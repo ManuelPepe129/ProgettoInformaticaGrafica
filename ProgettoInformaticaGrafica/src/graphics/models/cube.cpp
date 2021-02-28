@@ -60,10 +60,10 @@ void Cube::init()
 		indices[i] = i;
 	}
 
-	Texture flag("assets/");
+	Texture flag("assets/flag.jpg","material.diffuse");
 	flag.load();
 
-	meshes.push_back(Mesh(Vertex::genList(vertices, noVertices), indices, { }));
+	meshes.push_back(Mesh(Vertex::genList(vertices, noVertices), indices, { flag }));
 }
 
 
@@ -75,7 +75,7 @@ void Cube::render(Shader shader) {
 	shader.setMat4("model", model);
 
 	shader.set3Float("material.ambient", material.ambient);
-	shader.set3Float("material.diffuse", material.diffuse);
+	//shader.set3Float("material.diffuse", material.diffuse);
 	shader.set3Float("material.specular", material.specular);
 	shader.setFloat("material.shininess", material.shininess);
 

@@ -106,7 +106,8 @@ int main()
 		screen.update();
 
 		shader.activate();
-		shader.set3Float("viewPos", camera.getCameraPos());
+		shader.set3Float("viewPosition", camera.getCameraPos());
+
 		shader.set3Float("light.position", lamp.pos);
 		shader.set3Float("light.ambient", lamp.ambient);
 		shader.set3Float("light.diffuse", lamp.diffuse);
