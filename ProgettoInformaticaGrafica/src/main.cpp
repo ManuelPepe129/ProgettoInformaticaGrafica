@@ -68,12 +68,51 @@ int main()
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 	Shader lampShader("assets/vertex_core.glsl", "assets/fs_lamp.glsl");
 
-	/* Vertices */
-	Cube cube(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f), Material::green_plastic);
-	cube.init();
+	/* Geometry */
 
-	Lamp lamp(glm::vec3(-1.0f, -0.5f, -0.5f), glm::vec3(0.25f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
-	lamp.init();
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
+	Cube cubes[10];
+	for (unsigned int i = 0; i < 10; i++) {
+		cubes[i] = Cube(cubePositions[i], glm::vec3(1.0f),Material::gold);
+		cubes[i].init();
+	}
+
+	glm::vec3 pointLightPositions[] = {
+			glm::vec3(0.7f,  0.2f,  2.0f),
+			glm::vec3(2.3f, -3.3f, -4.0f),
+			glm::vec3(-4.0f,  2.0f, -12.0f),
+			glm::vec3(0.0f,  0.0f, -3.0f)
+	};
+	Lamp lamps[4];
+	for (unsigned int i = 0; i < 4; i++) {
+		lamps[i] = Lamp(pointLightPositions[i], glm::vec3(0.25f), 
+			glm::vec3(1.0f),
+			1.0f, 0.07f, 0.032f, 
+			glm::vec3(0.05f), glm::vec3(0.8f), glm::vec3(1.0f));
+		lamps[i].init();
+	}
+
+	DirectionalLight dirLight = { glm::vec3(-0.2f, -1.0f, -0.3f),1.0f, 0.07f, 0.032f, glm::vec3(0.1f), glm::vec3(0.4f), glm::vec3(0.5f) };
+
+	SpotLight spotLight = { 
+		camera.getCameraPos(), 
+		camera.getCameraFront(),
+		glm::cos(glm::radians(12.5f)),  glm::cos(glm::radians(20.0f)),
+		1.0f, 0.07f, 0.032f,
+		glm::vec3(0.f), glm::vec3(1.0f), glm::vec3(1.0f)
+	};
 
 	mainJ.update();
 
@@ -108,10 +147,23 @@ int main()
 		shader.activate();
 		shader.set3Float("viewPosition", camera.getCameraPos());
 
-		shader.set3Float("light.position", lamp.pos);
-		shader.set3Float("light.ambient", lamp.ambient);
-		shader.set3Float("light.diffuse", lamp.diffuse);
-		shader.set3Float("light.specular", lamp.specular);
+		dirLight.direction = glm::vec3(
+			glm::rotate(glm::mat4(1.0f), glm::radians(.5f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+			glm::vec4(dirLight.direction,1.0f)
+		);
+		
+		dirLight.render(shader);
+
+		for (int i = 0; i < 4; i++)
+		{
+			lamps[i].pointLight.render(shader,i);
+		}
+		shader.setInt("noPointLights", 4);
+
+		spotLight.position = camera.getCameraPos();
+		spotLight.direction = camera.getCameraFront();
+		spotLight.render(shader,0);
+		shader.setInt("noSpotLights", 0);
 
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);
@@ -123,20 +175,33 @@ int main()
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
 
-		cube.render(shader);
+		for (int i = 0; i < 10; i++) {
+			cubes[i].render(shader);
+		}
+		
 
 		lampShader.activate();
 		lampShader.setMat4("view", view);
 		lampShader.setMat4("projection", projection);
-		lamp.render(lampShader);
+		for (int i = 0; i < 4; i++)
+		{
+			lamps[i].render(lampShader);
+		}
 
 
 		// send new frame to window
 		screen.newFrame();
 		
 	}
-	cube.cleanup();
-	lamp.cleanup();
+
+	/* Clean Up */
+	for (int i = 0; i < 10; i++) {
+		cubes[i].cleanup();
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		lamps[i].cleanup();
+	}
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	glfwTerminate();

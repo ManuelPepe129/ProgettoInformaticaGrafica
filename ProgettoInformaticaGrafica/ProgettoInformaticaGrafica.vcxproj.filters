@@ -60,6 +60,9 @@
     <ClCompile Include="src\graphics\models\lamp.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\light.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\vertex_core.glsl" />
@@ -101,6 +104,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\models\lamp.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\light.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

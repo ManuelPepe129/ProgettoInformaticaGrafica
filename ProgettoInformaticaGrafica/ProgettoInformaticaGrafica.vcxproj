@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\light.cpp" />
     <ClCompile Include="src\graphics\models\lamp.cpp" />
     <ClCompile Include="src\graphics\material.cpp" />
     <ClCompile Include="src\graphics\models\cube.cpp" />
@@ -164,6 +165,7 @@
     <None Include="assets\vertex_core.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\light.h" />
     <ClInclude Include="src\graphics\models\lamp.h" />
     <ClInclude Include="src\graphics\material.h" />
     <ClInclude Include="src\graphics\models\cube.h" />

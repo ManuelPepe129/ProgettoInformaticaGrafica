@@ -29,6 +29,7 @@ public:
 	glm::mat4 getViewMatrix() const;
 	float getCameraZoom() const;
 	glm::vec3 getCameraPos() const;
+	glm::vec3 getCameraFront() const;
 
 private:
 	void updateCameraVectors();
