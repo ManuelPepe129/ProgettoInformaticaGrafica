@@ -65,9 +65,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\vertex_core.glsl" />
-    <None Include="assets\fragment_core.glsl" />
-    <None Include="assets\fs_lamp.glsl" />
+    <None Include="assets\shaders\vertex_core.glsl" />
+    <None Include="assets\shaders\fragment_core.glsl" />
+    <None Include="assets\shaders\fs_lamp.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\io\Mouse.h">

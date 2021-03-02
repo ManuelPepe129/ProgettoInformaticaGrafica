@@ -31,7 +31,7 @@ glm::mat4 mouseTransform = glm::mat4(1.0f);
 Joystick mainJ(0);
 glm::mat4 transform = glm::mat4(1.0f);
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -71,17 +71,17 @@ int main()
 
 	/* Shaders */
 
-	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
-	Shader lampShader("assets/vertex_core.glsl", "assets/fs_lamp.glsl");
+	Shader shader("assets/shaders/vertex_core.glsl", "assets/shaders/fragment_core.glsl");
+	Shader lampShader("assets/shaders/vertex_core.glsl", "assets/shaders/fs_lamp.glsl");
 
 	/* Models */
 
-	//Model m(glm::vec3(0.0f), glm::vec3(1.0f));
-	//m.loadModel("assets/models/Maze/maze.obj");
+	Model m(glm::vec3(0.0f), glm::vec3(1.0f), true);
+	m.loadModel("assets/models/Maze/maze.obj");
 	//Model m1(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f));
 	//m1.loadModel("assets/models/lotr_troll/scene.gltf");
-	Model m(glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
-	m.loadModel("assets/models/m4a1/scene.gltf");
+	//Model m(glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
+	//m.loadModel("assets/models/m4a1/scene.gltf");
 
 	DirectionalLight dirLight = {
 		glm::vec3(-0.2f, -1.0f, -0.3f),
