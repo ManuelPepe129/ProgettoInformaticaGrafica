@@ -1,10 +1,7 @@
 #include "cube.h"
 
-Cube::Cube(glm::vec3 pos, glm::vec3 size, Material material)
-	:pos(pos),size(size), material(material)
-{ }
-
-Cube::Cube()
+Cube::Cube(glm::vec3 pos, glm::vec3 size)
+	: Model(pos, size)
 { }
 
 void Cube::init()
@@ -63,16 +60,18 @@ void Cube::init()
 		indices[i] = i;
 	}
 
+	/*
 	Texture flag("assets/flag.jpg","material.diffuse");
 	flag.load();
 
 	Texture flagSpec("assets/flag_specular.jpg", "material.specular");
 	flagSpec.load();
+	*/
 
-	meshes.push_back(Mesh(Vertex::genList(vertices, noVertices), indices, { flag, flagSpec }));
+	meshes.push_back(Mesh(Vertex::genList(vertices, noVertices), indices));
 }
 
-
+/*
 void Cube::render(Shader shader) {
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, pos);
@@ -87,3 +86,4 @@ void Cube::render(Shader shader) {
 
 	Model::render(shader);
 }
+*/

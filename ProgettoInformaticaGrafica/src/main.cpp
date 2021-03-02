@@ -13,6 +13,7 @@
 #include "graphics/Shader.h"
 #include "graphics/texture.h"
 #include "graphics/material.h"
+#include "graphics/model.h"
 
 #include "graphics/models/cube.h"
 #include "graphics/models/lamp.h"
@@ -31,6 +32,7 @@ Joystick mainJ(0);
 glm::mat4 transform = glm::mat4(1.0f);
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
 
@@ -46,6 +48,10 @@ int main()
 
 	// Use OpenGL Core Profile
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+# ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COPMPAT, GL_TRUE);
+#endif
 
 	if (!screen.init())
 	{
@@ -68,50 +74,47 @@ int main()
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 	Shader lampShader("assets/vertex_core.glsl", "assets/fs_lamp.glsl");
 
-	/* Geometry */
+	/* Models */
 
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
+	//Model m(glm::vec3(0.0f), glm::vec3(1.0f));
+	//m.loadModel("assets/models/Maze/maze.obj");
+	//Model m1(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f));
+	//m1.loadModel("assets/models/lotr_troll/scene.gltf");
+	Model m(glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
+	m.loadModel("assets/models/m4a1/scene.gltf");
+
+	DirectionalLight dirLight = {
+		glm::vec3(-0.2f, -1.0f, -0.3f),
+		glm::vec4(0.1f, 0.1f, 0.1f, 1.0f),
+		glm::vec4(0.4f, 0.4f, 0.4f, 1.0f),
+		glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)
 	};
-
-	Cube cubes[10];
-	for (unsigned int i = 0; i < 10; i++) {
-		cubes[i] = Cube(cubePositions[i], glm::vec3(1.0f),Material::gold);
-		cubes[i].init();
-	}
 
 	glm::vec3 pointLightPositions[] = {
-			glm::vec3(0.7f,  0.2f,  2.0f),
-			glm::vec3(2.3f, -3.3f, -4.0f),
-			glm::vec3(-4.0f,  2.0f, -12.0f),
-			glm::vec3(0.0f,  0.0f, -3.0f)
+		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+		glm::vec3(-4.0f,  2.0f, -12.0f),
+		glm::vec3(0.0f,  0.0f, -3.0f)
 	};
+
 	Lamp lamps[4];
-	for (unsigned int i = 0; i < 4; i++) {
+	for (unsigned int i = 0; i < 4; i++) 
+	{
 		lamps[i] = Lamp(pointLightPositions[i], glm::vec3(0.25f), 
 			glm::vec3(1.0f),
 			1.0f, 0.07f, 0.032f, 
-			glm::vec3(0.05f), glm::vec3(0.8f), glm::vec3(1.0f));
+			glm::vec4(0.05f, 0.05f, 0.05f,1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		lamps[i].init();
 	}
 
-	DirectionalLight dirLight = { glm::vec3(-0.2f, -1.0f, -0.3f),1.0f, 0.07f, 0.032f, glm::vec3(0.1f), glm::vec3(0.4f), glm::vec3(0.5f) };
+
 
 	SpotLight spotLight = { 
 		camera.getCameraPos(), 
 		camera.getCameraFront(),
 		glm::cos(glm::radians(12.5f)),  glm::cos(glm::radians(20.0f)),
 		1.0f, 0.07f, 0.032f,
-		glm::vec3(0.f), glm::vec3(1.0f), glm::vec3(1.0f)
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
 	};
 
 	mainJ.update();
@@ -145,16 +148,12 @@ int main()
 		screen.update();
 
 		shader.activate();
+
 		shader.set3Float("viewPosition", camera.getCameraPos());
 
-		dirLight.direction = glm::vec3(
-			glm::rotate(glm::mat4(1.0f), glm::radians(.5f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-			glm::vec4(dirLight.direction,1.0f)
-		);
-		
 		dirLight.render(shader);
 
-		for (int i = 0; i < 4; i++)
+		for (unsigned int i = 0; i < 4; i++)
 		{
 			lamps[i].pointLight.render(shader,i);
 		}
@@ -162,32 +161,28 @@ int main()
 
 		spotLight.position = camera.getCameraPos();
 		spotLight.direction = camera.getCameraFront();
-		spotLight.render(shader,0);
-		shader.setInt("noSpotLights", 0);
+		spotLight.render(shader, 0);
+		shader.setInt("noSpotLights", 1);
 
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
-
 		view = camera.getViewMatrix();
 		projection = glm::perspective(glm::radians(camera.getCameraZoom()), (float)Screen::SCR_WIDTH / (float)Screen::SCR_HEIGHT, 0.1f, 100.0f);
 
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
 
-		for (int i = 0; i < 10; i++) {
-			cubes[i].render(shader);
-		}
-		
+		m.render(shader);
+		//m1.render(shader);
 
 		lampShader.activate();
 		lampShader.setMat4("view", view);
 		lampShader.setMat4("projection", projection);
-		for (int i = 0; i < 4; i++)
+		for (unsigned int i = 0; i < 4; i++)
 		{
 			lamps[i].render(lampShader);
 		}
-
 
 		// send new frame to window
 		screen.newFrame();
@@ -195,9 +190,10 @@ int main()
 	}
 
 	/* Clean Up */
-	for (int i = 0; i < 10; i++) {
-		cubes[i].cleanup();
-	}
+
+	//m1.cleanup();
+	m.cleanup();
+
 	for (int i = 0; i < 4; i++)
 	{
 		lamps[i].cleanup();

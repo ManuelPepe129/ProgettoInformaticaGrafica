@@ -13,9 +13,9 @@ public:
         float c0,
         float c1,
         float c2,
-        glm::vec3 ambient,
-        glm::vec3 diffuse,
-        glm::vec3 specular);
+        glm::vec4 ambient,
+        glm::vec4 diffuse,
+        glm::vec4 specular);
 
     Lamp();
 

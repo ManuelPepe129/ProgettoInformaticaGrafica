@@ -10,9 +10,9 @@ void PointLight::render(Shader shader, int idx)
 	shader.setFloat(name + ".c1", c1);
 	shader.setFloat(name + ".c2", c2);
 
-	shader.set3Float(name + ".ambient", ambient);
-	shader.set3Float(name + ".diffuse", diffuse);
-	shader.set3Float(name + ".specular", specular);
+	shader.set4Float(name + ".ambient", ambient);
+	shader.set4Float(name + ".diffuse", diffuse);
+	shader.set4Float(name + ".specular", specular);
 }
 
 void DirectionalLight::render(Shader shader)
@@ -21,18 +21,14 @@ void DirectionalLight::render(Shader shader)
 
 	shader.set3Float(name + ".direction", direction);
 
-	shader.setFloat(name + ".c0", c0);
-	shader.setFloat(name + ".c1", c1);
-	shader.setFloat(name + ".c2", c2);
-
-	shader.set3Float(name + ".ambient", ambient);
-	shader.set3Float(name + ".diffuse", diffuse);
-	shader.set3Float(name + ".specular", specular);
+	shader.set4Float(name + ".ambient", ambient);
+	shader.set4Float(name + ".diffuse", diffuse);
+	shader.set4Float(name + ".specular", specular);
 }
 
 void SpotLight::render(Shader shader, int idx)
 {
-	std::string name = "pointLights[" + std::to_string(idx) + "]";
+	std::string name = "spotLights[" + std::to_string(idx) + "]";
 
 	shader.set3Float(name + ".direction", direction);
 	shader.set3Float(name + ".position", position);
@@ -44,7 +40,7 @@ void SpotLight::render(Shader shader, int idx)
 	shader.setFloat(name + ".c1", c1);
 	shader.setFloat(name + ".c2", c2);
 
-	shader.set3Float(name + ".ambient", ambient);
-	shader.set3Float(name + ".diffuse", diffuse);
-	shader.set3Float(name + ".specular", specular);
+	shader.set4Float(name + ".ambient", ambient);
+	shader.set4Float(name + ".diffuse", diffuse);
+	shader.set4Float(name + ".specular", specular);
 }
