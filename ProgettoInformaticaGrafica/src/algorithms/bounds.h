@@ -13,10 +13,13 @@ public:
 
 	// initialize with type
 	BoundingRegion(BoundTypes type);
+	// initialize as sphere
 	BoundingRegion(glm::vec3 center, float radius);
+	// initialize as box
 	BoundingRegion(glm::vec3 min, glm::vec3 max);
 
 	/*
+		calculating values for the region
 	*/
 
 	// center
@@ -32,6 +35,7 @@ public:
 	bool containsPoint(glm::vec3 pt);
 	bool containsRegion(BoundingRegion br);
 
+	// determine if region intersects (partial containment)
 	bool intersects(BoundingRegion br);
 
 	BoundTypes type;

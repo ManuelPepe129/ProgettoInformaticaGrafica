@@ -13,6 +13,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "../algorithms/bounds.h"
+#include "models/box.h"
 
 struct Vertex {
 	glm::vec3 pos;
@@ -31,7 +32,7 @@ public:
 
 	Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular);
 
-	void render(Shader shader);
+	void render(Shader shader, glm::vec3 pos, glm::vec3 size, Box* box, bool doRender = true);
 
 	void cleanUp();
 
@@ -43,9 +44,11 @@ public:
 	// we could have more textures for model
 	std::vector<Texture> textures;
 
+	unsigned int VAO;
+
 private:
 	unsigned int VBO, EBO;
-	unsigned int VAO;
+	
 
 	bool noTex;
 

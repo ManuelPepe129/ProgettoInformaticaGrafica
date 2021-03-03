@@ -1,6 +1,7 @@
 #include "box.h"
 
-void Box::init() {
+void Box::init()
+{
 	vertices = {
 		// position             x   y   z   i
 		 0.5f,  0.5f,  0.5f, // +   +   +   0

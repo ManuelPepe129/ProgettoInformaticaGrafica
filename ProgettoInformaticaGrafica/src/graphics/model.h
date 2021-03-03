@@ -8,28 +8,33 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.h"
+#include "models/box.h"
+#include "../physics/rigidbody.h"
 #include "../algorithms/bounds.h"
 
 class Model
 {
 public:
-	Model() {};
 	Model(BoundTypes boundType = BoundTypes::AABB, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f), bool noTex = false);
 
 	bool loadModel(std::string path);
 
-	void render(Shader shader);
+	void render(Shader shader, float dt, Box* box, bool setModel = true, bool doRender = true);
 
 	void cleanup();
 
 	glm::vec3 pos;
 	glm::vec3 size;
 
+	std::vector<Mesh> meshes;
+
+	RigidBody rb;
+
 	BoundTypes boundType;
 
 protected:
 	bool noTex;
-	std::vector<Mesh> meshes;
+	
 	std::string directory;
 
 	std::vector<Texture> texturesLoaded;

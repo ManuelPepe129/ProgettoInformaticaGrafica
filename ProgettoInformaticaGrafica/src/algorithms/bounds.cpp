@@ -3,18 +3,15 @@
 
 BoundingRegion::BoundingRegion(BoundTypes type)
 	: type(type)
-{
-}
+{ }
 
 BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
 	: type(BoundTypes::SPHERE), center(center), radius(radius)
-{
-}
+{ }
 
 BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
 	:type(BoundTypes::AABB), min(min), max(max)
-{
-}
+{ }
 
 glm::vec3 BoundingRegion::calculateCenter()
 {

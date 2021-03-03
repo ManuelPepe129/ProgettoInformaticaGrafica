@@ -44,7 +44,7 @@ Mesh::Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned
 	setup();
 }
 
-void Mesh::render(Shader shader)
+void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box* box, bool doRender)
 {
 	if (noTex)
 	{
@@ -55,16 +55,13 @@ void Mesh::render(Shader shader)
 	}
 	else
 	{
-		//shader.setFloat("noTex", 0);
-
 		//textures
 		unsigned int diffuseIdx = 0;
 		unsigned int specularIdx = 0;
 
 		for (unsigned int i = 0; i < textures.size(); ++i)
 		{
-			// active textures
-			//textures[i].active();
+			// activate textures
 			glActiveTexture(GL_TEXTURE0 + i);
 
 			// retrieve texture info
@@ -87,12 +84,16 @@ void Mesh::render(Shader shader)
 		}
 	}
 
-	// EBO stuff
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+	if (doRender) {
+		box->addInstance(br, pos, size);
 
-	glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		// reset
+		glActiveTexture(GL_TEXTURE0);
+	}
 }
 
 void Mesh::cleanUp()
@@ -114,7 +115,7 @@ void Mesh::setup()
 
 	// bind VBO
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);

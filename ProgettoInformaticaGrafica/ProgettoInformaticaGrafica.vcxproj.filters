@@ -69,6 +69,15 @@
     <ClCompile Include="src\graphics\models\box.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\models\sphere.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\environment.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\rigidbody.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\vertex_core.glsl" />
@@ -119,6 +128,18 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\models\box.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\sphere.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\modelArray.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\environment.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\rigidbody.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

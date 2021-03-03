@@ -1,30 +1,31 @@
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <string>
+#include <vector>
+#include <stack>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-#include <stb/stb_image.h>
-
-#include <iostream>
-#include <string>
-
-#include "graphics/Shader.h"
+#include "graphics/shader.h"
 #include "graphics/texture.h"
-#include "graphics/material.h"
 #include "graphics/model.h"
+#include "graphics/light.h"
 
 #include "graphics/models/cube.h"
 #include "graphics/models/lamp.h"
+#include "graphics/models/sphere.h"
+#include "graphics/models/box.h"
 
-#include "algorithms/bounds.h"
+#include "physics/environment.h"
 
 #include "io/keyboard.h"
 #include "io/mouse.h"
 #include "io/joystick.h"
-#include "io/camera.h"
 #include "io/screen.h"
+#include "io/camera.h"
 
 // Callbacks
 void processInput(double dt);
@@ -33,7 +34,7 @@ glm::mat4 mouseTransform = glm::mat4(1.0f);
 Joystick mainJ(0);
 glm::mat4 transform = glm::mat4(1.0f);
 
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(-32.9f, 0.0f, -1.0f));
 
 float deltaTime = 0.0f;
 float lastTime = 0.0f;
@@ -78,12 +79,15 @@ int main()
 
 	/* Models */
 
+	Box box;
+	box.init();
+
 	Model m(BoundTypes::AABB,glm::vec3(0.0f), glm::vec3(1.0f), true);
-	m.loadModel("assets/models/Maze/maze.obj");
+	m.loadModel("assets/models/Maze/Maze.obj");
 	//Model m1(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f));
 	//m1.loadModel("assets/models/lotr_troll/scene.gltf");
-	//Model m(glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
-	//m.loadModel("assets/models/m4a1/scene.gltf");
+	//Model m(BoundTypes::AABB,glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
+	//m.loadModel("assets/models/m4a1/scene.gltf");	
 
 	DirectionalLight dirLight = {
 		glm::vec3(-0.2f, -1.0f, -0.3f),
@@ -99,14 +103,22 @@ int main()
 		glm::vec3(0.0f,  0.0f, -3.0f)
 	};
 
-	Lamp lamps[4];
+	glm::vec4 ambient = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	glm::vec4 diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+	glm::vec4 specular = glm::vec4(1.0f);
+	float c0 = 1.0f;
+	float c1 = 0.09f;
+	float c2 = 0.032f;
+
+	LampArray lamps;
+	lamps.init();
 	for (unsigned int i = 0; i < 4; i++) 
 	{
-		lamps[i] = Lamp(pointLightPositions[i], glm::vec3(0.25f), 
-			glm::vec3(1.0f),
-			1.0f, 0.07f, 0.032f, 
-			glm::vec4(0.05f, 0.05f, 0.05f,1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		lamps[i].init();
+		lamps.lightInstances.push_back({
+			pointLightPositions[i],
+			c0, c1, c2,
+			ambient, diffuse, specular
+			});
 	}
 
 
@@ -139,25 +151,23 @@ int main()
 		deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
 
+		box.offsets.clear();
+		box.sizes.clear();
+
 		// process input
 		processInput(deltaTime);
-
-		/*
-			Render
-		*/
 
 		// set background color
 		screen.update();
 
 		shader.activate();
-
 		shader.set3Float("viewPosition", camera.getCameraPos());
 
 		dirLight.render(shader);
 
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			lamps[i].pointLight.render(shader,i);
+		for (unsigned int i = 0; i < 4; i++) {
+			shader.activate();
+			lamps.lightInstances[i].render(shader, i);
 		}
 		shader.setInt("noPointLights", 4);
 
@@ -174,17 +184,13 @@ int main()
 
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
+		m.render(shader, deltaTime, &box);
 
-		m.render(shader);
-		//m1.render(shader);
-
+		// lamps
 		lampShader.activate();
 		lampShader.setMat4("view", view);
 		lampShader.setMat4("projection", projection);
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			//lamps[i].render(lampShader);
-		}
+		lamps.render(lampShader, deltaTime, &box);
 
 		// send new frame to window
 		screen.newFrame();
@@ -196,10 +202,7 @@ int main()
 	//m1.cleanup();
 	m.cleanup();
 
-	for (int i = 0; i < 4; i++)
-	{
-		lamps[i].cleanup();
-	}
+	lamps.cleanup();
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	glfwTerminate();
@@ -213,6 +216,12 @@ void processInput(double dt)
 	if (Keyboard::key(GLFW_KEY_ESCAPE) || mainJ.buttonState(GLFW_JOYSTICK_BTN_RIGHT))
 	{
 		screen.setShouldClose(true);
+	}
+
+	if (Keyboard::key(GLFW_KEY_P))
+	{
+		glm::vec3 pos = camera.getCameraPos();
+		std::cout << "x: " << pos.x << ", y: " << pos.y << ", z: " << pos.z << std::endl;
 	}
 
 	/* move camera */

@@ -1,8 +1,10 @@
 #include "model.h"
 
-Model::Model(BoundTypes boundType,glm::vec3 pos, glm::vec3 size, bool noTex) :
+Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTex) :
 	boundType(boundType), pos(pos), size(size), noTex(noTex)
-{ }
+{
+	rb.pos = pos;
+}
 
 bool Model::loadModel(std::string path)
 {
@@ -21,18 +23,22 @@ bool Model::loadModel(std::string path)
 	return true;
 }
 
-void Model::render(Shader shader)
+void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRender)
 {
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, pos);
-	model = glm::scale(model, size);
-	shader.setMat4("model", model);
+	rb.update(dt);
+
+	if (setModel) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, rb.pos);
+		model = glm::scale(model, size);
+		shader.setMat4("model", model);
+	}
 
 	shader.setFloat("material.shininess", 0.5f);
 
 	for (Mesh mesh : meshes)
 	{
-		mesh.render(shader);
+		mesh.render(shader, pos, size, box, doRender);
 	}
 }
 
@@ -139,27 +145,29 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// process material
-	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+	if (mesh->mMaterialIndex >= 0) {
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-	if (noTex) {
-		// diffuse color
-		aiColor4D diff(1.0f);
-		aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diff);
+		if (noTex) {
+			// diffuse color
+			aiColor4D diff(1.0f);
+			aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diff);
 
-		// specular color
-		aiColor4D spec(1.0f);
-		aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &spec);
+			// specular color
+			aiColor4D spec(1.0f);
+			aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &spec);
 
-		return Mesh(br, vertices, indices, diff, spec);
+			return Mesh(br, vertices, indices, diff, spec);
+		}
+
+		// diffuse maps
+		std::vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE);
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+		// specular maps
+		std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
-
-	// diffuse maps
-	std::vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE);
-	textures.insert(textures.end(),diffuseMaps.begin(), diffuseMaps.end());
-
-	// specular maps
-	std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
-	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
 	return Mesh(br, vertices, indices, textures);
 }
