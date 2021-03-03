@@ -1,7 +1,7 @@
 #include "cube.h"
 
 Cube::Cube(glm::vec3 pos, glm::vec3 size)
-	: Model(pos, size)
+	: Model(BoundTypes::AABB, size)
 { }
 
 void Cube::init()
@@ -68,7 +68,9 @@ void Cube::init()
 	flagSpec.load();
 	*/
 
-	meshes.push_back(Mesh(Vertex::genList(vertices, noVertices), indices));
+	BoundingRegion br(glm::vec3(-05.f), glm::vec3(0.5f));
+
+	meshes.push_back(Mesh(br, Vertex::genList(vertices, noVertices), indices));
 }
 
 /*

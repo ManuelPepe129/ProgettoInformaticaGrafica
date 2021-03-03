@@ -18,6 +18,8 @@
 #include "graphics/models/cube.h"
 #include "graphics/models/lamp.h"
 
+#include "algorithms/bounds.h"
+
 #include "io/keyboard.h"
 #include "io/mouse.h"
 #include "io/joystick.h"
@@ -76,7 +78,7 @@ int main()
 
 	/* Models */
 
-	Model m(glm::vec3(0.0f), glm::vec3(1.0f), true);
+	Model m(BoundTypes::AABB,glm::vec3(0.0f), glm::vec3(1.0f), true);
 	m.loadModel("assets/models/Maze/maze.obj");
 	//Model m1(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f));
 	//m1.loadModel("assets/models/lotr_troll/scene.gltf");
@@ -181,7 +183,7 @@ int main()
 		lampShader.setMat4("projection", projection);
 		for (unsigned int i = 0; i < 4; i++)
 		{
-			lamps[i].render(lampShader);
+			//lamps[i].render(lampShader);
 		}
 
 		// send new frame to window

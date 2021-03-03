@@ -8,12 +8,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.h"
+#include "../algorithms/bounds.h"
 
 class Model
 {
 public:
 	Model() {};
-	Model(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f), bool noTex = false);
+	Model(BoundTypes boundType = BoundTypes::AABB, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f), bool noTex = false);
 
 	bool loadModel(std::string path);
 
@@ -24,7 +25,7 @@ public:
 	glm::vec3 pos;
 	glm::vec3 size;
 
-	
+	BoundTypes boundType;
 
 protected:
 	bool noTex;

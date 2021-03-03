@@ -1,7 +1,7 @@
 #include "model.h"
 
-Model::Model(glm::vec3 pos, glm::vec3 size, bool noTex) :
-	pos(pos), size(size), noTex(noTex)
+Model::Model(BoundTypes boundType,glm::vec3 pos, glm::vec3 size, bool noTex) :
+	boundType(boundType), pos(pos), size(size), noTex(noTex)
 { }
 
 bool Model::loadModel(std::string path)
@@ -66,6 +66,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 
+	BoundingRegion br(boundType);
+	glm::vec3 min(float(~0)); // min point = max float
+	glm::vec3 max(-(float(~0))); // max point = min float
+
 	// process vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++) 
 	{
@@ -73,6 +77,16 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 		// position
 		vertex.pos = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+
+		for (int j = 0; j < 3; ++j)
+		{
+			//if smaller than min
+			if (vertex.pos[j] < min[j])
+				min[j] = vertex.pos[j];
+			// if bigger than max
+			if (vertex.pos[j] > max[j])
+				max[j] = vertex.pos[j];
+		}
 
 		// normal vectors
 		vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
@@ -88,6 +102,30 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		}
 
 		vertices.push_back(vertex);
+	}
+
+	if (boundType == BoundTypes::AABB)
+	{
+		br.max = max;
+		br.min = min;
+	}
+	else if (boundType == BoundTypes::SPHERE)
+	{
+		br.center = BoundingRegion(min, max).calculateCenter();
+		float maxRadiusSquared = 0.0f;
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			float radiusSquared = 0.0f; // distance for this vertex
+			for (int j = 0; j < 3; j++)
+			{
+				radiusSquared += (vertices[i].pos[j]-br.center[j])* (vertices[i].pos[j] - br.center[j]);
+			}
+			if (radiusSquared > maxRadiusSquared)
+			{
+				maxRadiusSquared = radiusSquared;
+			}
+		}
+		br.radius = sqrt(maxRadiusSquared);
 	}
 
 	// process indices
@@ -112,7 +150,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		aiColor4D spec(1.0f);
 		aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &spec);
 
-		return Mesh(vertices, indices, diff, spec);
+		return Mesh(br, vertices, indices, diff, spec);
 	}
 
 	// diffuse maps
@@ -123,7 +161,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-	return Mesh(vertices, indices, textures);
+	return Mesh(br, vertices, indices, textures);
 }
 
 std::vector<Texture> Model::loadTextures(aiMaterial* mat, aiTextureType type)

@@ -12,6 +12,7 @@
 
 #include "shader.h"
 #include "texture.h"
+#include "../algorithms/bounds.h"
 
 struct Vertex {
 	glm::vec3 pos;
@@ -24,10 +25,11 @@ struct Vertex {
 class Mesh
 {
 public:
+	BoundingRegion br;
 
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures = {});
+	Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures = {});
 
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular);
+	Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular);
 
 	void render(Shader shader);
 
