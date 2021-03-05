@@ -1,9 +1,5 @@
 #include "material.h"
 
-/*
-    static instances of common materials
-*/
-
 // data obtained from http://devernay.free.fr/cours/opengl/materials.html
 
 Material Material::emerald = { glm::vec3(0.0215, 0.1745, 0.0215), glm::vec3(0.07568, 0.61424, 0.07568), glm::vec3(0.633, 0.727811, 0.633), 0.6 };
@@ -31,13 +27,18 @@ Material Material::red_rubber = { glm::vec3(0.05, 0.0, 0.0), glm::vec3(0.5, 0.4,
 Material Material::white_rubber = { glm::vec3(0.05, 0.05, 0.05), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.7, 0.7, 0.7), .078125 };
 Material Material::yellow_rubber = { glm::vec3(0.05, 0.05, 0.0), glm::vec3(0.5, 0.5, 0.4), glm::vec3(0.7, 0.7, 0.04), .078125 };
 
-// function to mix two materials with a proportion
 Material Material::mix(Material m1, Material m2, float mix) {
-    return {
-        // set lighting values based on proportion
-        m1.ambient * mix + m2.ambient * (1 - mix),
-        m1.diffuse * mix + m2.diffuse * (1 - mix),
-        m1.specular * mix + m2.specular * (1 - mix),
-        m1.shininess * mix + m2.shininess * (1 - mix)
-    };
+	return {
+		m1.ambient * mix + m2.ambient * (1 - mix),
+		m1.diffuse * mix + m2.diffuse * (1 - mix),
+		m1.specular * mix + m2.specular * (1 - mix),
+		m1.shininess * mix + m2.shininess * (1 - mix)
+	};
+
+	/*
+	(x + y) / 2 = .5(x + y)
+
+	mix = .5
+	= x * .5 + y * (1 - .5)
+	*/
 }

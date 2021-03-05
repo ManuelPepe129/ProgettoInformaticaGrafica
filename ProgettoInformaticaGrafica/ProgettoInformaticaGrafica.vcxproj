@@ -142,59 +142,55 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\io\camera.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\physics\rigidbody.cpp" />
     <ClCompile Include="src\physics\environment.cpp" />
-    <ClCompile Include="src\graphics\models\sphere.cpp" />
-    <ClCompile Include="src\graphics\models\box.cpp" />
     <ClCompile Include="src\algorithms\bounds.cpp" />
     <ClCompile Include="src\graphics\light.cpp" />
-    <ClCompile Include="src\graphics\models\lamp.cpp" />
     <ClCompile Include="src\graphics\material.cpp" />
-    <ClCompile Include="src\graphics\models\cube.cpp" />
     <ClCompile Include="src\graphics\model.cpp" />
     <ClCompile Include="src\graphics\mesh.cpp" />
-    <ClCompile Include="src\io\Camera.cpp" />
     <ClCompile Include="src\io\Joystick.cpp" />
     <ClCompile Include="src\io\Keyboard.cpp" />
-    <ClCompile Include="lib\glad.c" />
+    <ClCompile Include="src\glad.c" />
     <ClCompile Include="lib\stb.cpp" />
     <ClCompile Include="src\io\Mouse.cpp" />
     <ClCompile Include="src\graphics\Shader.cpp" />
-    <ClCompile Include="src\io\screen.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\graphics\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\fs_box.glsl" />
-    <None Include="assets\shaders\fragment_core.glsl" />
-    <None Include="assets\shaders\fs_lamp.glsl" />
-    <None Include="assets\shaders\vertex_core.glsl" />
-    <None Include="assets\shaders\vs_box.glsl" />
-    <None Include="assets\shaders\vs_instanced.glsl" />
+    <None Include="assets\shaders\box_fs.glsl" />
+    <None Include="assets\shaders\core_fs.glsl" />
+    <None Include="assets\shaders\lamp_fs.glsl" />
+    <None Include="assets\shaders\instanced_vs.glsl" />
+    <None Include="assets\shaders\core_vs.glsl" />
+    <None Include="assets\shaders\box_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\models\box.hpp" />
+    <ClInclude Include="src\graphics\models\cube.hpp" />
+    <ClInclude Include="src\graphics\models\gun.hpp" />
+    <ClInclude Include="src\graphics\models\lamp.hpp" />
+    <ClInclude Include="src\graphics\models\modelarray.hpp" />
+    <ClInclude Include="src\graphics\models\sphere.hpp" />
+    <ClInclude Include="src\io\camera.h" />
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\algorithms\states.hpp" />
     <ClInclude Include="src\graphics\glmemory.hpp" />
     <ClInclude Include="src\physics\rigidbody.h" />
     <ClInclude Include="src\physics\environment.h" />
     <ClInclude Include="src\graphics\modelArray.hpp" />
-    <ClInclude Include="src\graphics\models\sphere.h" />
-    <ClInclude Include="src\graphics\models\box.h" />
     <ClInclude Include="src\algorithms\bounds.h" />
     <ClInclude Include="src\graphics\light.h" />
-    <ClInclude Include="src\graphics\models\lamp.h" />
     <ClInclude Include="src\graphics\material.h" />
-    <ClInclude Include="src\graphics\models\cube.h" />
     <ClInclude Include="src\graphics\model.h" />
     <ClInclude Include="src\graphics\mesh.h" />
-    <ClInclude Include="src\io\Camera.h" />
     <ClInclude Include="src\io\Joystick.h" />
     <ClInclude Include="src\io\Keyboard.h" />
     <ClInclude Include="src\io\Mouse.h" />
     <ClInclude Include="src\graphics\Shader.h" />
-    <ClInclude Include="src\io\screen.h" />
     <ClInclude Include="src\graphics\texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

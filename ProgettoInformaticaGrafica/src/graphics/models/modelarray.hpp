@@ -1,7 +1,9 @@
-#pragma once
+#ifndef MODELARRAY_HPP
+#define MODELARRAY_HPP
+
 #include "../model.h"
 
-#include "models/box.h"
+#include "box.hpp"
 
 #define UPPER_BOUND 100
 
@@ -42,7 +44,7 @@ public:
 		}
 	}
 
-	void render(Shader shader, float dt, Box* box, bool setLists = true) {
+	void render(Shader shader, float dt, Box *box, bool setLists = true) {
 		if (setLists) {
 			positions.clear();
 			sizes.clear();
@@ -104,3 +106,5 @@ protected:
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> sizes;
 };
+
+#endif

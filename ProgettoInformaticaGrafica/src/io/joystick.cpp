@@ -1,55 +1,56 @@
-#include "Joystick.h"
+#include "joystick.h"
 
-Joystick::Joystick(int i)
-{
+Joystick::Joystick(int i) {
 	id = getId(i);
+
 	update();
 }
 
-void Joystick::update()
-{
+void Joystick::update() {
 	present = glfwJoystickPresent(id);
 
-	if (present)
-	{
-		// resets the values every frame
+	if (present) {
 		name = glfwGetJoystickName(id);
 		axes = glfwGetJoystickAxes(id, &axesCount);
 		buttons = glfwGetJoystickButtons(id, &buttonCount);
 	}
 }
 
-float Joystick::axesState(int axis)
-{
-	return present ? axes[axis] : 0.0f;
+float Joystick::axesState(int axis) {
+	if (present) {
+		return axes[axis];
+	}
+
+	return -1;
 }
 
-unsigned char Joystick::buttonState(int button)
-{
-	return present ? buttons[button] : GLFW_RELEASE;
+unsigned char Joystick::buttonState(int button) {
+	if (present) {
+		return buttons[button];
+	}
+
+	return GLFW_RELEASE;
 }
 
-int Joystick::getAxesCount()
-{
+int Joystick::getAxesCount() {
 	return axesCount;
 }
 
-int Joystick::getButtonCount()
-{
+int Joystick::getButtonCount() {
 	return buttonCount;
 }
 
-bool Joystick::isPresent()
-{
+bool Joystick::isPresent() {
 	return present;
 }
 
-const char* Joystick::getName()
-{
+const char* Joystick::getName() {
 	return name;
 }
 
-int Joystick::getId(int i)
-{
-	return GLFW_JOYSTICK_1+i;
+int Joystick::getId(int i) {
+	switch (i) {
+	case 0: return GLFW_JOYSTICK_1;
+	default: return -1;
+	};
 }

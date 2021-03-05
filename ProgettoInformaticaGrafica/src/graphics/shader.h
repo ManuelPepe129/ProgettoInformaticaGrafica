@@ -1,32 +1,37 @@
-#pragma once
+#ifndef SHADER_H
+#define SHADER_H
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <assimp/color4.h>
-
-#include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
-#include <streambuf>
-#include <string>
+#include <iostream>
 
-class Shader
-{
+#include <assimp/scene.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+class Shader {
 public:
+	// program ID
+	unsigned int id;
 
+	// contructor
 	Shader();
+	Shader(const char* vertexShaderPath, const char* fragShaderPath);
 
-	Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
+	// generate
+	void generate(const char* vertexShaderPath, const char* fragShaderPath);
 
-	void generate(const char* vertexShaderPath, const char* fragmentShaderPath);
-
+	// activate shader
 	void activate();
-	const unsigned int GetId() const;
+
+	// utility functions
+	std::string loadShaderSrc(const char* filePath);
+	GLuint compileShader(const char* filePath, GLuint type);
 
 	// uniform functions
 	void setBool(const std::string& name, bool value);
@@ -37,15 +42,7 @@ public:
 	void set4Float(const std::string& name, float v1, float v2, float v3, float v4);
 	void set4Float(const std::string& name, aiColor4D color);
 	void set4Float(const std::string& name, glm::vec4 v);
-	void setMat3(const std::string& name, glm::mat3 val);
-	void setMat4(const std::string& uniformName, glm::mat4 transform);
-
-private:
-
-	unsigned int id;
-
-	// utility functions
-	std::string loadShaderSrc(const char* filepath);
-	GLuint compileShader(const char* filepath, GLenum type);
+	void setMat4(const std::string& name, glm::mat4 val);
 };
 
+#endif

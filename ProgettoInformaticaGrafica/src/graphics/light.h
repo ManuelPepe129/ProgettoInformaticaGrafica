@@ -1,32 +1,33 @@
-#pragma once
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include <glm/glm.hpp>
 
 #include "shader.h"
 
+struct DirLight {
+	glm::vec3 direction;
+
+	glm::vec4 ambient;
+	glm::vec4 diffuse;
+	glm::vec4 specular;
+	
+	void render(Shader shader);
+};
+
 struct PointLight {
 	glm::vec3 position;
 
 	// attenuation constants
-	float c0;
-	float c1;
-	float c2;
+	float k0;
+	float k1;
+	float k2;
 
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 
 	void render(Shader shader, int idx);
-};
-
-struct DirectionalLight {
-	glm::vec3 direction;
-
-	glm::vec4 ambient;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
-
-	void render(Shader shader);
 };
 
 struct SpotLight {
@@ -37,9 +38,9 @@ struct SpotLight {
 	float outerCutOff;
 
 	// attenuation constants
-	float c0;
-	float c1;
-	float c2;
+	float k0;
+	float k1;
+	float k2;
 
 	glm::vec4 ambient;
 	glm::vec4 diffuse;
@@ -47,3 +48,5 @@ struct SpotLight {
 
 	void render(Shader shader, int idx);
 };
+
+#endif

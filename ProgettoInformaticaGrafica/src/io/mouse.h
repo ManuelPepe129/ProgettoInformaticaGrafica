@@ -1,10 +1,10 @@
-#pragma once
+#ifndef MOUSE_H
+#define MOUSE_H
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-class Mouse
-{
+class Mouse {
 public:
 	static void cursorPosCallback(GLFWwindow* window, double _x, double _y);
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
@@ -21,8 +21,8 @@ public:
 
 	static bool button(int button);
 	static bool buttonChanged(int button);
-	static bool buttonReleased(int button);
-	static bool buttonPressed(int button);
+	static bool buttonWentUp(int button);
+	static bool buttonWentDown(int button);
 
 private:
 	static double x;
@@ -43,3 +43,4 @@ private:
 	static bool buttonsChanged[];
 };
 
+#endif

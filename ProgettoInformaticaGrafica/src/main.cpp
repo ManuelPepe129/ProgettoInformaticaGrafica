@@ -1,3 +1,10 @@
+/*
+	CODE
+	ENGINE (Scene)
+	OPENGL
+	GPU
+*/
+
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -14,10 +21,11 @@
 #include "graphics/model.h"
 #include "graphics/light.h"
 
-#include "graphics/models/cube.h"
-#include "graphics/models/lamp.h"
-#include "graphics/models/sphere.h"
-#include "graphics/models/box.h"
+#include "graphics/models/cube.hpp"
+#include "graphics/models/lamp.hpp"
+#include "graphics/models/gun.hpp"
+#include "graphics/models/sphere.hpp"
+#include "graphics/models/box.hpp"
 
 #include "physics/environment.h"
 
@@ -32,53 +40,46 @@
 
 Scene scene;
 
+void processInput(double dt);
+
+Camera cam;
+
 //Joystick mainJ(0);
-void processInput(double deltaTime);
 
-Camera camera(glm::vec3(-32.9f, 0.0f, -1.0f));
+double dt = 0.0f; // tme btwn frames
+double lastFrame = 0.0f; // time of last frame
 
-double deltaTime = 0.0f;
-double lastTime = 0.0f;
+SphereArray launchObjects;
 
-int main()
-{
-	scene = Scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+int main() {
 
-	if (!scene.init())
-	{
-		std::cout << "Could not create window" << std::endl;
+	scene = Scene(3, 3, "OpenGL Tutorial", 800, 600);
+	if (!scene.init()) {
+		std::cout << "Could not open window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
 
-	scene.cameras.push_back(&camera);
+	scene.cameras.push_back(&cam);
 	scene.activeCamera = 0;
 
-	/* Shaders */
+	// SHADERS===============================
+	Shader shader("assets/object.vs", "assets/object.fs");
+	Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
+	Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
 
-	Shader shader("assets/shaders/vertex_core.glsl", "assets/shaders/fragment_core.glsl");
-	Shader lampShader("assets/shaders/vertex_core.glsl", "assets/shaders/fs_lamp.glsl");
-	Shader boxShader("assets/shaders/vs_box.glsl", "assets/shaders/fs_box.glsl");
-
-	/* Models */
+	// MODELS==============================
+	launchObjects.init();
 
 	Box box;
 	box.init();
 
-	//Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f), true);
-	//m.loadModel("assets/models/Maze/Maze.obj");
-	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(0.05f));
-	m.loadModel("assets/models/lotr_troll/scene.gltf");
-	//Model m(BoundTypes::AABB,glm::vec3(0.0f, -2.0f, -5.0f), glm::vec3(0.05f), true);
-	//m.loadModel("assets/models/m4a1/scene.gltf");	
+	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(0.05f),true);
+	m.loadModel("assets/models/maze/maze.obj");
 
-	DirectionalLight dirLight = {
-		glm::vec3(-0.2f, -1.0f, -0.3f),
-		glm::vec4(0.1f, 0.1f, 0.1f, 1.0f),
-		glm::vec4(0.4f, 0.4f, 0.4f, 1.0f),
-		glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)
-	};
-	scene.directionalLight = &dirLight;
+	// LIGHTS
+	DirLight dirLight = { glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) };
+	scene.dirLight = &dirLight;
 
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(0.7f,  0.2f,  2.0f),
@@ -90,19 +91,18 @@ int main()
 	glm::vec4 ambient = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
 	glm::vec4 diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
 	glm::vec4 specular = glm::vec4(1.0f);
-	float c0 = 1.0f;
-	float c1 = 0.09f;
-	float c2 = 0.032f;
+	float k0 = 1.0f;
+	float k1 = 0.09f;
+	float k2 = 0.032f;
 
 	PointLight pointLights[4];
 
 	LampArray lamps;
 	lamps.init();
-	for (unsigned int i = 0; i < 4; ++i) 
-	{
+	for (unsigned int i = 0; i < 4; i++) {
 		pointLights[i] = {
 			pointLightPositions[i],
-			c0, c1, c2,
+			k0, k1, k2,
 			ambient, diffuse, specular
 		};
 		lamps.lightInstances.push_back(pointLights[i]);
@@ -110,50 +110,42 @@ int main()
 		States::activate(&scene.activePointLights, i);
 	}
 
-	SpotLight spotLight = { 
-		camera.getCameraPos(), 
-		camera.getCameraFront(),
-		glm::cos(glm::radians(12.5f)),  glm::cos(glm::radians(20.0f)),
+	SpotLight spotLight = {
+		cam.cameraPos, cam.cameraFront,
+		glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
 		1.0f, 0.07f, 0.032f,
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f)
 	};
 	scene.spotLights.push_back(&spotLight);
-	scene.activeSpotLights = 1;
+	scene.activeSpotLights = 1;	// 0b00000001
 
+	// joystick recognition
+	/*mainJ.update();
+	if (mainJ.isPresent()) {
+		std::cout << mainJ.getName() << " is present." << std::endl;
+	}*/
 
-	/*
-	mainJ.update();
-
-	if (mainJ.isPresent())
-	{
-		std::cout << mainJ.getName() << " is present" << std::endl;
-	}
-	*/
-
-	double currentTime;
-
-	// main loop
-	while (!scene.shouldClose())
-	{
-		currentTime = glfwGetTime();
-		deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
-
+	while (!scene.shouldClose()) {
 		box.positions.clear();
 		box.sizes.clear();
 
-		// process input
-		processInput(deltaTime);
+		// calculate dt
+		double currentTime = glfwGetTime();
+		dt = currentTime - lastFrame;
+		lastFrame = currentTime;
 
-		// set background color
+		// process input
+		processInput(dt);
+
+		// update screen values
 		scene.update();
 
 		scene.render(shader);
-		m.render(shader, deltaTime, &box);
+		m.render(shader, dt, &box);
 
 		// lamps
 		scene.render(lampShader, false);
-		lamps.render(lampShader, deltaTime, &box);
+		lamps.render(lampShader, dt, &box);
 
 		// render boxes
 		if (box.positions.size() > 0) {
@@ -164,44 +156,37 @@ int main()
 
 		// send new frame to window
 		scene.newFrame();
-		
 	}
 
-	/* Clean Up */
-
-	m.cleanup();
-	box.cleanup();
+	// clean up objects
 	lamps.cleanup();
+	box.cleanup();
+	m.cleanup();
 
 	scene.cleanup();
 	return 0;
 }
 
-void processInput(double dt)
-{
+void processInput(double dt) {
 	scene.processInput(dt);
 
-	// update flashlight
-	if (States::isActive(&scene.activeSpotLights, 0))
-	{
-		scene.spotLights[0]->position = scene.getActiveCamera()->getCameraPos();
-		scene.spotLights[0]->direction = scene.getActiveCamera()->getCameraFront();
+	// update flash light
+	if (States::isActive(&scene.activeSpotLights, 0)) {
+		scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
+		scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
 	}
 
-	// close window if escape or round button is pressed
-	if (Keyboard::key(GLFW_KEY_ESCAPE))
-	{
+	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
 		scene.setShouldClose(true);
 	}
 
-	if (Keyboard::keyPressed(GLFW_KEY_L)) {
+	if (Keyboard::keyWentDown(GLFW_KEY_L)) {
 		States::toggle(&scene.activeSpotLights, 0); // toggle spot light
 	}
 
-	// TODO: Debug function - Needs to be removed
-	if (Keyboard::keyPressed(GLFW_KEY_P))
-	{
-		glm::vec3 pos = camera.getCameraPos();
-		std::cout << "x: " << pos.x << ", y: " << pos.y << ", z: " << pos.z << std::endl;
+	for (int i = 0; i < 4; i++) {
+		if (Keyboard::keyWentDown(GLFW_KEY_1 + i)) {
+			States::toggle(&scene.activePointLights, i);
+		}
 	}
 }

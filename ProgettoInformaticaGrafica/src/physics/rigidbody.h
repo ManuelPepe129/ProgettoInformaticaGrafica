@@ -1,9 +1,9 @@
-#pragma once
+#ifndef RIGIDBODY_H
+#define RIGIDBODY_H
 
 #include <glm/glm.hpp>
 
-class RigidBody
-{
+class RigidBody {
 public:
 	float mass;
 
@@ -27,3 +27,4 @@ public:
 	void transferEnergy(float joules, glm::vec3 direction);
 };
 
+#endif

@@ -1,9 +1,9 @@
-#pragma once
+#ifndef JOYSTICK_H
+#define JOYSTICK_H
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// analog input	button values					//		PS		|		XBOX
+// analog input									//		PS		|		XBOX
 #define GLFW_JOYSTICK_BTN_LEFT 0				//	Square		|	X
 #define GLFW_JOYSTICK_BTN_DOWN 1				//	X			|	A
 #define GLFW_JOYSTICK_BTN_RIGHT 2				//	Circle		|	B
@@ -31,12 +31,9 @@
 #define GLFW_JOYSTICK_AXES_RIGHT_TRIGGER 4
 #define GLFW_JOYSTICK_AXES_RIGHT_STICK_Y 5
 
-class Joystick
-{
+class Joystick {
 public:
-
 	Joystick(int i);
-
 	void update();
 
 	float axesState(int axis);
@@ -54,13 +51,11 @@ private:
 	int present;
 
 	int id;
-
 	const char* name;
-
 	int axesCount;
 	const float* axes;
-
 	int buttonCount;
 	const unsigned char* buttons;
 };
 
+#endif

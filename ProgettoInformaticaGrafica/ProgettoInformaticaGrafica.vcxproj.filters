@@ -18,7 +18,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="lib\glad.c">
+    <ClCompile Include="src\glad.c">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="lib\stb.cpp">
@@ -33,13 +33,7 @@
     <ClCompile Include="src\io\Joystick.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\Camera.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\Shader.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\io\screen.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\texture.cpp">
@@ -51,25 +45,13 @@
     <ClCompile Include="src\graphics\model.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\models\cube.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\material.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\models\lamp.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\light.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\algorithms\bounds.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\models\box.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\models\sphere.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\physics\environment.cpp">
@@ -81,14 +63,17 @@
     <ClCompile Include="src\scene.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\io\camera.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\vertex_core.glsl" />
-    <None Include="assets\shaders\fragment_core.glsl" />
-    <None Include="assets\shaders\fs_lamp.glsl" />
-    <None Include="assets\shaders\vs_box.glsl" />
-    <None Include="assets\shaders\fs_box.glsl" />
-    <None Include="assets\shaders\vs_instanced.glsl" />
+    <None Include="assets\shaders\core_vs.glsl" />
+    <None Include="assets\shaders\core_fs.glsl" />
+    <None Include="assets\shaders\lamp_fs.glsl" />
+    <None Include="assets\shaders\box_vs.glsl" />
+    <None Include="assets\shaders\box_fs.glsl" />
+    <None Include="assets\shaders\instanced_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\io\Mouse.h">
@@ -100,13 +85,7 @@
     <ClInclude Include="src\io\Joystick.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\io\Camera.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\Shader.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\io\screen.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\texture.h">
@@ -118,25 +97,13 @@
     <ClInclude Include="src\graphics\model.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\models\cube.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\material.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\models\lamp.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\light.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\bounds.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\models\box.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\models\sphere.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\environment.h">
@@ -155,6 +122,27 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\scene.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\camera.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\sphere.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\box.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\cube.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\gun.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\lamp.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\modelarray.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
