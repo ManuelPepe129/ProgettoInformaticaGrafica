@@ -74,7 +74,7 @@ int main() {
 	Box box;
 	box.init();
 
-	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(0.05f),true);
+	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f),true);
 	m.loadModel("assets/models/maze/maze.obj");
 
 	// LIGHTS

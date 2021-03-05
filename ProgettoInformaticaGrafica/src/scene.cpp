@@ -23,7 +23,7 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	title(title),
 	activeCamera(-1),
 	activePointLights(0), activeSpotLights(0) {
-	
+
 	Scene::scrWidth = scrWidth;
 	Scene::scrHeight = scrHeight;
 
@@ -81,6 +81,12 @@ bool Scene::init() {
 		set rendering parameters
 	*/
 	glEnable(GL_DEPTH_TEST); // doesn't show vertices not visible to camera (back of object)
+
+	glEnable(GL_FOG);
+
+	const GLfloat density = 0.4f;
+	glFogfv(GL_FOG_DENSITY, &density);
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 
 	return true;
@@ -159,7 +165,7 @@ void Scene::render(Shader shader, bool applyLighting) {
 	// lighting
 	if (applyLighting) {
 		// point lights
- 		unsigned int noLights = pointLights.size();
+		unsigned int noLights = pointLights.size();
 		unsigned int noActiveLights = 0;
 		for (unsigned int i = 0; i < noLights; i++) {
 			if (States::isActive(&activePointLights, i)) {
