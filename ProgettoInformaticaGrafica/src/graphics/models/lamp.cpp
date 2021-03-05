@@ -13,11 +13,6 @@ Lamp::Lamp(glm::vec3 lightColor,
 	pointLight({ pos, c0, c1, c2, ambient, diffuse, specular }),
 	Cube(pos, size) {}
 
-/*
-Lamp::Lamp()
-{ }
-*/
-
 void Lamp::render(Shader shader, float dt, Box* box, bool setModel, bool doRender)
 {
 	// set light color
@@ -42,6 +37,5 @@ void LampArray::render(Shader shader, float dt, Box* box) {
 		positions.push_back(pl.position);
 		sizes.push_back(model.size);
 	}
-
 	ModelArray::render(shader, dt, box, false);
 }

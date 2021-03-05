@@ -60,14 +60,6 @@ void Cube::init()
 		indices[i] = i;
 	}
 
-	/*
-	Texture flag("assets/flag.jpg","material.diffuse");
-	flag.load();
-
-	Texture flagSpec("assets/flag_specular.jpg", "material.specular");
-	flagSpec.load();
-	*/
-
 	BoundingRegion br(glm::vec3(-05.f), glm::vec3(0.5f));
 
 	meshes.push_back(Mesh(br, Vertex::genList(vertices, noVertices), indices));

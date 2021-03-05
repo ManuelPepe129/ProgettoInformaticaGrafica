@@ -76,6 +76,7 @@ int main()
 
 	Shader shader("assets/shaders/vertex_core.glsl", "assets/shaders/fragment_core.glsl");
 	Shader lampShader("assets/shaders/vertex_core.glsl", "assets/shaders/fs_lamp.glsl");
+	Shader boxShader("assets/shaders/vs_box.glsl", "assets/shaders/fs_box.glsl");
 
 	/* Models */
 
@@ -121,8 +122,6 @@ int main()
 			});
 	}
 
-
-
 	SpotLight spotLight = { 
 		camera.getCameraPos(), 
 		camera.getCameraFront(),
@@ -151,7 +150,7 @@ int main()
 		deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
 
-		box.offsets.clear();
+		box.positions.clear();
 		box.sizes.clear();
 
 		// process input
@@ -192,6 +191,15 @@ int main()
 		lampShader.setMat4("projection", projection);
 		lamps.render(lampShader, deltaTime, &box);
 
+		// render boxes
+		if (box.positions.size() > 0) {
+			// instances exist
+			boxShader.activate();
+			boxShader.setMat4("view", view);
+			boxShader.setMat4("projection", projection);
+			box.render(boxShader);
+		}
+
 		// send new frame to window
 		screen.newFrame();
 		
@@ -201,7 +209,7 @@ int main()
 
 	//m1.cleanup();
 	m.cleanup();
-
+	box.cleanup();
 	lamps.cleanup();
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.

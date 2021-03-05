@@ -12,6 +12,7 @@
 
 #include "shader.h"
 #include "texture.h"
+#include "glmemory.hpp"
 #include "../algorithms/bounds.h"
 #include "models/box.h"
 
@@ -44,7 +45,7 @@ public:
 	// we could have more textures for model
 	std::vector<Texture> textures;
 
-	unsigned int VAO;
+	ArrayObject VAO;
 
 private:
 	unsigned int VBO, EBO;

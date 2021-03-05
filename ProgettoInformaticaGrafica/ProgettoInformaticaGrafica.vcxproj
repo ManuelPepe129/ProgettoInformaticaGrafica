@@ -165,14 +165,18 @@
     <ClCompile Include="src\graphics\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\fs_box.glsl" />
     <None Include="assets\shaders\fragment_core.glsl" />
     <None Include="assets\shaders\fs_lamp.glsl" />
     <None Include="assets\shaders\vertex_core.glsl" />
+    <None Include="assets\shaders\vs_box.glsl" />
+    <None Include="assets\shaders\vs_instanced.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\glmemory.hpp" />
     <ClInclude Include="src\physics\rigidbody.h" />
     <ClInclude Include="src\physics\environment.h" />
-    <ClInclude Include="src\graphics\modelArray.h" />
+    <ClInclude Include="src\graphics\modelArray.hpp" />
     <ClInclude Include="src\graphics\models\sphere.h" />
     <ClInclude Include="src\graphics\models\box.h" />
     <ClInclude Include="src\algorithms\bounds.h" />

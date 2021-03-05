@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../model.h"
-#include "../modelArray.h"
+#include "../modelArray.hpp"
 
 class Sphere : public Model
 {

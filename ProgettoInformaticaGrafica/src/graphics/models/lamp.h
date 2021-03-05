@@ -4,7 +4,7 @@
 
 #include "cube.h"
 #include "../light.h"
-#include "../modelArray.h"
+#include "../modelArray.hpp"
 #include "../material.h"
 #include "../shader.h"
 

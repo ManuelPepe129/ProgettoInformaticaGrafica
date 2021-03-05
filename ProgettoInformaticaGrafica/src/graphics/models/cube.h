@@ -10,8 +10,6 @@ public:
 
 	void init();
 
-	// void render(Shader shader);
-
 	glm::vec3 pos;
 	glm::vec3 size;
 

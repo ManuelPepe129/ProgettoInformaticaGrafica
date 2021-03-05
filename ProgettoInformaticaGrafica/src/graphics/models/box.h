@@ -7,12 +7,13 @@
 
 #include "../../algorithms/bounds.h"
 #include "../shader.h"
+#include "../glmemory.hpp"
 
 #define UPPER_BOUND 100
 
 class Box {
 public:
-    std::vector<glm::vec3> offsets;
+    std::vector<glm::vec3> positions;
     std::vector<glm::vec3> sizes;
 
     void init();
@@ -24,8 +25,7 @@ public:
     void cleanup();
 
 private:
-    unsigned int VAO, VBO, EBO;
-    unsigned int offsetVBO, sizeVBO;
+    ArrayObject VAO;
 
     std::vector<float> vertices;
     std::vector<unsigned int> indices;

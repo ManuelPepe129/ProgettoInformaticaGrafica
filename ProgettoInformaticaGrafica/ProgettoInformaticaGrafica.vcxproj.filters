@@ -83,6 +83,9 @@
     <None Include="assets\shaders\vertex_core.glsl" />
     <None Include="assets\shaders\fragment_core.glsl" />
     <None Include="assets\shaders\fs_lamp.glsl" />
+    <None Include="assets\shaders\vs_box.glsl" />
+    <None Include="assets\shaders\fs_box.glsl" />
+    <None Include="assets\shaders\vs_instanced.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\io\Mouse.h">
@@ -133,13 +136,16 @@
     <ClInclude Include="src\graphics\models\sphere.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\modelArray.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\physics\environment.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\rigidbody.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\glmemory.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\modelArray.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
