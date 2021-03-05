@@ -11,7 +11,8 @@ Lamp::Lamp(glm::vec3 lightColor,
 	glm::vec3 size)
 	: lightColor(lightColor),
 	pointLight({ pos, c0, c1, c2, ambient, diffuse, specular }),
-	Cube(pos, size) {}
+	Cube(pos, size)
+{}
 
 void Lamp::render(Shader shader, float dt, Box* box, bool setModel, bool doRender)
 {

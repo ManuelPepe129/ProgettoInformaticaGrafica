@@ -3,17 +3,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include <vector>
 #include <glm/glm.hpp>
 
 #include "shader.h"
 #include "texture.h"
 #include "glmemory.hpp"
+
 #include "../algorithms/bounds.h"
+
 #include "models/box.h"
 
 struct Vertex {
@@ -35,7 +33,7 @@ public:
 
 	void render(Shader shader, glm::vec3 pos, glm::vec3 size, Box* box, bool doRender = true);
 
-	void cleanUp();
+	void cleanup();
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;

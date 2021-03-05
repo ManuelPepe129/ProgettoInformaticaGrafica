@@ -17,10 +17,9 @@ void PointLight::render(Shader shader, int idx)
 
 void DirectionalLight::render(Shader shader)
 {
-	std::string name = "directionalLight";
+	std::string name = "dirLight";
 
 	shader.set3Float(name + ".direction", direction);
-
 	shader.set4Float(name + ".ambient", ambient);
 	shader.set4Float(name + ".diffuse", diffuse);
 	shader.set4Float(name + ".specular", specular);

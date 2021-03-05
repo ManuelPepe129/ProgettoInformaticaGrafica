@@ -1,7 +1,7 @@
 #include "model.h"
 
 Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTex) :
-	boundType(boundType), pos(pos), size(size), noTex(noTex)
+	boundType(boundType), size(size), noTex(noTex)
 {
 	rb.pos = pos;
 }
@@ -27,7 +27,8 @@ void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRend
 {
 	rb.update(dt);
 
-	if (setModel) {
+	if (setModel)
+	{
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, rb.pos);
 		model = glm::scale(model, size);
@@ -36,17 +37,17 @@ void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRend
 
 	shader.setFloat("material.shininess", 0.5f);
 
-	for (Mesh mesh : meshes)
+	for (unsigned int i = 0; i < meshes.size(); ++i)
 	{
-		mesh.render(shader, pos, size, box, doRender);
+		meshes[i].render(shader, rb.pos, size, box, doRender);
 	}
 }
 
 void Model::cleanup()
 {
-	for (Mesh mesh : meshes)
+	for (unsigned int i = 0; i < meshes.size(); ++i)
 	{
-		mesh.cleanUp();
+		meshes[i].cleanup();
 	}
 }
 
@@ -73,16 +74,20 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Texture> textures;
 
 	BoundingRegion br(boundType);
-	glm::vec3 min(float(~0)); // min point = max float
-	glm::vec3 max(-(float(~0))); // max point = min float
+	glm::vec3 min((float)(~0));		// min point = max float
+	glm::vec3 max(-(float)(~0));	// max point = min float
 
 	// process vertices
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++) 
+	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) 
 	{
 		Vertex vertex;
 
 		// position
-		vertex.pos = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+		vertex.pos = glm::vec3(
+			mesh->mVertices[i].x, 
+			mesh->mVertices[i].y, 
+			mesh->mVertices[i].z
+		);
 
 		for (int j = 0; j < 3; ++j)
 		{
@@ -95,12 +100,19 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		}
 
 		// normal vectors
-		vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+		vertex.normal = glm::vec3(
+			mesh->mNormals[i].x, 
+			mesh->mNormals[i].y, 
+			mesh->mNormals[i].z
+		);
 
 		// texture coords
 		if (mesh->mTextureCoords[0])
 		{
-			vertex.texCoord = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+			vertex.texCoord = glm::vec2(
+				mesh->mTextureCoords[0][i].x, 
+				mesh->mTextureCoords[0][i].y
+			);
 		}
 		else
 		{
@@ -179,7 +191,8 @@ std::vector<Texture> Model::loadTextures(aiMaterial* mat, aiTextureType type)
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		std::cout << str.C_Str() << std::endl;
+
+		//std::cout << str.C_Str() << std::endl;
 
 		// prevents duplicate loadings
 		bool skip = false;

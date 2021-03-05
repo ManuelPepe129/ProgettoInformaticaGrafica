@@ -44,7 +44,6 @@ public:
 
 	void render(Shader shader, float dt, Box* box, bool setLists = true) {
 		if (setLists) {
-			std::cout << "Adding boxes for modelArray" << std::endl;
 			positions.clear();
 			sizes.clear();
 

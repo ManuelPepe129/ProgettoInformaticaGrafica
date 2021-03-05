@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\physics\rigidbody.cpp" />
     <ClCompile Include="src\physics\environment.cpp" />
     <ClCompile Include="src\graphics\models\sphere.cpp" />
@@ -173,6 +174,8 @@
     <None Include="assets\shaders\vs_instanced.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\scene.h" />
+    <ClInclude Include="src\algorithms\states.hpp" />
     <ClInclude Include="src\graphics\glmemory.hpp" />
     <ClInclude Include="src\physics\rigidbody.h" />
     <ClInclude Include="src\physics\environment.h" />

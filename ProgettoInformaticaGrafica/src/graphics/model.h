@@ -3,6 +3,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,7 +27,6 @@ public:
 
 	void cleanup();
 
-	glm::vec3 pos;
 	glm::vec3 size;
 
 	std::vector<Mesh> meshes;

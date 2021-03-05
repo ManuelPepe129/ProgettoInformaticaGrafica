@@ -95,13 +95,8 @@ void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box* box, bool d
 	}
 }
 
-void Mesh::cleanUp()
+void Mesh::cleanup()
 {
-	/*
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	*/
 	VAO.cleanup();
 }
 

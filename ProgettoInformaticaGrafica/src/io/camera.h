@@ -20,7 +20,7 @@ enum class CameraDirection {
 class Camera
 {
 public:
-	Camera(glm::vec3 position);
+	Camera(glm::vec3 position = glm::vec3(0.0f));
 
 	void updateCameraDirection(double dx, double dy);
 	void updateCameraPos(CameraDirection dir, double dt);
