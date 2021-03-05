@@ -16,6 +16,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <ft2build.h>
+
 #include "graphics/shader.h"
 #include "graphics/texture.h"
 #include "graphics/model.h"
