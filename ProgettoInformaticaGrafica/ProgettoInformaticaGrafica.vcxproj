@@ -159,10 +159,13 @@
     <ClCompile Include="src\graphics\Shader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\graphics\texture.cpp" />
+    <ClCompile Include="src\graphics\text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\box_fs.glsl" />
     <None Include="assets\shaders\core_fs.glsl" />
+    <None Include="assets\shaders\glyph_fs.glsl" />
+    <None Include="assets\shaders\glyph_vs.glsl" />
     <None Include="assets\shaders\lamp_fs.glsl" />
     <None Include="assets\shaders\instanced_vs.glsl" />
     <None Include="assets\shaders\core_vs.glsl" />
@@ -192,6 +195,7 @@
     <ClInclude Include="src\io\Mouse.h" />
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\graphics\texture.h" />
+    <ClInclude Include="src\graphics\text.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

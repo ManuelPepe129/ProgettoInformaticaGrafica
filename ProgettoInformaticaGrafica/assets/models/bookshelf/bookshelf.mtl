@@ -1,0 +1,14 @@
+# Blender MTL File: 'bookshelf.blend'
+# Material Count: 1
+
+newmtl Bookshelf
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.039546 0.019382 0.003347
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd D:\\Documenti\\Università\\Dropbox (Politecnico Di Torino Studenti)\\Informatica Grafica\\Progetto\\Texture\\Bookshelf\\Wood028_2K-JPG\\Wood028_2K_Color.jpg
+map_Ns D:\\Documenti\\Università\\Dropbox (Politecnico Di Torino Studenti)\\Informatica Grafica\\Progetto\\Texture\\Bookshelf\\Wood028_2K-JPG\\Wood028_2K_Roughness.jpg

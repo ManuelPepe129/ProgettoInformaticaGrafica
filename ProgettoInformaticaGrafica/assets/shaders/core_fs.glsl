@@ -27,9 +27,9 @@ struct PointLight {
 	vec4 diffuse;
 	vec4 specular;
 
-	float c0;
-	float c1;
-	float c2;
+	float k0;
+	float k1;
+	float k2;
 };
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform int noPointLights;
@@ -46,9 +46,9 @@ struct SpotLight {
 	vec4 diffuse;
 	vec4 specular;
 
-	float c0;
-	float c1;
-	float c2;
+	float k0;
+	float k1;
+	float k2;
 };
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform int noSpotLights;
@@ -89,12 +89,12 @@ void main() {
 	result = calcDirLight(norm, viewDir, texDiff, texSpec);
 
 	// point lights
-	for (int i = 0; i < noPointLights; ++i) {
+	for (int i = 0; i < noPointLights; i++) {
 		result += calcPointLight(i, norm, viewDir, texDiff, texSpec);
 	}
 
 	// spot lights
-	for (int i = 0; i < noSpotLights; ++i) {
+	for (int i = 0; i < noSpotLights; i++) {
 		result += calcSpotLight(i, norm, viewDir, texDiff, texSpec);
 	}
 
@@ -134,7 +134,7 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 texDiff, vec4 texSpec
 
 	// calculate attenuation
 	float dist = length(pointLights[idx].position - FragPos);
-	float attenuation = 1.0 / (pointLights[idx].c0 + pointLights[idx].c1 * dist + pointLights[idx].c2 * (dist * dist));
+	float attenuation = 1.0 / (pointLights[idx].k0 + pointLights[idx].k1 * dist + pointLights[idx].k2 * (dist * dist));
 
 	// apply attenuation
 	ambient *= attenuation;
@@ -171,7 +171,7 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 texDiff, vec4 texSpec)
 
 		// calculate attenuation
 		float dist = length(spotLights[idx].position - FragPos);
-		float attenuation = 1.0 / (spotLights[idx].c0 + spotLights[idx].c1 * dist + spotLights[idx].c2 * (dist * dist));
+		float attenuation = 1.0 / (spotLights[idx].k0 + spotLights[idx].k1 * dist + spotLights[idx].k2 * (dist * dist));
 
 		// apply attenuation
 		ambient *= attenuation;

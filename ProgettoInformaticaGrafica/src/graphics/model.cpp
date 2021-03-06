@@ -64,9 +64,13 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 
+	//std::cout << "Processing mesh " << mesh->mName.C_Str() << std::endl;
+
 	BoundingRegion br(boundType);
-	glm::vec3 min((float)(~0));		// min point = max float
-	glm::vec3 max(-(float)(~0));	// max point = min float
+	glm::vec3 min(100000000.f);		// min point = max float
+	glm::vec3 max(-100000000.f);	// max point = min float
+	//std::cout << "max.x: " << max[0] << " max.y: " << max[1] << " max.z: " << max[2] << std::endl;
+	//std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
 	// vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
@@ -94,18 +98,23 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 		);
 
 		// textures
-		if (mesh->mTextureCoords[0]) {
+		if (mesh->mTextureCoords[0])
+		{
 			vertex.texCoord = glm::vec2(
 				mesh->mTextureCoords[0][i].x,
 				mesh->mTextureCoords[0][i].y
 			);
 		}
-		else {
+		else
+		{
 			vertex.texCoord = glm::vec2(0.0f);
 		}
 
 		vertices.push_back(vertex);
 	}
+
+	std::cout << "max.x: " << max[0] << " max.y: " << max[1] << " max.z: " << max[2] << std::endl;
+	std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
 	// process min/max for BR
 	if (boundType == BoundTypes::AABB) {
@@ -145,7 +154,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	if (mesh->mMaterialIndex >= 0) {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		if (noTex) {
+		if (noTex)
+		{
 			// diffuse color
 			aiColor4D diff(1.0f);
 			aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diff);
