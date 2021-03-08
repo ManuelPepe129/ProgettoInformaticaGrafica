@@ -3,6 +3,7 @@
 #include "../physics/environment.h"
 
 #include <iostream>
+#include <limits>
 
 Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTex) 
 	: boundType(boundType), size(size), noTex(noTex) {
@@ -67,8 +68,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	//std::cout << "Processing mesh " << mesh->mName.C_Str() << std::endl;
 
 	BoundingRegion br(boundType);
-	glm::vec3 min(100000000.f);		// min point = max float
-	glm::vec3 max(-100000000.f);	// max point = min float
+	glm::vec3 min(std::numeric_limits<double>::max());		// min point = max float
+	glm::vec3 max(std::numeric_limits<double>::lowest());	// max point = min float
 	//std::cout << "max.x: " << max[0] << " max.y: " << max[1] << " max.z: " << max[2] << std::endl;
 	//std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
@@ -113,8 +114,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vertices.push_back(vertex);
 	}
 
-	std::cout << "max.x: " << max[0] << " max.y: " << max[1] << " max.z: " << max[2] << std::endl;
-	std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
+	//std::cout << "max.x: " << max[0] << " max.y: " << max[1] << " max.z: " << max[2] << std::endl;
+	//std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
 	// process min/max for BR
 	if (boundType == BoundTypes::AABB) {

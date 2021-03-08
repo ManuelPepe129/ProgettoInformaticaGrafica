@@ -32,8 +32,6 @@ public:
 
 private:
 
-	void loadGlyphs();
-
 	const char* fontPath;
 
 	ArrayObject VAO;

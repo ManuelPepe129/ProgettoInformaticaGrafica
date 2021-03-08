@@ -82,10 +82,8 @@ bool Scene::init() {
 	*/
 	glEnable(GL_DEPTH_TEST); // doesn't show vertices not visible to camera (back of object)
 
-	glEnable(GL_FOG);
-
-	const GLfloat density = 0.4f;
-	glFogfv(GL_FOG_DENSITY, &density);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 
