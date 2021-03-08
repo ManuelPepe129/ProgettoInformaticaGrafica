@@ -12,7 +12,7 @@
 #include "../../algorithms/bounds.h"
 #include "../shader.h"
 
-#define UPPER_BOUND 100
+#define UPPER_BOUND 200
 
 class Box {
 public:
@@ -90,7 +90,7 @@ public:
         shader.setMat4("model", glm::mat4(1.0f));
 
         // update data
-        int instances = std::min(UPPER_BOUND, (int)positions.size()); // if more than 100 instances, only render 100
+        int instances = std::min(UPPER_BOUND, (int)positions.size()); // if more than UPPER_BOUND instances, only render UPPER_BOUND
 
         // update data
         if (instances != 0) {
