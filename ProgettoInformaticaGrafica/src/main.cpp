@@ -55,6 +55,10 @@ double lastFrame = 0.0f; // time of last frame
 
 unsigned int VAO, VBO;
 
+
+
+std::vector<Model> models;
+
 int main() {
 
 	scene = Scene(3, 3, "OpenGL Tutorial", 800, 600);
@@ -87,6 +91,7 @@ int main() {
 
 	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f),true);
 	m.loadModel("assets/models/maze/maze.obj");
+	models.push_back(m);
 	//m.loadModel("assets/models/cube/cube.obj");
 
 	// LIGHTS
@@ -149,6 +154,27 @@ int main() {
 		// process input
 		processInput(dt);
 
+		Camera* camera = scene.getActiveCamera();
+		for (unsigned int i = 0; i < models.size(); ++i) {
+			m = models[i];
+			for (unsigned int j = 0; j < m.meshes.size(); ++j)
+			{
+				BoundingRegion tmp = m.meshes[j].br;
+				if (tmp.containsPoint(camera->cameraPos))
+				{
+					switch (m.type) {
+					case ModelType::WALL :
+						scene.getActiveCamera()->updateCameraPos(camera->lastDirection, 2 * dt);
+						break;
+					case ModelType::COLLECTABLE :
+						m.toBeDestroyed = true;
+						break;
+					}
+					break; // max 1 collisione gestita
+				}
+			}
+		}
+
 		// update screen values
 		scene.update();
 
@@ -162,8 +188,8 @@ int main() {
 		// render boxes
 		if (box.positions.size() > 0) {
 			// instances exist
-			scene.render(boxShader, false);
-			box.render(boxShader);
+			//scene.render(boxShader, false);
+			//box.render(boxShader);
 		}
 
 		textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
@@ -196,11 +222,5 @@ void processInput(double dt) {
 
 	if (Keyboard::keyWentDown(GLFW_KEY_L)) {
 		States::toggle(&scene.activeSpotLights, 0); // toggle spot light
-	}
-
-	for (int i = 0; i < 4; i++) {
-		if (Keyboard::keyWentDown(GLFW_KEY_1 + i)) {
-			States::toggle(&scene.activePointLights, i);
-		}
 	}
 }

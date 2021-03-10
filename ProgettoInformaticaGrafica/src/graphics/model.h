@@ -20,16 +20,24 @@
 #include "../physics/rigidbody.h"
 #include "../algorithms/bounds.h"
 
+enum class ModelType {
+	WALL,
+	COLLECTABLE
+};
+
 class Model {
 public:
 	RigidBody rb;
 	glm::vec3 size;
 
+	ModelType type;
 	BoundTypes boundType;
 
 	std::vector<Mesh> meshes;
 
-	Model(BoundTypes boundType = BoundTypes::AABB, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f), bool noTex = false);
+	bool toBeDestroyed;
+
+	Model(BoundTypes boundType = BoundTypes::AABB, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f), bool noTex = false, ModelType type = ModelType::WALL);
 
 	void loadModel(std::string path);
 
@@ -38,6 +46,7 @@ public:
 	void cleanup();
 
 protected:
+
 	bool noTex;
 	
 	std::string directory;

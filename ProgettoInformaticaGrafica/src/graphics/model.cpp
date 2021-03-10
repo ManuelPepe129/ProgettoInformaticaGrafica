@@ -5,9 +5,10 @@
 #include <iostream>
 #include <limits>
 
-Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTex) 
-	: boundType(boundType), size(size), noTex(noTex) {
+Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTex, ModelType type)
+	: boundType(boundType), size(size), noTex(noTex), type(type) {
 	rb.pos = pos;
+	toBeDestroyed = false;
 }
 
 void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRender) {
@@ -23,7 +24,7 @@ void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRend
 	shader.setFloat("material.shininess", 0.5f);
 
 	for (unsigned int i = 0; i < meshes.size(); i++) {
-		meshes[i].render(shader, rb.pos, size, box, doRender);
+		meshes[i].render(shader, rb.pos, size, box, doRender && !toBeDestroyed);
 	}
 }
 
@@ -118,10 +119,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	//std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
 	// process min/max for BR
+	const glm::vec3 dx = glm::vec3(0.05f);
 	if (boundType == BoundTypes::AABB) {
 		// assign max and min
-		br.min = min;
-		br.max = max;
+		br.min = min-dx;
+		br.max = max+dx;
 	}
 	else {
 		// calculate max distance from the center

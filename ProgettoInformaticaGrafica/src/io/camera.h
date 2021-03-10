@@ -26,6 +26,8 @@ public:
 
 	glm::vec3 worldUp;
 
+	CameraDirection lastDirection;
+
 	float yaw; // x-axis
 	float pitch; // y-axis
 	float speed;

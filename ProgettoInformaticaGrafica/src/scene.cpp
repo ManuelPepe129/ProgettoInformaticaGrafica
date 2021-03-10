@@ -99,7 +99,7 @@ void Scene::processInput(float dt) {
 		// active camera exists
 
 		// set camera direction
-		cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), Mouse::getDY());
+		cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), 0);
 
 		// set camera zoom
 		cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
@@ -129,7 +129,7 @@ void Scene::processInput(float dt) {
 		projection = glm::perspective(
 			glm::radians(cameras[activeCamera]->getZoom()),	// FOV
 			(float)scrWidth / (float)scrHeight,					// aspect ratio
-			0.1f, 100.0f										// near and far bounds
+			0.01f, 100.0f										// near and far bounds
 		);
 
 		// set pos at end

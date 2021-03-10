@@ -9,11 +9,11 @@ BoundingRegion::BoundingRegion(BoundTypes type)
 	: type(type) {}
 
 // initialize as sphere
-BoundingRegion::BoundingRegion(glm::vec3 center, float radius) 
+BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
 	: type(BoundTypes::SPHERE), center(center), radius(radius) {}
 
 // initialize as AABB
-BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max) 
+BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
 	: type(BoundTypes::AABB), min(min), max(max) {}
 
 /*
@@ -38,9 +38,9 @@ glm::vec3 BoundingRegion::calculateDimensions() {
 bool BoundingRegion::containsPoint(glm::vec3 pt) {
 	if (type == BoundTypes::AABB) {
 		// box - point must be larger than man and smaller than max
-		return (pt.x >= min.x) && (pt.x <= max.x) &&
+		return ((pt.x >= min.x) && (pt.x <= max.x) &&
 			(pt.y >= min.y) && (pt.y <= max.y) &&
-			(pt.z >= min.z) && (pt.z <= min.z);
+			(pt.z >= min.z) && (pt.z <= max.z));
 	}
 	else {
 		// sphere - distance must be less than radius
@@ -135,7 +135,7 @@ bool BoundingRegion::intersectsWith(BoundingRegion br) {
 			// else inside
 		}
 
-		return distSquared < (radius * radius);
+		return distSquared < (radius* radius);
 	}
 	else {
 		// this is a box, br is a sphere
