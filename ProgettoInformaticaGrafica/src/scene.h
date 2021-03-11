@@ -10,6 +10,7 @@
 
 #include "graphics/light.h"
 #include "graphics/shader.h"
+#include "graphics/basescene.h"
 
 #include "io/camera.h"
 #include "io/keyboard.h"
@@ -17,14 +18,10 @@
 
 #include "algorithms/states.hpp"
 
-class Scene {
+class Scene : public BaseScene{
 public:
 	/*
 		callbacks
-	*/
-	// window resize
-	static void framebufferSizeCallback(GLFWwindow* widnow, int width, int height);
-
 	/*
 		constructor
 	*/
@@ -35,41 +32,26 @@ public:
 	/*
 		initialization
 	*/
-	bool init();
+	//virtual bool init();
 
 	/*
 		main loop methods
 	*/
+
 	// process input
 	void processInput(float dt);
 
-	// update screen before each frame
-	void update();
-
-	// update screen after frame
-	void newFrame();
-
 	// set uniform shader varaibles (lighting, etc)
-	void render(Shader shader, bool applyLighting = true);
+	virtual void render(Shader shader, bool applyLighting = true);
+
+	virtual void render();
 
 	/*
 		cleanup method
 	*/
-	void cleanup();
-
-	/*
-		accessors
-	*/
-	bool shouldClose();
+	virtual void cleanup();
 
 	Camera* getActiveCamera();
-
-	/*
-		modifiers
-	*/
-	void setShouldClose(bool shouldClose);
-
-	void setWindowColor(float r, float g, float b, float a);
 
 	/*
 		lights
@@ -93,20 +75,6 @@ public:
 	glm::mat4 projection;
 	glm::vec3 cameraPos;
 
-protected:
-	// window object
-	GLFWwindow* window;
-
-	// window vals
-	const char* title;
-	static unsigned int scrWidth;
-	static unsigned int scrHeight;
-
-	float bg[4]; // background color
-
-	// GLFW info
-	int glfwVersionMajor;
-	int glfwVersionMinor;
 };
 
 #endif

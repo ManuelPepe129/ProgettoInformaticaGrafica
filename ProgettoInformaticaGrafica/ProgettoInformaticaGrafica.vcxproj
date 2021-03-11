@@ -142,6 +142,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\basescene.cpp" />
+    <ClCompile Include="src\graphics\menu.cpp" />
+    <ClCompile Include="src\imgui\imgui.cpp" />
+    <ClCompile Include="src\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\io\camera.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\physics\rigidbody.cpp" />
@@ -172,12 +181,22 @@
     <None Include="assets\shaders\box_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\basescene.h" />
+    <ClInclude Include="src\graphics\menu.h" />
     <ClInclude Include="src\graphics\models\box.hpp" />
     <ClInclude Include="src\graphics\models\cube.hpp" />
     <ClInclude Include="src\graphics\models\gun.hpp" />
     <ClInclude Include="src\graphics\models\lamp.hpp" />
     <ClInclude Include="src\graphics\models\modelarray.hpp" />
     <ClInclude Include="src\graphics\models\sphere.hpp" />
+    <ClInclude Include="src\imgui\imconfig.h" />
+    <ClInclude Include="src\imgui\imgui.h" />
+    <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\imgui\imgui_internal.h" />
+    <ClInclude Include="src\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\io\camera.h" />
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\algorithms\states.hpp" />

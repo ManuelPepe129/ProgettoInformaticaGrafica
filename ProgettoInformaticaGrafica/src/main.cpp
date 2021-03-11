@@ -24,6 +24,7 @@
 #include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/text.h"
+#include "graphics/menu.h"
 
 #include "graphics/models/cube.hpp"
 #include "graphics/models/lamp.hpp"
@@ -42,6 +43,10 @@
 
 #include "scene.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 Scene scene;
 
 void processInput(double dt);
@@ -55,25 +60,27 @@ double lastFrame = 0.0f; // time of last frame
 
 unsigned int VAO, VBO;
 
-
-
 std::vector<Model> models;
 
 int main() {
 
-	scene = Scene(3, 3, "OpenGL Tutorial", 800, 600);
+	scene = Scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+
 	if (!scene.init()) {
 		std::cout << "Could not open window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
 
+	//Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
+	//menu.init();
+
 	/*
 	*	Text Rendering Library
 	*/
 
 	TextRenderer textRenderer("assets/fonts/comic.ttf", 48);
-	textRenderer.init();
+	//textRenderer.init();
 
 	scene.cameras.push_back(&cam);
 	scene.activeCamera = 0;
@@ -89,7 +96,7 @@ int main() {
 	Box box;
 	box.init();
 
-	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f),true);
+	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f), true);
 	m.loadModel("assets/models/maze/maze.obj");
 	models.push_back(m);
 	//m.loadModel("assets/models/cube/cube.obj");
@@ -143,13 +150,21 @@ int main() {
 	}*/
 
 	while (!scene.shouldClose()) {
-		box.positions.clear();
-		box.sizes.clear();
-
 		// calculate dt
 		double currentTime = glfwGetTime();
 		dt = currentTime - lastFrame;
 		lastFrame = currentTime;
+
+		// process input
+		processInput(dt);
+
+		//menu.render();
+		//menu.update();
+		//menu.newFrame();
+
+
+		box.positions.clear();
+		box.sizes.clear();
 
 		// process input
 		processInput(dt);
@@ -163,10 +178,10 @@ int main() {
 				if (tmp.containsPoint(camera->cameraPos))
 				{
 					switch (m.type) {
-					case ModelType::WALL :
+					case ModelType::WALL:
 						scene.getActiveCamera()->updateCameraPos(camera->lastDirection, 2 * dt);
 						break;
-					case ModelType::COLLECTABLE :
+					case ModelType::COLLECTABLE:
 						m.toBeDestroyed = true;
 						break;
 					}
@@ -188,14 +203,15 @@ int main() {
 		// render boxes
 		if (box.positions.size() > 0) {
 			// instances exist
-			//scene.render(boxShader, false);
-			//box.render(boxShader);
+			scene.render(boxShader, false);
+			box.render(boxShader);
 		}
 
 		textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
 		// send new frame to window
 		scene.newFrame();
+
 	}
 
 	// clean up objects
@@ -204,6 +220,7 @@ int main() {
 	m.cleanup();
 
 	scene.cleanup();
+	//menu.cleanup();
 	return 0;
 }
 

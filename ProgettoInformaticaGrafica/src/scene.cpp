@@ -1,38 +1,21 @@
 #include "scene.h"
 
-unsigned int Scene::scrWidth = 0;
-unsigned int Scene::scrHeight = 0;
-
-/*
-	callbacks
-*/
-// window resize
-void Scene::framebufferSizeCallback(GLFWwindow* widnow, int width, int height) {
-	glViewport(0, 0, width, height);
-	Scene::scrWidth = width;
-	Scene::scrHeight = height;
-}
-
 /*
 	constructor
 */
 Scene::Scene() {}
+
 Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	const char* title, unsigned int scrWidth, unsigned int scrHeight)
-	: glfwVersionMajor(glfwVersionMajor), glfwVersionMinor(glfwVersionMinor),
-	title(title),
+	: BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
 	activeCamera(-1),
-	activePointLights(0), activeSpotLights(0) {
-
-	Scene::scrWidth = scrWidth;
-	Scene::scrHeight = scrHeight;
-
-	setWindowColor(0.1f, 0.15f, 0.15f, 1.0f);
-}
+	activePointLights(0), activeSpotLights(0) 
+{ }
 
 /*
 	initialization
 */
+/*
 bool Scene::init() {
 	glfwInit();
 
@@ -44,7 +27,7 @@ bool Scene::init() {
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-
+	
 	// initialize window
 	window = glfwCreateWindow(scrWidth, scrHeight, title, NULL, NULL);
 	if (window == NULL) {
@@ -52,6 +35,7 @@ bool Scene::init() {
 		return false;
 	}
 	glfwMakeContextCurrent(window);
+	
 
 	// set GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -63,9 +47,8 @@ bool Scene::init() {
 	// setup screen
 	glViewport(0, 0, scrWidth, scrHeight);
 
-	/*
-		callbacks
-	*/
+		// callbacks
+
 	// frame size
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 	// key pressed
@@ -77,9 +60,8 @@ bool Scene::init() {
 	// mouse scroll
 	glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
 
-	/*
-		set rendering parameters
-	*/
+	// set rendering parameters
+
 	glEnable(GL_DEPTH_TEST); // doesn't show vertices not visible to camera (back of object)
 
 	glEnable(GL_BLEND);
@@ -89,6 +71,7 @@ bool Scene::init() {
 
 	return true;
 }
+*/
 
 /*
 	main loop methods
@@ -137,18 +120,6 @@ void Scene::processInput(float dt) {
 	}
 }
 
-// update screen before each frame
-void Scene::update() {
-	glClearColor(bg[0], bg[1], bg[2], bg[4]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-// update screen after frame
-void Scene::newFrame() {
-	// send new frame to window
-	glfwSwapBuffers(window);
-	glfwPollEvents();
-}
 
 // set uniform shader varaibles (lighting, etc)
 void Scene::render(Shader shader, bool applyLighting) {
@@ -191,34 +162,16 @@ void Scene::render(Shader shader, bool applyLighting) {
 	}
 }
 
-/*
-	cleanup method
-*/
-void Scene::cleanup() {
-	glfwTerminate();
+void Scene::render()
+{
+	std::cout << "Render function not defined without shader input" << std::endl;
 }
 
-/*
-	accessors
-*/
-bool Scene::shouldClose() {
-	return glfwWindowShouldClose(window);
+void Scene::cleanup() {
+	glfwTerminate();
 }
 
 Camera* Scene::getActiveCamera() {
 	return (activeCamera >= 0 && activeCamera < cameras.size()) ? cameras[activeCamera] : nullptr;
 }
 
-/*
-	modifiers
-*/
-void Scene::setShouldClose(bool shouldClose) {
-	glfwSetWindowShouldClose(window, shouldClose);
-}
-
-void Scene::setWindowColor(float r, float g, float b, float a) {
-	bg[0] = r;
-	bg[1] = g;
-	bg[2] = b;
-	bg[3] = a;
-}
