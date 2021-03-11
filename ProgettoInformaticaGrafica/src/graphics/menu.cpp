@@ -81,7 +81,19 @@ void Menu::render()
 	static float f = 0.0f;
 	static int counter = 0;
 
-	ImGui::Begin(title);                          // Create a window called "Hello, world!" and append into it
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+
+	// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
+	// Based on your use case you may want one of the other.
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+
+	ImGui::Begin(title, NULL, window_flags);                          // Create a window  and append into it
 
 	//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 	//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
@@ -90,12 +102,14 @@ void Menu::render()
 	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-	if (ImGui::Button("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+	if (ButtonCenteredOnLine("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 		std::cout << "start new game" << std::endl;
-	if (ImGui::Button("Rules"))
+	if (ButtonCenteredOnLine(" Rules  "))
 		std::cout << "print rules" << std::endl;
-	if (ImGui::Button("Credits"))
+	if (ButtonCenteredOnLine(" Credits"))
 		std::cout << "print credis" << std::endl;
+	if (ButtonCenteredOnLine("  Close "))
+		setShouldClose(true);
 	//ImGui::SameLine();
 	//ImGui::Text("counter = %d", counter);
 
@@ -125,4 +139,19 @@ void Menu::cleanup()
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
+}
+
+bool Menu::ButtonCenteredOnLine(const char* label, float alignment)
+{
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	float size = ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
+	float avail = ImGui::GetContentRegionAvail().x;
+
+	float off = (BaseScene::scrWidth - BaseScene::scrWidth / 5) * alignment;
+	if (off > 0.0f)
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY()+25);
+
+	return ImGui::Button(label, ImVec2(BaseScene::scrWidth/5, BaseScene::scrHeight/10));
 }

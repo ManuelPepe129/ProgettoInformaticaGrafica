@@ -47,6 +47,11 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+enum class GameState {
+	MENU,
+	GAME
+};
+
 Scene scene;
 
 void processInput(double dt);
@@ -63,17 +68,18 @@ unsigned int VAO, VBO;
 std::vector<Model> models;
 
 int main() {
-
+	
 	scene = Scene(3, 3, "Progetto Informatica Grafica", 800, 600);
-
+	/*
 	if (!scene.init()) {
 		std::cout << "Could not open window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
+	*/
 
-	//Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
-	//menu.init();
+	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
+	menu.init();
 
 	/*
 	*	Text Rendering Library
@@ -149,6 +155,22 @@ int main() {
 		std::cout << mainJ.getName() << " is present." << std::endl;
 	}*/
 
+	while (!menu.shouldClose())
+	{
+		// calculate dt
+		double currentTime = glfwGetTime();
+		dt = currentTime - lastFrame;
+		lastFrame = currentTime;
+
+		// process input
+		processInput(dt);
+
+		menu.render();
+		menu.update();
+		menu.newFrame();
+	}
+
+	/*
 	while (!scene.shouldClose()) {
 		// calculate dt
 		double currentTime = glfwGetTime();
@@ -213,6 +235,7 @@ int main() {
 		scene.newFrame();
 
 	}
+	*/
 
 	// clean up objects
 	lamps.cleanup();
@@ -225,7 +248,7 @@ int main() {
 }
 
 void processInput(double dt) {
-	scene.processInput(dt);
+	//scene.processInput(dt);
 
 	// update flash light
 	if (States::isActive(&scene.activeSpotLights, 0)) {

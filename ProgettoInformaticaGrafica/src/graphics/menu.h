@@ -24,6 +24,6 @@ public:
 
 	virtual void cleanup();
 
-
+	bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f);
 };
 
