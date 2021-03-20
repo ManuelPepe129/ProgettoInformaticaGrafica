@@ -41,42 +41,22 @@
 
 #include "algorithms/states.hpp"
 
-#include "scene.h"
+#include "gamescene.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-enum class GameState {
-	MENU,
-	GAME
-};
-
-Scene scene;
-
 void processInput(double dt);
-
-Camera cam;
 
 //Joystick mainJ(0);
 
-double dt = 0.0f; // tme btwn frames
-double lastFrame = 0.0f; // time of last frame
-
-unsigned int VAO, VBO;
-
 std::vector<Model> models;
+Camera cam;
+Scene scene;
 
 int main() {
-	
 	scene = Scene(3, 3, "Progetto Informatica Grafica", 800, 600);
-	/*
-	if (!scene.init()) {
-		std::cout << "Could not open window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	*/
 
 	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
 	menu.init();
@@ -86,7 +66,13 @@ int main() {
 	*/
 
 	TextRenderer textRenderer("assets/fonts/comic.ttf", 48);
-	//textRenderer.init();
+	textRenderer.init();
+
+	// joystick recognition
+	/*mainJ.update();
+	if (mainJ.isPresent()) {
+		std::cout << mainJ.getName() << " is present." << std::endl;
+	}*/
 
 	scene.cameras.push_back(&cam);
 	scene.activeCamera = 0;
@@ -149,25 +135,84 @@ int main() {
 	scene.spotLights.push_back(&spotLight);
 	scene.activeSpotLights = 1;	// 0b00000001
 
-	// joystick recognition
-	/*mainJ.update();
-	if (mainJ.isPresent()) {
-		std::cout << mainJ.getName() << " is present." << std::endl;
-	}*/
-
-	while (!menu.shouldClose())
+	while (!menu.shouldClose() && !(menu.GetState() == MenuState::NEW_GAME))
 	{
-		// calculate dt
+		// process input
+		menu.processInput(0.0f);
+
+		menu.render();
+		menu.update();
+		
+		menu.newFrame();
+
+	}
+
+	//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+	if (!scene.init()) {
+		std::cout << "Could not open window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+
+	double dt = 0.0f; // tme btwn frames
+	double lastFrame = 0.0f; // time of last frame
+	while (!scene.shouldClose())
+	{
 		double currentTime = glfwGetTime();
 		dt = currentTime - lastFrame;
 		lastFrame = currentTime;
 
+		box.positions.clear();
+		box.sizes.clear();
+
 		// process input
 		processInput(dt);
 
-		menu.render();
-		menu.update();
-		menu.newFrame();
+		/*
+		Camera* camera = scene.getActiveCamera();
+		for (unsigned int i = 0; i < models.size(); ++i) {
+			m = models[i];
+			for (unsigned int j = 0; j < m.meshes.size(); ++j)
+			{
+				BoundingRegion tmp = m.meshes[j].br;
+				if (tmp.containsPoint(camera->cameraPos))
+				{
+					switch (m.type) {
+					case ModelType::WALL:
+						scene.getActiveCamera()->updateCameraPos(camera->lastDirection, 2 * dt);
+						break;
+					case ModelType::COLLECTABLE:
+						m.toBeDestroyed = true;
+						break;
+					}
+					break; // max 1 collisione gestita
+				}
+			}
+		}
+		*/
+
+
+		// update screen values
+		scene.update();
+
+		scene.render(shader);
+		m.render(shader, dt, &box);
+
+		// lamps
+		scene.render(lampShader, false);
+		lamps.render(lampShader, dt, &box);
+
+		// render boxes
+		if (box.positions.size() > 0) {
+			// instances exist
+			scene.render(boxShader, false);
+			box.render(boxShader);
+		}
+
+		textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+
+		// send new frame to window
+		scene.newFrame();
 	}
 
 	/*
@@ -176,9 +221,6 @@ int main() {
 		double currentTime = glfwGetTime();
 		dt = currentTime - lastFrame;
 		lastFrame = currentTime;
-
-		// process input
-		processInput(dt);
 
 		//menu.render();
 		//menu.update();
@@ -236,31 +278,31 @@ int main() {
 
 	}
 	*/
-
-	// clean up objects
 	lamps.cleanup();
 	box.cleanup();
 	m.cleanup();
-
 	scene.cleanup();
-	//menu.cleanup();
+	menu.cleanup();
 	return 0;
 }
 
 void processInput(double dt) {
-	//scene.processInput(dt);
-
-	// update flash light
+	scene.processInput(dt);
+	/*
+	 update flash light
 	if (States::isActive(&scene.activeSpotLights, 0)) {
 		scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
 		scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
 	}
 
+	
 	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
 		scene.setShouldClose(true);
 	}
+	
 
 	if (Keyboard::keyWentDown(GLFW_KEY_L)) {
 		States::toggle(&scene.activeSpotLights, 0); // toggle spot light
 	}
+	*/
 }

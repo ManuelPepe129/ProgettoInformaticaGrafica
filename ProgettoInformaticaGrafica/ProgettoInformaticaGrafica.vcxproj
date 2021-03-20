@@ -142,6 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\gamescene.cpp" />
+    <ClCompile Include="src\scenemanager.cpp" />
     <ClCompile Include="src\graphics\basescene.cpp" />
     <ClCompile Include="src\graphics\menu.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
@@ -181,6 +183,8 @@
     <None Include="assets\shaders\box_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gamescene.h" />
+    <ClInclude Include="src\scenemanager.h" />
     <ClInclude Include="src\graphics\basescene.h" />
     <ClInclude Include="src\graphics\menu.h" />
     <ClInclude Include="src\graphics\models\box.hpp" />

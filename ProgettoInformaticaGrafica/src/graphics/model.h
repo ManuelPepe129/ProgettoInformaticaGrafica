@@ -43,6 +43,8 @@ public:
 
 	void render(Shader shader, float dt, Box *box, bool setModel = true, bool doRender = true);
 
+	void render(Shader shader, Box* box, bool setModel = true, bool doRender = true);
+
 	void cleanup();
 
 protected:

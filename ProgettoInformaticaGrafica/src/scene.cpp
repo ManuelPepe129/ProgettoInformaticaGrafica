@@ -1,5 +1,7 @@
 #include "scene.h"
 
+// TODO: Spostare tutta la logica della scena dal main a qua
+
 /*
 	constructor
 */
@@ -9,7 +11,7 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	const char* title, unsigned int scrWidth, unsigned int scrHeight)
 	: BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
 	activeCamera(-1),
-	activePointLights(0), activeSpotLights(0) 
+	activePointLights(0), activeSpotLights(0)
 { }
 
 /*
@@ -78,6 +80,9 @@ bool Scene::init() {
 */
 // process input
 void Scene::processInput(float dt) {
+	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
+		setShouldClose(true);
+	}
 	if (activeCamera != -1 && activeCamera < cameras.size()) {
 		// active camera exists
 
@@ -85,7 +90,7 @@ void Scene::processInput(float dt) {
 		cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), 0);
 
 		// set camera zoom
-		cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
+		//cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
 
 		// set camera pos
 		if (Keyboard::key(GLFW_KEY_W)) {
@@ -119,7 +124,6 @@ void Scene::processInput(float dt) {
 		cameraPos = cameras[activeCamera]->cameraPos;
 	}
 }
-
 
 // set uniform shader varaibles (lighting, etc)
 void Scene::render(Shader shader, bool applyLighting) {
@@ -168,6 +172,9 @@ void Scene::render()
 }
 
 void Scene::cleanup() {
+	if (window) {
+		glfwDestroyWindow(window);
+	}
 	glfwTerminate();
 }
 

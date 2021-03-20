@@ -34,6 +34,13 @@ public:
 
 		Cube::render(shader, dt, box, setModel, doRender);
 	}
+
+	void render(Shader shader, Box* box, bool setModel = true, bool doRender = true) {
+		// set light color
+		shader.set3Float("lightColor", lightColor);
+
+		Cube::render(shader,box, setModel, doRender);
+	}
 };
 
 class LampArray : public ModelArray<Lamp> {
@@ -58,6 +65,18 @@ public:
 		}
 
 		ModelArray::render(shader, dt, box, false);
+	}
+
+	void render(Shader shader, Box* box) {
+		positions.clear();
+		sizes.clear();
+
+		for (PointLight& pl : lightInstances) {
+			positions.push_back(pl.position);
+			sizes.push_back(model.size);
+		}
+
+		ModelArray::render(shader,box, false);
 	}
 };
 

@@ -28,6 +28,21 @@ void Model::render(Shader shader, float dt, Box* box, bool setModel, bool doRend
 	}
 }
 
+void Model::render(Shader shader, Box* box, bool setModel, bool doRender) {
+	if (setModel) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, rb.pos);
+		model = glm::scale(model, size);
+		shader.setMat4("model", model);
+	}
+
+	shader.setFloat("material.shininess", 0.5f);
+
+	for (unsigned int i = 0; i < meshes.size(); i++) {
+		meshes[i].render(shader, rb.pos, size, box, doRender && !toBeDestroyed);
+	}
+}
+
 void Model::cleanup() {
 	for (unsigned int i = 0; i < meshes.size(); i++) {
 		meshes[i].cleanup();
@@ -122,8 +137,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	const glm::vec3 dx = glm::vec3(0.05f);
 	if (boundType == BoundTypes::AABB) {
 		// assign max and min
-		br.min = min-dx;
-		br.max = max+dx;
+		br.min = min - dx;
+		br.max = max + dx;
 	}
 	else {
 		// calculate max distance from the center

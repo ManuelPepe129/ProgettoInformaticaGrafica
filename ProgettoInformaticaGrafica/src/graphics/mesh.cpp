@@ -73,7 +73,7 @@ void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box* box, bool d
 		}
 	}
 	
-	if (doRender) {
+	if (doRender && box) {
 		box->addInstance(br, pos, size);
 
 		VAO.bind();

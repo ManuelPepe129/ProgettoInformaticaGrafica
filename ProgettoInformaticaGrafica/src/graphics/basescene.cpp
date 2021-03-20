@@ -20,8 +20,8 @@ void BaseScene::framebufferSizeCallback(GLFWwindow* window, int width, int heigh
 BaseScene::BaseScene()
 { }
 
-BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight)
-	: glfwVersionMajor(glfwVersionMajor), glfwVersionMinor(glfwVersionMinor), title(title) {
+BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType)
+	: glfwVersionMajor(glfwVersionMajor), glfwVersionMinor(glfwVersionMinor), title(title), sceneType(sceneType){
 
 	BaseScene::scrWidth = scrWidth;
 	BaseScene::scrHeight = scrHeight;
@@ -114,6 +114,13 @@ void BaseScene::setBackgroundColor(glm::vec4 background)
 GLFWwindow* BaseScene::getWindow()
 {
 	return window;
+}
+
+void BaseScene::processInput(float dt)
+{
+	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
+		setShouldClose(true);
+	}
 }
 
 // update screen before each frame

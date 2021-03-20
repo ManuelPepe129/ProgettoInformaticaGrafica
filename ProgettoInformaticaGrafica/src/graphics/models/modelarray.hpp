@@ -88,6 +88,44 @@ public:
 		}
 	}
 
+	void render(Shader shader, Box* box, bool setLists = true) {
+		if (setLists) {
+			positions.clear();
+			sizes.clear();
+		}
+
+		shader.setMat4("model", glm::mat4(1.0f));
+
+		model.render(shader, nullptr, false, false);
+
+		int instances = std::min(UPPER_BOUND, (int)positions.size()); // if more than 100 instances, only render 100
+
+		// update data
+		if (instances != 0) {
+			// if instances exist
+
+			// reset VBO data
+			posVBO.bind();
+			posVBO.updateData<glm::vec3>(0, instances, &positions[0]);
+
+			sizeVBO.bind();
+			sizeVBO.updateData<glm::vec3>(0, instances, &sizes[0]);
+
+			sizeVBO.clear();
+		}
+
+		// render instanced data
+		for (unsigned int i = 0, length = model.meshes.size(); i < length; i++) {
+			for (unsigned int j = 0; j < instances; j++) {
+				box->addInstance(model.meshes[i].br, positions[j], sizes[j]);
+			}
+
+			model.meshes[i].VAO.bind();
+			model.meshes[i].VAO.draw(GL_TRIANGLES, model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, instances);
+			ArrayObject::clear();
+		}
+	}
+
 	void setSize(glm::vec3 size) {
 		model.size = size;
 	}

@@ -1,5 +1,10 @@
 #include "light.h"
 
+DirLight::DirLight(glm::vec3 direction, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
+	: direction(direction), ambient(ambient), diffuse(diffuse), specular(specular)
+{
+}
+
 void DirLight::render(Shader shader) {
 	shader.set3Float("dirLight.direction", direction);
 	shader.set4Float("dirLight.ambient", ambient);
@@ -18,6 +23,11 @@ void PointLight::render(Shader shader, int idx) {
 	shader.set4Float(name + ".ambient", ambient);
 	shader.set4Float(name + ".diffuse", diffuse);
 	shader.set4Float(name + ".specular", specular);
+}
+
+SpotLight::SpotLight(glm::vec3 position, glm::vec3 direction, float cutOff, float outerCutOff, float k0, float k1, float k2, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
+	:position(position), direction(direction), cutOff(cutOff), outerCutOff(outerCutOff), k0(k0), k1(k1), k2(k2), ambient(ambient), diffuse(diffuse), specular(specular)
+{
 }
 
 void SpotLight::render(Shader shader, int idx) {

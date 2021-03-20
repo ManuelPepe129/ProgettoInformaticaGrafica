@@ -8,7 +8,8 @@ static void glfw_error_callback(int error, const char* description)
 Menu::Menu(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight)
 	:BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight)
 {
-
+	sceneType = SceneType::MENU;
+	currentMenuState = MenuState::MAIN_MENU;
 }
 
 void Menu::init() {
@@ -53,6 +54,7 @@ void Menu::init() {
 		return;
 	}
 	*/
+
 	// init window
 	BaseScene::init();
 	// Setup Dear ImGui context
@@ -102,13 +104,19 @@ void Menu::render()
 	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-	if (ButtonCenteredOnLine("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		std::cout << "start new game" << std::endl;
-	if (ButtonCenteredOnLine(" Rules  "))
-		std::cout << "print rules" << std::endl;
-	if (ButtonCenteredOnLine(" Credits"))
-		std::cout << "print credis" << std::endl;
-	if (ButtonCenteredOnLine("  Close "))
+	if (buttonCentered("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+	{
+		currentMenuState = MenuState::NEW_GAME;
+	}
+	if (buttonCentered(" Rules  "))
+		currentMenuState = MenuState::RULES;
+	if (buttonCentered(" Credits"))
+	{
+		currentMenuState = MenuState::CREDITS;;
+		ImGui::Text("Manuel Pepe");
+	}
+
+	if (buttonCentered("  Close "))
 		setShouldClose(true);
 	//ImGui::SameLine();
 	//ImGui::Text("counter = %d", counter);
@@ -136,22 +144,23 @@ void Menu::cleanup()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-
-	glfwDestroyWindow(window);
+	if (window) {
+		glfwDestroyWindow(window);
+	}
 	glfwTerminate();
 }
 
-bool Menu::ButtonCenteredOnLine(const char* label, float alignment)
+bool Menu::buttonCentered(const char* label, float alignment)
 {
-	ImGuiStyle& style = ImGui::GetStyle();
+	//ImGuiStyle& style = ImGui::GetStyle();
 
-	float size = ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
-	float avail = ImGui::GetContentRegionAvail().x;
+	//float size = ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
+	//float avail = ImGui::GetContentRegionAvail().x;
 
-	float off = (BaseScene::scrWidth - BaseScene::scrWidth / 5) * alignment;
+	float off = (BaseScene::scrWidth - BaseScene::scrWidth / 5.0f) * alignment;
 	if (off > 0.0f)
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY()+25);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 25);
 
-	return ImGui::Button(label, ImVec2(BaseScene::scrWidth/5, BaseScene::scrHeight/10));
+	return ImGui::Button(label, ImVec2(BaseScene::scrWidth / 5, BaseScene::scrHeight / 10));
 }

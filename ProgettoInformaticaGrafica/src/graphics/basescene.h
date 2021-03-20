@@ -11,6 +11,11 @@
 #include "../io/keyboard.h"
 #include "../io/mouse.h"
 
+enum class SceneType {
+	MENU,
+	GAME
+};
+
 class BaseScene
 {
 public:
@@ -21,7 +26,7 @@ public:
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 	BaseScene();
-	BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight);
+	BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType=SceneType::GAME);
 
 
 	bool init();
@@ -29,6 +34,8 @@ public:
 	virtual void render()=0;
 
 	virtual void cleanup()=0;
+
+	virtual void processInput(float dt);
 
 	// update screen before each frame
 	void update();
@@ -50,6 +57,8 @@ public:
 
 	GLFWwindow* getWindow();
 
+	SceneType sceneType;
+
 protected:
 	// window object
 	static GLFWwindow* window;
@@ -64,5 +73,7 @@ protected:
 	// GLFW info
 	int glfwVersionMajor;
 	int glfwVersionMinor;
+
+	
 };
 

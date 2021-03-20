@@ -18,7 +18,9 @@
 
 #include "algorithms/states.hpp"
 
-class Scene : public BaseScene{
+
+class Scene : public BaseScene
+{
 public:
 	/*
 		callbacks
@@ -39,7 +41,7 @@ public:
 	*/
 
 	// process input
-	void processInput(float dt);
+	virtual void processInput(float dt);
 
 	// set uniform shader varaibles (lighting, etc)
 	virtual void render(Shader shader, bool applyLighting = true);

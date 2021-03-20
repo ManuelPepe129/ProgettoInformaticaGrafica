@@ -10,6 +10,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+enum class MenuState
+{
+	MAIN_MENU,
+	NEW_GAME,
+	CREDITS,
+	RULES
+};
+
 class Menu : public BaseScene
 {
 public:
@@ -24,6 +32,13 @@ public:
 
 	virtual void cleanup();
 
-	bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f);
+	bool buttonCentered(const char* label, float alignment = 0.5f);
+
+	MenuState GetState() {
+		return currentMenuState;
+	}
+
+private:
+	MenuState currentMenuState;
 };
 
