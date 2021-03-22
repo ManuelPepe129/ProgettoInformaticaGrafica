@@ -18,6 +18,9 @@ struct DirLight {
 };
 
 struct PointLight {
+	PointLight(glm::vec3 position, float k0, float k1, float k2, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular);
+	PointLight() {};
+
 	glm::vec3 position;
 
 	// attenuation constants

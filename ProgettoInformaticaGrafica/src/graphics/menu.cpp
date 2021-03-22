@@ -137,6 +137,11 @@ void Menu::render()
 		ImGui::Text("");
 		ImGui::Text("Press ESC to return to main menu...");
 		break;
+	case MenuState::RULES:
+		textCentered("Esci dal labirinto.");
+		ImGui::Text("");
+		ImGui::Text("Press ESC to return to main menu...");
+		break;
 	default:
 		break;
 	}

@@ -12,6 +12,11 @@ void DirLight::render(Shader shader) {
 	shader.set4Float("dirLight.specular", specular);
 }
 
+PointLight::PointLight(glm::vec3 position, float k0, float k1, float k2, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
+	: position(position), k0(k0), k1(k1), k2(k2), ambient(ambient), diffuse(diffuse), specular(specular)
+{
+}
+
 void PointLight::render(Shader shader, int idx) {
 	std::string name = "pointLights[" + std::to_string(idx) + "]";
 	shader.set3Float(name + ".position", position);

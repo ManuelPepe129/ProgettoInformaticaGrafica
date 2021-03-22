@@ -41,8 +41,6 @@
 
 #include "algorithms/states.hpp"
 
-#include "gamescene.h"
-
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -94,7 +92,7 @@ int main() {
 	//m.loadModel("assets/models/cube/cube.obj");
 
 	// LIGHTS
-	DirLight dirLight = { glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f) };
+	DirLight dirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	scene.dirLight = &dirLight;
 
 	glm::vec3 pointLightPositions[] = {
@@ -116,22 +114,21 @@ int main() {
 	LampArray lamps;
 	lamps.init();
 	for (unsigned int i = 0; i < 4; i++) {
-		pointLights[i] = {
+		pointLights[i] = PointLight(
 			pointLightPositions[i],
 			k0, k1, k2,
 			ambient, diffuse, specular
-		};
+		);
 		lamps.lightInstances.push_back(pointLights[i]);
 		scene.pointLights.push_back(&pointLights[i]);
 		States::activate(&scene.activePointLights, i);
 	}
 
-	SpotLight spotLight = {
+	SpotLight spotLight(
 		cam.cameraPos, cam.cameraFront,
 		glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
 		1.0f, 0.07f, 0.032f,
-		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f)
-	};
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f));
 	scene.spotLights.push_back(&spotLight);
 	scene.activeSpotLights = 1;	// 0b00000001
 
@@ -153,6 +150,7 @@ int main() {
 		glfwTerminate();
 		return -1;
 	}
+
 
 	double dt = 0.0f; // tme btwn frames
 	double lastFrame = 0.0f; // time of last frame
@@ -191,7 +189,6 @@ int main() {
 			}
 		}
 		*/
-
 
 		// update screen values
 		scene.update();
@@ -289,8 +286,7 @@ int main() {
 
 void processInput(double dt) {
 	scene.processInput(dt);
-	/*
-	 update flash light
+	
 	if (States::isActive(&scene.activeSpotLights, 0)) {
 		scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
 		scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
@@ -305,5 +301,4 @@ void processInput(double dt) {
 	if (Keyboard::keyWentDown(GLFW_KEY_L)) {
 		States::toggle(&scene.activeSpotLights, 0); // toggle spot light
 	}
-	*/
 }

@@ -23,18 +23,11 @@ class Scene : public BaseScene
 {
 public:
 	/*
-		callbacks
-	/*
 		constructor
 	*/
 	Scene();
 	Scene(int glfwVersionMajor, int glfwVersionMinor,
 		const char* title, unsigned int scrWidth, unsigned int scrHeight);
-
-	/*
-		initialization
-	*/
-	//virtual bool init();
 
 	/*
 		main loop methods
@@ -58,6 +51,7 @@ public:
 	/*
 		lights
 	*/
+
 	// list of point lights
 	std::vector<PointLight*> pointLights;
 	unsigned int activePointLights;
