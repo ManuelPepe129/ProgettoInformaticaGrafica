@@ -149,7 +149,7 @@ int main() {
 
 	//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 	if (!scene.init()) {
-		std::cout << "Could not open window" << std::endl;
+		std::cout << "Could not init game scene" << std::endl;
 		glfwTerminate();
 		return -1;
 	}

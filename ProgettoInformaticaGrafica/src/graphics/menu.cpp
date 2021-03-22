@@ -104,20 +104,42 @@ void Menu::render()
 	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-	if (buttonCentered("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+	switch (currentMenuState)
 	{
-		currentMenuState = MenuState::NEW_GAME;
+	case MenuState::MAIN_MENU:
+		if (buttonCentered("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		{
+			currentMenuState = MenuState::NEW_GAME;
+		}
+		if (buttonCentered(" Rules  "))
+		{
+			currentMenuState = MenuState::RULES;
+		}
+		if (buttonCentered(" Credits"))
+		{
+			currentMenuState = MenuState::CREDITS;
+		}
+		if (buttonCentered("  Close "))
+		{
+			setShouldClose(true);
+		}
+		break;
+	case MenuState::CREDITS:
+		textCentered("02BBHIOV - Informatica Grafica - Anno Accademico 2020/21");
+		ImGui::Text("");
+		textCentered("Professore titolare: Fabrizio Lamberti");
+		textCentered("Esercitatore: Alberto Cannavo'");
+		ImGui::Text("");
+		textCentered("Progetto Gruppo 20 - The Shining");
+		textCentered("Manuel Pepe - s281221");
+		textCentered("Riccardo Malvicino - s290338");
+		textCentered("Emanuele Zacheo - s290260");
+		ImGui::Text("");
+		ImGui::Text("Press ESC to return to main menu...");
+		break;
+	default:
+		break;
 	}
-	if (buttonCentered(" Rules  "))
-		currentMenuState = MenuState::RULES;
-	if (buttonCentered(" Credits"))
-	{
-		currentMenuState = MenuState::CREDITS;;
-		ImGui::Text("Manuel Pepe");
-	}
-
-	if (buttonCentered("  Close "))
-		setShouldClose(true);
 	//ImGui::SameLine();
 	//ImGui::Text("counter = %d", counter);
 
@@ -163,4 +185,39 @@ bool Menu::buttonCentered(const char* label, float alignment)
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 25);
 
 	return ImGui::Button(label, ImVec2(BaseScene::scrWidth / 5, BaseScene::scrHeight / 10));
+}
+
+void Menu::textCentered(std::string text) {
+	float font_size = ImGui::GetFontSize() * text.size() / 2;
+	ImGui::SameLine(
+		ImGui::GetWindowSize().x / 2 -
+		font_size + (font_size / 2)
+	);
+
+	ImGui::Text(text.c_str());
+	ImGui::Text("");
+}
+
+void Menu::processInput(float dt)
+{
+	if (Keyboard::keyWentDown(GLFW_KEY_ESCAPE)) {
+		switch (currentMenuState)
+		{
+		case MenuState::MAIN_MENU:
+			setShouldClose(true);
+			break;
+		case MenuState::NEW_GAME:
+			break;
+		case MenuState::CREDITS:
+			currentMenuState = MenuState::MAIN_MENU;
+			break;
+		case MenuState::RULES:
+			currentMenuState = MenuState::MAIN_MENU;
+			break;
+		default:
+			setShouldClose(true);
+			break;
+		}
+	}
+
 }

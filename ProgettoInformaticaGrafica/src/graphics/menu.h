@@ -27,12 +27,16 @@ public:
 
 	virtual void render();
 
+	virtual void processInput(float dt);
+
 	// update screen before each frame
 	void update();
 
 	virtual void cleanup();
 
 	bool buttonCentered(const char* label, float alignment = 0.5f);
+
+	void textCentered(std::string text);
 
 	MenuState GetState() {
 		return currentMenuState;
