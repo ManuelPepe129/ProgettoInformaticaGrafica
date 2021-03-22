@@ -60,7 +60,7 @@
     <ClCompile Include="src\physics\rigidbody.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene.cpp">
+    <ClCompile Include="src\scenes\scene.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\io\camera.cpp">
@@ -90,10 +90,10 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\menu.cpp">
+    <ClCompile Include="src\scenes\menu.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\basescene.cpp">
+    <ClCompile Include="src\scenes\basescene.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\scenemanager.cpp">
@@ -156,7 +156,7 @@
     <ClInclude Include="src\algorithms\states.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene.h">
+    <ClInclude Include="src\scenes\scene.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\io\camera.h">
@@ -207,10 +207,10 @@
     <ClInclude Include="src\imgui\imstb_textedit.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\menu.h">
+    <ClInclude Include="src\scenes\menu.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\basescene.h">
+    <ClInclude Include="src\scenes\basescene.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\scenemanager.h">

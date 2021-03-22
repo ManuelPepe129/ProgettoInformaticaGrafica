@@ -2,7 +2,7 @@
 #include "../../io/camera.h"
 #include "../../io/keyboard.h"
 
-#include "../../scene.h"
+#include "../../scenes/scene.h"
 
 class Gun : public Model {
 public:

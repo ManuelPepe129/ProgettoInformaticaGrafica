@@ -8,15 +8,17 @@
 
 #include <glm/glm.hpp>
 
-#include "graphics/light.h"
-#include "graphics/shader.h"
-#include "graphics/basescene.h"
+#include "../graphics/light.h"
+#include "../graphics/shader.h"
+#include "basescene.h"
 
-#include "io/camera.h"
-#include "io/keyboard.h"
-#include "io/mouse.h"
+#include "../io/camera.h"
+#include "../io/keyboard.h"
+#include "../io/mouse.h"
 
-#include "algorithms/states.hpp"
+#include "../algorithms/states.hpp"
+
+#include "../algorithms/states.hpp"
 
 
 class Scene : public BaseScene
@@ -25,7 +27,6 @@ public:
 	/*
 		constructor
 	*/
-	Scene();
 	Scene(int glfwVersionMajor, int glfwVersionMinor,
 		const char* title, unsigned int scrWidth, unsigned int scrHeight);
 

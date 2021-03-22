@@ -24,7 +24,6 @@
 #include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/text.h"
-#include "graphics/menu.h"
 
 #include "graphics/models/cube.hpp"
 #include "graphics/models/lamp.hpp"
@@ -45,16 +44,16 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-void processInput(double dt);
+#include "scenes/menu.h"
+#include "scenes/scene.h"
 
 //Joystick mainJ(0);
 
 std::vector<Model> models;
 Camera cam;
-Scene scene;
 
 int main() {
-	scene = Scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+	Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 
 	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
 	menu.init();
@@ -165,7 +164,7 @@ int main() {
 		box.sizes.clear();
 
 		// process input
-		processInput(dt);
+		scene.processInput(dt);
 
 		/*
 		Camera* camera = scene.getActiveCamera();
@@ -276,29 +275,11 @@ int main() {
 
 	}
 	*/
+
 	lamps.cleanup();
 	box.cleanup();
 	m.cleanup();
 	scene.cleanup();
 	menu.cleanup();
 	return 0;
-}
-
-void processInput(double dt) {
-	scene.processInput(dt);
-	
-	if (States::isActive(&scene.activeSpotLights, 0)) {
-		scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
-		scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
-	}
-
-	
-	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
-		scene.setShouldClose(true);
-	}
-	
-
-	if (Keyboard::keyWentDown(GLFW_KEY_L)) {
-		States::toggle(&scene.activeSpotLights, 0); // toggle spot light
-	}
 }

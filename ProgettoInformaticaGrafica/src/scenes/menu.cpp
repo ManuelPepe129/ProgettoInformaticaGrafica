@@ -171,10 +171,11 @@ void Menu::cleanup()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	if (window) {
+	if (BaseScene::instances == 1) {
 		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
-	glfwTerminate();
+	
 }
 
 bool Menu::buttonCentered(const char* label, float alignment)

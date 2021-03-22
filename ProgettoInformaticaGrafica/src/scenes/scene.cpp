@@ -5,7 +5,6 @@
 /*
 	constructor
 */
-Scene::Scene() {}
 
 Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	const char* title, unsigned int scrWidth, unsigned int scrHeight)
@@ -122,6 +121,11 @@ void Scene::processInput(float dt) {
 
 		// set pos at end
 		cameraPos = cameras[activeCamera]->cameraPos;
+
+		if (States::isActive(&activeSpotLights, 0)) {
+			spotLights[0]->position = cameraPos;
+			spotLights[0]->direction = cameras[activeCamera]->cameraFront;
+		}
 	}
 }
 
@@ -172,10 +176,10 @@ void Scene::render()
 }
 
 void Scene::cleanup() {
-	if (window) {
+	if (BaseScene::instances == 1) {
 		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
-	glfwTerminate();
 }
 
 Camera* Scene::getActiveCamera() {

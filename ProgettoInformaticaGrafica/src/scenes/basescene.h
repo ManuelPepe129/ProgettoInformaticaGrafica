@@ -25,9 +25,9 @@ public:
 	// window resize
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
-	BaseScene();
 	BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType=SceneType::GAME);
 
+	~BaseScene();
 
 	bool init();
 
@@ -74,6 +74,6 @@ protected:
 	int glfwVersionMajor;
 	int glfwVersionMinor;
 
-	
+	static unsigned int instances;
 };
 

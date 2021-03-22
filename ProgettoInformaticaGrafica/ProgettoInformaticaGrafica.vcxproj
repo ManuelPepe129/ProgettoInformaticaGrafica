@@ -143,8 +143,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\scenemanager.cpp" />
-    <ClCompile Include="src\graphics\basescene.cpp" />
-    <ClCompile Include="src\graphics\menu.cpp" />
+    <ClCompile Include="src\scenes\basescene.cpp" />
+    <ClCompile Include="src\scenes\menu.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
@@ -153,7 +153,7 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\io\camera.cpp" />
-    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\scenes\scene.cpp" />
     <ClCompile Include="src\physics\rigidbody.cpp" />
     <ClCompile Include="src\physics\environment.cpp" />
     <ClCompile Include="src\algorithms\bounds.cpp" />
@@ -183,8 +183,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\scenemanager.h" />
-    <ClInclude Include="src\graphics\basescene.h" />
-    <ClInclude Include="src\graphics\menu.h" />
+    <ClInclude Include="src\scenes\basescene.h" />
+    <ClInclude Include="src\scenes\menu.h" />
     <ClInclude Include="src\graphics\models\box.hpp" />
     <ClInclude Include="src\graphics\models\cube.hpp" />
     <ClInclude Include="src\graphics\models\gun.hpp" />
@@ -200,7 +200,7 @@
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\io\camera.h" />
-    <ClInclude Include="src\scene.h" />
+    <ClInclude Include="src\scenes\scene.h" />
     <ClInclude Include="src\algorithms\states.hpp" />
     <ClInclude Include="src\graphics\glmemory.hpp" />
     <ClInclude Include="src\physics\rigidbody.h" />
