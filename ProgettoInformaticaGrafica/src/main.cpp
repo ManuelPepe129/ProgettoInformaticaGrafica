@@ -156,11 +156,12 @@ int main() {
 
 	double dt = 0.0f; // tme btwn frames
 	double lastFrame = 0.0f; // time of last frame
+	glfwSetTime(0.0f);
 	while (!scene.shouldClose())
 	{
 		double currentTime = glfwGetTime();
 		dt = currentTime - lastFrame;
-		lastFrame = currentTime;
+		lastFrame = lastFrame + dt;
 
 		box.positions.clear();
 		box.sizes.clear();
