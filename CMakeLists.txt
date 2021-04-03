@@ -32,6 +32,15 @@ include_directories(ProgettoInformaticaGrafica/src/io)
 include_directories(ProgettoInformaticaGrafica/src/physics)
 include_directories(ProgettoInformaticaGrafica/src/scenes)
 
+include_directories(Linking/lib)
+include_directories(Linking/lib/GLFW)
+include_directories(Linking/lib/freetype)
+
+target_link_libraries(Linking/lib/freetype/freetype.lib
+        Linking/lib/assimp/assimp-vc142-mtd.lib
+        Linking/lib/GLFW/glfw3.lib
+        Linking/lib/opengl32.lib)
+
 add_executable(ProgettoInformaticaGrafica
         Linking/include/assimp/Compiler/poppack1.h
         Linking/include/assimp/Compiler/pstdint.h

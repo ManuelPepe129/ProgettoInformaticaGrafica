@@ -1,6 +1,21 @@
 #include "scene.h"
 
-// TODO: Spostare tutta la logica della scena dal main a qua
+std::string Scene::generateId()
+{
+	for (int i = currentId.length() - 1; i >= 0; --i)
+	{
+		if ((int)currentId[i] != (int)'z')
+		{
+			currentId[i] = (char)(((int)currentId[i]) + 1);
+			break;
+		}
+		else
+		{
+			currentId[i] = 'a';
+		}
+	}
+	return currentId;
+}
 
 /*
 	constructor
@@ -10,83 +25,34 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	const char* title, unsigned int scrWidth, unsigned int scrHeight)
 	: BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
 	activeCamera(-1),
-	activePointLights(0), activeSpotLights(0)
+	activePointLights(0), activeSpotLights(0),
+	currentId("aaaaaaaa")
 { }
-
-/*
-	initialization
-*/
-/*
-bool Scene::init() {
-	glfwInit();
-
-	// set version
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glfwVersionMajor);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glfwVersionMinor);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-	
-	// initialize window
-	window = glfwCreateWindow(scrWidth, scrHeight, title, NULL, NULL);
-	if (window == NULL) {
-		// not created
-		return false;
-	}
-	glfwMakeContextCurrent(window);
-	
-
-	// set GLAD
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		glfwTerminate();
-		return false;
-	}
-
-	// setup screen
-	glViewport(0, 0, scrWidth, scrHeight);
-
-		// callbacks
-
-	// frame size
-	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-	// key pressed
-	glfwSetKeyCallback(window, Keyboard::keyCallback);
-	// cursor moved
-	glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
-	// mouse btn pressed
-	glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
-	// mouse scroll
-	glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
-
-	// set rendering parameters
-
-	glEnable(GL_DEPTH_TEST); // doesn't show vertices not visible to camera (back of object)
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
-
-	return true;
-}
-*/
 
 /*
 	main loop methods
 */
+
 // process input
 void Scene::processInput(float dt) {
 	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
 		setShouldClose(true);
 	}
+	if (Keyboard::keyWentDown(GLFW_KEY_P)) {
+		glm::vec3 pos = cameraPos;
+		std::cout << "[x: " << pos.x << ", y: " << pos.y
+			<< ", z:" << pos.z << "]\n";
+	}
 	if (activeCamera != -1 && activeCamera < cameras.size()) {
 		// active camera exists
 
 		// set camera direction
-		cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), 0);
+		double mouseDX = Mouse::getDX();
+		double mouseDY = Mouse::getDY();
+		if ( mouseDX != 0.0 || mouseDY != 0)
+		{
+			cameras[activeCamera]->updateCameraDirection(mouseDX, mouseDY);
+		}
 
 		// set camera zoom
 		//cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
@@ -122,7 +88,7 @@ void Scene::processInput(float dt) {
 		// set pos at end
 		cameraPos = cameras[activeCamera]->cameraPos;
 
-		if (States::isActive(&activeSpotLights, 0)) {
+		if (States::isIndexActive(&activeSpotLights, 0)) {
 			spotLights[0]->position = cameraPos;
 			spotLights[0]->direction = cameras[activeCamera]->cameraFront;
 		}
@@ -130,7 +96,7 @@ void Scene::processInput(float dt) {
 }
 
 // set uniform shader varaibles (lighting, etc)
-void Scene::render(Shader shader, bool applyLighting) {
+void Scene::renderShader(Shader shader, bool applyLighting) {
 	// activate shader
 	shader.activate();
 
@@ -170,12 +136,93 @@ void Scene::render(Shader shader, bool applyLighting) {
 	}
 }
 
+void Scene::renderInstances(std::string modelId, Shader shader, float dt)
+{
+	if (models[modelId])
+	{
+		models[modelId]->render(shader, dt, this);
+	}
+	else 
+	{
+		std::cout << "Cannot find model with " << modelId << " id\n";
+	}
+}
+
 void Scene::render()
 {
 	std::cout << "Render function not defined without shader input" << std::endl;
 }
 
+void Scene::registerModel(Model* model)
+{
+	models.insert(model->id, model);
+}
+
+RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos)
+{
+	RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
+
+	if (rb)
+	{
+		std::string id = generateId();
+		rb->instanceId = id;
+		instances.insert(id, rb);
+		return rb;
+	}
+	return nullptr;
+}
+
+void Scene::initInstances()
+{
+	models.traverse([](Model* model)->void {
+		model->initInstances();
+	});
+}
+
+void Scene::loadModels()
+{
+	models.traverse([](Model* model)->void {
+		model->init();
+	});
+}
+
+void Scene::removeInstance(std::string instanceId)
+{
+	/*
+	*	remove all locations
+	*	- Scene::instances
+	*	- Model::instances
+	*/
+
+	std::string targetModel = instances[instanceId]->modelId;
+
+	models[targetModel]->removeInstance(instanceId);
+
+	instances[instanceId] = nullptr;
+
+	instances.erase(instanceId);
+}
+
+void Scene::markForDeletion(std::string instanceId)
+{
+	States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
+	instancesToDelete.push_back(instances[instanceId]);
+}
+
+void Scene::clearDeadInstances()
+{
+	for (RigidBody* rb : instancesToDelete)
+	{
+		removeInstance(rb->instanceId);
+	}
+	instancesToDelete.clear();
+}
+
 void Scene::cleanup() {
+	models.traverse([](Model* model)->void {
+		model->cleanup();
+	});
+
 	if (BaseScene::instances == 1) {
 		glfwDestroyWindow(window);
 		glfwTerminate();

@@ -4,17 +4,34 @@
 		Constructors
 */
 
+void BoundingRegion::transform()
+{
+	if (instance)
+	{
+		if (type == BoundTypes::AABB)
+		{
+			min = ogMin * instance->size + instance->pos;
+			max = ogMax * instance->size + instance->pos;
+		}
+		else
+		{
+			center = ogCenter * instance->size + instance->pos;
+			radius = ogRadius * instance->size.x;
+		}
+	}
+}
+
 // initialize with type
 BoundingRegion::BoundingRegion(BoundTypes type)
 	: type(type) {}
 
 // initialize as sphere
 BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
-	: type(BoundTypes::SPHERE), center(center), radius(radius) {}
+	: type(BoundTypes::SPHERE), center(center), radius(radius), ogCenter(center), ogRadius(radius) {}
 
 // initialize as AABB
 BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
-	: type(BoundTypes::AABB), min(min), max(max) {}
+	: type(BoundTypes::AABB), min(min), max(max), ogMin(min), ogMax(max) {}
 
 /*
 	Calculating values for the region
@@ -141,5 +158,19 @@ bool BoundingRegion::intersectsWith(BoundingRegion br) {
 		// this is a box, br is a sphere
 		// call algorithm for br (defined in preceding else if block)
 		return br.intersectsWith(*this);
+	}
+}
+
+bool BoundingRegion::operator==(BoundingRegion br)
+{
+	if (type != br.type) {
+		return false;
+	}
+
+	if (type == BoundTypes::AABB) {
+		return min == br.min && max == br.max;
+	}
+	else {
+		return center == br.center && radius == br.radius;
 	}
 }

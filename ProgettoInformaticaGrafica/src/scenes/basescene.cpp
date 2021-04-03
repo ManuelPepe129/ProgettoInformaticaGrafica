@@ -24,7 +24,7 @@ void BaseScene::framebufferSizeCallback(GLFWwindow* window, int width, int heigh
 		std::cout << "Height and Width already set\n";
 	}
 	
-	BaseScene::instances++;
+	
 }
 
 BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType)
@@ -34,6 +34,8 @@ BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* tit
 	BaseScene::scrHeight = scrHeight;
 
 	setBackgroundColor(0.1f, 0.15f, 0.15f, 1.0f);
+
+	BaseScene::instances++;
 }
 
 BaseScene::~BaseScene()
@@ -41,7 +43,7 @@ BaseScene::~BaseScene()
 	BaseScene::instances--;
 	if (instances == 0)
 	{
-		delete window;
+		//delete window;
 	}
 }
 

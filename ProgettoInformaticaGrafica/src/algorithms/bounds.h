@@ -2,6 +2,7 @@
 #define BOUNDS_H
 
 #include <glm/glm.hpp>
+#include "../physics/rigidbody.h"
 
 enum class BoundTypes : unsigned char {
 	AABB = 0x00,	// 0x00 = 0	// Axis-aligned bounding box
@@ -12,20 +13,33 @@ class BoundingRegion {
 public:
 	BoundTypes type;
 
+	RigidBody* instance;
+
 	// sphere values
 	glm::vec3 center;
 	float radius;
+
+	// original values
+	glm::vec3 ogCenter;
+	float ogRadius;
 
 	// bounding box values
 	glm::vec3 min;
 	glm::vec3 max;
 
+	// original values
+	glm::vec3 ogMin;
+	glm::vec3 ogMax;
+
 	/*
 		Constructors
 	*/
 
+	// transform instance
+	void transform();
+
 	// initialize with type
-	BoundingRegion(BoundTypes type);
+	BoundingRegion(BoundTypes type = BoundTypes::AABB);
 
 	// initialize as sphere
 	BoundingRegion(glm::vec3 center, float radius);
@@ -33,9 +47,9 @@ public:
 	// initialize as AABB
 	BoundingRegion(glm::vec3 min, glm::vec3 max);
 
-	/*
-		Calculating values for the region
-	*/
+    /*
+        Calculating values for the region
+    */
 
 	// center
 	glm::vec3 calculateCenter();
@@ -55,6 +69,13 @@ public:
 
 	// determine if region intersects (partial containment)
 	bool intersectsWith(BoundingRegion br);
+
+	/*
+	* Utils
+	*/
+
+	// operator overload
+	bool operator==(BoundingRegion br);
 };
 
 #endif

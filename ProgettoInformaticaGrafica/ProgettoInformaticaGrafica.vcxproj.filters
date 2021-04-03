@@ -96,7 +96,10 @@
     <ClCompile Include="src\scenes\basescene.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenemanager.cpp">
+    <ClCompile Include="src\algorithms\octree.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\durationlogger.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -150,9 +153,6 @@
     <ClInclude Include="src\graphics\glmemory.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\modelArray.hpp">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\algorithms\states.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -171,13 +171,7 @@
     <ClInclude Include="src\graphics\models\cube.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\models\gun.hpp">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\models\lamp.hpp">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\models\modelarray.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\text.h">
@@ -213,7 +207,19 @@
     <ClInclude Include="src\scenes\basescene.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\scenemanager.h">
+    <ClInclude Include="src\algorithms\octree.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\models\plane.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\durationlogger.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\list.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\trie.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

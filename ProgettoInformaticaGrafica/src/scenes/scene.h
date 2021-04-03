@@ -5,11 +5,13 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
+#include <map>
 
 #include <glm/glm.hpp>
 
 #include "../graphics/light.h"
 #include "../graphics/shader.h"
+#include "../graphics/model.h"
 #include "basescene.h"
 
 #include "../io/camera.h"
@@ -17,16 +19,22 @@
 #include "../io/mouse.h"
 
 #include "../algorithms/states.hpp"
+#include "../algorithms/trie.hpp"
 
-#include "../algorithms/states.hpp"
-
+class Model;
 
 class Scene : public BaseScene
 {
 public:
+	trie::Trie<Model*> models;
+	trie::Trie<RigidBody*> instances;
+
+	std::vector<RigidBody*>instancesToDelete;
+
 	/*
 		constructor
 	*/
+
 	Scene(int glfwVersionMajor, int glfwVersionMinor,
 		const char* title, unsigned int scrWidth, unsigned int scrHeight);
 
@@ -38,9 +46,33 @@ public:
 	virtual void processInput(float dt);
 
 	// set uniform shader varaibles (lighting, etc)
-	virtual void render(Shader shader, bool applyLighting = true);
+	virtual void renderShader(Shader shader, bool applyLighting = true);
+
+	void renderInstances(std::string modelId, Shader shader, float dt);
 
 	virtual void render();
+
+	/*
+	* Model / instance methods
+	*/
+
+	// add model to scene models array
+	void registerModel(Model* model);
+
+	// generate an instance based on modelId
+	RigidBody* generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos);
+
+	void initInstances();
+
+	void loadModels();
+
+	void removeInstance(std::string instanceId);
+
+	void markForDeletion(std::string instanceId);
+	void clearDeadInstances();
+
+	std::string currentId;
+	std::string generateId();
 
 	/*
 		cleanup method

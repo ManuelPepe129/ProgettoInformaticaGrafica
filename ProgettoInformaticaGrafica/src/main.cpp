@@ -27,15 +27,10 @@
 
 #include "graphics/models/cube.hpp"
 #include "graphics/models/lamp.hpp"
-#include "graphics/models/gun.hpp"
-#include "graphics/models/sphere.hpp"
 #include "graphics/models/box.hpp"
-
-#include "physics/environment.h"
 
 #include "io/keyboard.h"
 #include "io/mouse.h"
-#include "io/joystick.h"
 #include "io/camera.h"
 
 #include "algorithms/states.hpp"
@@ -46,17 +41,42 @@
 
 #include "scenes/menu.h"
 #include "scenes/scene.h"
+#include "algorithms/octree.h"
 
 //Joystick mainJ(0);
 
-std::vector<Model> models;
 Camera cam;
 
-int main() {
-	Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
+	out << "[x: " << v.x << ", y: " << v.y
+		<< ", z:" << v.z << "]";
+	return out;
+}
 
+int main() {
 	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
 	menu.init();
+
+	while (!menu.shouldClose() && !(menu.GetState() == MenuState::NEW_GAME))
+	{
+		// process input
+		menu.processInput(0.0f);
+
+		menu.render();
+		menu.update();
+		
+		menu.newFrame();
+
+	}
+
+	Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+
+	//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
+	if (!scene.init()) {
+		std::cout << "Could not init game scene" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
 
 	/*
 	*	Text Rendering Library
@@ -65,30 +85,29 @@ int main() {
 	TextRenderer textRenderer("assets/fonts/comic.ttf", 48);
 	textRenderer.init();
 
-	// joystick recognition
-	/*mainJ.update();
-	if (mainJ.isPresent()) {
-		std::cout << mainJ.getName() << " is present." << std::endl;
-	}*/
-
 	scene.cameras.push_back(&cam);
 	scene.activeCamera = 0;
 
 	// SHADERS===============================
-	Shader shader("assets/shaders/core_vs.glsl", "assets/shaders/core_fs.glsl");
+	Shader shader("assets/shaders/instanced_vs.glsl", "assets/shaders/core_fs.glsl");
 	Shader lampShader("assets/shaders/instanced_vs.glsl", "assets/shaders/lamp_fs.glsl");
 	Shader boxShader("assets/shaders/box_vs.glsl", "assets/shaders/box_fs.glsl");
 	Shader textShader("assets/shaders/glyph_vs.glsl", "assets/shaders/glyph_fs.glsl");
 
-	// MODELS==============================
+	// MODELS
 
-	Box box;
-	box.init();
+	Lamp lamp(4);
+	scene.registerModel(&lamp);
 
-	Model m(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1.0f), true);
-	m.loadModel("assets/models/maze/maze.obj");
-	models.push_back(m);
-	//m.loadModel("assets/models/cube/cube.obj");
+	Model maze("maze", BoundTypes::AABB, 1, NO_TEX);
+	maze.loadModel("assets/models/maze/maze.obj");
+	scene.registerModel(&maze);
+	scene.generateInstance("maze", glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+
+	scene.loadModels();
+
+	// load all model data
+	//scene.loadModels();
 
 	// LIGHTS
 	DirLight dirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
@@ -110,15 +129,13 @@ int main() {
 
 	PointLight pointLights[4];
 
-	LampArray lamps;
-	lamps.init();
 	for (unsigned int i = 0; i < 4; i++) {
 		pointLights[i] = PointLight(
 			pointLightPositions[i],
 			k0, k1, k2,
 			ambient, diffuse, specular
 		);
-		lamps.lightInstances.push_back(pointLights[i]);
+		scene.generateInstance(lamp.id, glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
 		scene.pointLights.push_back(&pointLights[i]);
 		States::activate(&scene.activePointLights, i);
 	}
@@ -131,25 +148,11 @@ int main() {
 	scene.spotLights.push_back(&spotLight);
 	scene.activeSpotLights = 1;	// 0b00000001
 
-	while (!menu.shouldClose() && !(menu.GetState() == MenuState::NEW_GAME))
-	{
-		// process input
-		menu.processInput(0.0f);
+	
+	scene.initInstances();
 
-		menu.render();
-		menu.update();
-		
-		menu.newFrame();
-
-	}
-
-	//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
-	if (!scene.init()) {
-		std::cout << "Could not init game scene" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
+	//Octree tree(models);
+	//tree.generateTree();
 
 	double dt = 0.0f; // tme btwn frames
 	double lastFrame = 0.0f; // time of last frame
@@ -160,8 +163,7 @@ int main() {
 		dt = currentTime - lastFrame;
 		lastFrame = lastFrame + dt;
 
-		box.positions.clear();
-		box.sizes.clear();
+		scene.update();
 
 		// process input
 		scene.processInput(dt);
@@ -187,24 +189,13 @@ int main() {
 				}
 			}
 		}
-		*/
+		*/		
 
-		// update screen values
-		scene.update();
+		scene.renderShader(shader);
+		scene.renderInstances(maze.id, shader, dt);
 
-		scene.render(shader);
-		m.render(shader, dt, &box);
-
-		// lamps
-		scene.render(lampShader, false);
-		lamps.render(lampShader, dt, &box);
-
-		// render boxes
-		if (box.positions.size() > 0) {
-			// instances exist
-			scene.render(boxShader, false);
-			box.render(boxShader);
-		}
+		scene.renderShader(lampShader);
+		scene.renderInstances(lamp.id, lampShader, dt);
 
 		textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
@@ -276,10 +267,8 @@ int main() {
 	}
 	*/
 
-	lamps.cleanup();
-	box.cleanup();
-	m.cleanup();
 	scene.cleanup();
 	menu.cleanup();
+
 	return 0;
 }
