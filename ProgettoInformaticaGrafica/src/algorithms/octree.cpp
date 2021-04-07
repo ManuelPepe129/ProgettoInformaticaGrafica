@@ -424,7 +424,7 @@ bool Octree::Node::insert(BoundingRegion obj)
 	return true;
 }
 
-void Octree::Node::checkCollisionsSelf(BoundingRegion obj)
+bool Octree::Node::checkCollisionsSelf(BoundingRegion obj)
 {
 	for (BoundingRegion br : objects)
 	{
@@ -443,11 +443,13 @@ void Octree::Node::checkCollisionsSelf(BoundingRegion obj)
 				// different instances collision
 				std::cout << "Instance " << br.instance->instanceId << " ( " << br.instance->modelId << " ) collided\n";
 			}
+			return true;
 		}
 	}
+	return false;
 }
 
-void Octree::Node::checkCollisionsChildren(BoundingRegion obj)
+bool Octree::Node::checkCollisionsChildren(BoundingRegion obj)
 {
 	if (children)
 	{
@@ -455,11 +457,18 @@ void Octree::Node::checkCollisionsChildren(BoundingRegion obj)
 		{
 			if (States::isIndexActive(&flags, 0) && children[i])
 			{
-				children[i]->checkCollisionsSelf(obj);
-				children[i]->checkCollisionsChildren(obj);
+				if (children[i]->checkCollisionsSelf(obj))
+				{
+					return true;
+				}
+				if (children[i]->checkCollisionsChildren(obj))
+				{
+					return true;
+				}
 			}
 		}
 	}
+	return false;
 }
 
 void Octree::Node::destroy()

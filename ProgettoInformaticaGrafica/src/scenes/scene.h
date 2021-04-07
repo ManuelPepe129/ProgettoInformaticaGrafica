@@ -4,14 +4,14 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
-#include <map>
 
 #include <glm/glm.hpp>
+
+#include "basescene.h"
 
 #include "../graphics/light.h"
 #include "../graphics/shader.h"
 #include "../graphics/model.h"
-#include "basescene.h"
 
 #include "../io/camera.h"
 #include "../io/keyboard.h"
@@ -21,13 +21,17 @@
 #include "../algorithms/trie.hpp"
 #include "../algorithms/octree.h"
 
+#include "../entities/entitybase.h"
+
 class Model;
+class EntityBase;
 
 class Scene : public BaseScene
 {
 public:
 	trie::Trie<Model*> models;
 	trie::Trie<RigidBody*> instances;
+	std::vector<EntityBase*> entities;
 
 	std::vector<RigidBody*>instancesToDelete;
 
@@ -55,8 +59,14 @@ public:
 
 	virtual void newFrame(Box& box);
 
+	virtual void update(double dt);
+
 	// process input
 	virtual void processInput(float dt);
+
+	/*
+	*	Rendering functions
+	*/
 
 	// set uniform shader varaibles (lighting, etc)
 	virtual void renderShader(Shader shader, bool applyLighting = true);
@@ -66,8 +76,11 @@ public:
 	virtual void render();
 
 	/*
-	* Model / instance methods
+	*	Model / instance methods
 	*/
+
+	// add entity to scene
+	void addEntity(EntityBase* entity);
 
 	// add model to scene models array
 	void registerModel(Model* model);
@@ -111,6 +124,7 @@ public:
 	/*
 		camera
 	*/
+
 	std::vector<Camera*> cameras;
 	unsigned int activeCamera;
 	glm::mat4 view;

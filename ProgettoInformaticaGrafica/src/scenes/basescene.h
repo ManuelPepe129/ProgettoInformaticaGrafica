@@ -38,7 +38,7 @@ public:
 	virtual void processInput(float dt);
 
 	// update screen before each frame
-	void update();
+	virtual void update();
 
 	// update screen after frame
 	virtual void newFrame();

@@ -19,6 +19,10 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "graphics/shader.h"
 #include "graphics/texture.h"
 #include "graphics/model.h"
@@ -28,21 +32,19 @@
 #include "graphics/models/cube.hpp"
 #include "graphics/models/lamp.hpp"
 #include "graphics/models/box.hpp"
+#include "graphics/models/sphere.hpp"
 
 #include "io/keyboard.h"
 #include "io/mouse.h"
 #include "io/camera.h"
 
 #include "algorithms/states.hpp"
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "algorithms/octree.h"
 
 #include "scenes/menu.h"
 #include "scenes/scene.h"
-#include "algorithms/octree.h"
-#include "graphics/models/sphere.hpp"
+
+#include "entities/player.h"
 
 //Joystick mainJ(0);
 
@@ -106,6 +108,7 @@ int main() {
 		Lamp lamp;
 		scene.registerModel(&lamp);
 
+		// TODO set maze material
 		Model maze("maze", BoundTypes::AABB, NO_TEX);
 		maze.loadModel("assets/models/maze/maze.obj");
 		scene.registerModel(&maze);
@@ -114,10 +117,14 @@ int main() {
 		Box box;
 		box.init();
 
-		scene.loadModels();
+		Player* player = new Player(scene);
+		player->init();
+		//player->setModelShader(shader);
+		player->setPlayerCamera(&cam);
+		scene.addEntity(player);
 
 		// load all model data
-		//scene.loadModels();
+		scene.loadModels();
 
 		// LIGHTS
 		DirLight dirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
@@ -158,7 +165,6 @@ int main() {
 		scene.spotLights.push_back(&spotLight);
 		scene.activeSpotLights = 1;	// 0b00000001
 
-
 		scene.initInstances();
 
 		scene.prepare(box);
@@ -172,10 +178,12 @@ int main() {
 			dt = currentTime - lastFrame;
 			lastFrame = lastFrame + dt;
 
-			scene.update();
+			scene.update(dt);
 
 			// process input
 			scene.processInput(dt);
+
+			//player.render(dt);
 
 			scene.renderShader(shader);
 			scene.renderInstances(maze.id, shader, dt);

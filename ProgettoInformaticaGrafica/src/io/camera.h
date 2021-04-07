@@ -18,6 +18,8 @@ enum class CameraDirection {
 
 class Camera {
 public:
+	bool hasMoved;
+
 	glm::vec3 cameraPos;
 
 	glm::vec3 cameraFront;
@@ -25,8 +27,6 @@ public:
 	glm::vec3 cameraRight;
 
 	glm::vec3 worldUp;
-
-	CameraDirection lastDirection;
 
 	float yaw; // x-axis
 	float pitch; // y-axis

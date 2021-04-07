@@ -91,8 +91,30 @@ void Model::loadModel(const std::string& path)
 	processNode(scene->mRootNode, scene);
 }
 
+void Model::update(double dt)
+{
+	if (!States::isActive(&switches, CONST_INSTANCES))
+	{
+		bool doUpdate = States::isActive(&switches, DYNAMIC);
 
-void Model::render(Shader shader, float dt, Scene* scene, bool setModel)
+		for (int i = 0; i < currentNoInstances; ++i)
+		{
+			if (doUpdate)
+			{
+				instances[i]->update(0.0f);
+				States::activate(&instances[i]->state, INSTANCE_MOVED);
+			}
+			else
+			{
+				States::deactivate(&instances[i]->state, INSTANCE_MOVED);
+			}
+
+		}
+	}
+}
+
+
+void Model::render(Shader shader, Scene* scene, bool setModel)
 {
 	if (setModel)
 	{
@@ -104,20 +126,9 @@ void Model::render(Shader shader, float dt, Scene* scene, bool setModel)
 		// update VBO data
 		std::vector<glm::vec3> positions, sizes;
 
-		bool doUpdate = States::isActive(&switches, DYNAMIC);
 
 		for (int i = 0; i < currentNoInstances; ++i)
 		{
-			if (doUpdate)
-			{
-				instances[i]->update(dt);
-				States::activate(&instances[i]->state, INSTANCE_MOVED);
-			}
-			else
-			{
-				States::deactivate(&instances[i]->state, INSTANCE_MOVED);
-			}
-
 			positions.push_back(instances[i]->pos);
 			sizes.push_back(instances[i]->size);
 		}

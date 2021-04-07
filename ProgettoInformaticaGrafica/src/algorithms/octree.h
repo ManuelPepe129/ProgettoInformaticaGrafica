@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-* Based on https://www.gamedev.net/articles/programming/general-and-gameplay-programming/introduction-to-octrees-r3529/ by Eric Nevala
+*	Based on https://www.gamedev.net/articles/programming/general-and-gameplay-programming/introduction-to-octrees-r3529/ by Eric Nevala
 */
 
 #include <vector>
@@ -69,10 +69,10 @@ namespace Octree {
 		bool insert(BoundingRegion obj);
 
 		// check collision with all objects in node
-		void checkCollisionsSelf(BoundingRegion obj);
+		bool checkCollisionsSelf(BoundingRegion obj);
 
 		// check collisions with all objects in child nodes
-		void checkCollisionsChildren(BoundingRegion obj);
+		bool checkCollisionsChildren(BoundingRegion obj);
 
 		void destroy();
 

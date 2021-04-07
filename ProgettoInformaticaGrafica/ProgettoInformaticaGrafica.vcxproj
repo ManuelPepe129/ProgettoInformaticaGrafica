@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entities\player.cpp" />
     <ClCompile Include="src\entities\entitybase.cpp" />
     <ClCompile Include="src\algorithms\durationlogger.cpp" />
     <ClCompile Include="src\algorithms\octree.cpp" />
@@ -184,6 +185,7 @@
     <None Include="assets\shaders\box_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\entities\player.h" />
     <ClInclude Include="src\entities\entitybase.h" />
     <ClInclude Include="src\algorithms\durationlogger.h" />
     <ClInclude Include="src\algorithms\list.hpp" />

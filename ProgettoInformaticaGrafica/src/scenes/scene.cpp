@@ -62,6 +62,16 @@ void Scene::newFrame(Box& box)
 	BaseScene::newFrame();
 }
 
+void Scene::update(double dt)
+{
+	BaseScene::update();
+
+	for (EntityBase* entity : entities)
+	{
+		entity->update(dt);
+	}
+}
+
 // process input
 void Scene::processInput(float dt) {
 	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
@@ -74,7 +84,7 @@ void Scene::processInput(float dt) {
 	}
 	if (activeCamera != -1 && activeCamera < cameras.size()) {
 		// active camera exists
-
+		/*
 		// set camera direction
 		double mouseDX = Mouse::getDX();
 		double mouseDY = Mouse::getDY();
@@ -123,6 +133,7 @@ void Scene::processInput(float dt) {
 			octree->checkCollisionsSelf(*cameraBR);
 			octree->checkCollisionsChildren(*cameraBR);
 		}
+		*/
 
 		// set matrices
 		view = cameras[activeCamera]->getViewMatrix();
@@ -187,7 +198,7 @@ void Scene::renderInstances(std::string modelId, Shader shader, float dt)
 {
 	if (models[modelId])
 	{
-		models[modelId]->render(shader, dt, this);
+		models[modelId]->render(shader, this);
 	}
 	else 
 	{
@@ -198,6 +209,11 @@ void Scene::renderInstances(std::string modelId, Shader shader, float dt)
 void Scene::render()
 {
 	std::cout << "Render function not defined without shader input" << std::endl;
+}
+
+void Scene::addEntity(EntityBase* entity)
+{
+	entities.push_back(entity);
 }
 
 void Scene::registerModel(Model* model)

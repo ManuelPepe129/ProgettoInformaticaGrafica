@@ -9,7 +9,7 @@ Camera::Camera(glm::vec3 position)
 	sensitivity(1.0f),
 	zoom(45.0f),
 	cameraFront(glm::vec3(1.0f, 0.0f, 0.0f)),
-	lastDirection(CameraDirection::NONE)
+	hasMoved(false)
 {
 	updateCameraVectors();
 }
@@ -35,31 +35,25 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 	switch (direction) {
 	case CameraDirection::FORWARD:
 		cameraPos += cameraFront * velocity;
-		lastDirection = CameraDirection::BACKWARD;
 		break;
 	case CameraDirection::BACKWARD:
 		cameraPos -= cameraFront * velocity;
-		lastDirection = CameraDirection::FORWARD;
 		break;
 	case CameraDirection::RIGHT:
 		cameraPos += cameraRight * velocity;
-		lastDirection = CameraDirection::LEFT;
 		break;
 	case CameraDirection::LEFT:
 		cameraPos -= cameraRight * velocity;
-		lastDirection = CameraDirection::RIGHT;
 		break;
 	case CameraDirection::UP:
 		cameraPos += cameraUp * velocity;
-		lastDirection = CameraDirection::DOWN;
 		break;
 	case CameraDirection::DOWN:
 		cameraPos -= cameraUp * velocity;
-		lastDirection = CameraDirection::UP;
 		break;
 	}
 
-	
+	hasMoved = true;
 }
 
 void Camera::updateCameraZoom(double dy) {

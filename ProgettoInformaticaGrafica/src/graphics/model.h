@@ -57,7 +57,9 @@ public:
 
 	void loadModel(const std::string& path);
 
-	virtual void render(Shader shader, float dt, Scene* scene, bool setModel = true);
+	virtual void update(double dt);
+
+	virtual void render(Shader shader, Scene* scene, bool setModel = true);
 
 	void cleanup();
 
