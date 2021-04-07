@@ -27,9 +27,9 @@ public:
 
 	BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType=SceneType::GAME);
 
-	~BaseScene();
+	virtual ~BaseScene();
 
-	bool init();
+	virtual bool init();
 
 	virtual void render()=0;
 
@@ -41,7 +41,7 @@ public:
 	void update();
 
 	// update screen after frame
-	void newFrame();
+	virtual void newFrame();
 
 	bool shouldClose() {
 		return glfwWindowShouldClose(window);

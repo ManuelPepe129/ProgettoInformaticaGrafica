@@ -4,6 +4,11 @@
 #include <glm/glm.hpp>
 #include "../physics/rigidbody.h"
 
+// forward declaration
+namespace Octree {
+	class Node;
+}
+
 enum class BoundTypes : unsigned char {
 	AABB = 0x00,	// 0x00 = 0	// Axis-aligned bounding box
 	SPHERE = 0x01	// 0x01 = 1
@@ -13,7 +18,12 @@ class BoundingRegion {
 public:
 	BoundTypes type;
 
+
+	// pointer for quick access to instance
 	RigidBody* instance;
+
+	// pointer for quick access to current octree node
+	Octree::Node* cell;
 
 	// sphere values
 	glm::vec3 center;

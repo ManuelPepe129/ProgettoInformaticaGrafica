@@ -20,6 +20,9 @@
 #define NO_CHILDREN 8
 #define MIN_BOUNDS 0.5
 
+class BoundingRegion;
+class Box;
+
 enum class NodeType
 {
 	EMPTY,
@@ -44,7 +47,7 @@ namespace Octree {
 	* Utility
 	*/
 
-	void calculateBounds(BoundingRegion* out, Octant octant, BoundingRegion parentRegion);
+	void calculateBounds(BoundingRegion& out, Octant octant, BoundingRegion parentRegion);
 
 	class Node
 	{
@@ -59,11 +62,17 @@ namespace Octree {
 
 		void build();
 
-		void update();
+		void update(Box& box);
 
 		void processPending();
 
 		bool insert(BoundingRegion obj);
+
+		// check collision with all objects in node
+		void checkCollisionsSelf(BoundingRegion obj);
+
+		// check collisions with all objects in child nodes
+		void checkCollisionsChildren(BoundingRegion obj);
 
 		void destroy();
 
@@ -86,5 +95,9 @@ namespace Octree {
 		std::queue<BoundingRegion> queue;
 
 		BoundingRegion region;
+
+	private:
+		void setStateVariables();
 	};
+
 }

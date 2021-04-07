@@ -1,5 +1,4 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -20,6 +19,7 @@
 
 #include "../algorithms/states.hpp"
 #include "../algorithms/trie.hpp"
+#include "../algorithms/octree.h"
 
 class Model;
 
@@ -31,6 +31,8 @@ public:
 
 	std::vector<RigidBody*>instancesToDelete;
 
+	Octree::Node* octree;
+
 	/*
 		constructor
 	*/
@@ -39,8 +41,19 @@ public:
 		const char* title, unsigned int scrWidth, unsigned int scrHeight);
 
 	/*
+	*	initialization
+	*/
+
+	virtual bool init();
+
+	// prepare for main loop (after object generation, etc)
+	void prepare(Box& box);
+
+	/*
 		main loop methods
 	*/
+
+	virtual void newFrame(Box& box);
 
 	// process input
 	virtual void processInput(float dt);
@@ -104,6 +117,6 @@ public:
 	glm::mat4 projection;
 	glm::vec3 cameraPos;
 
-};
+	BoundingRegion* cameraBR;
 
-#endif
+};

@@ -13,22 +13,13 @@ static void glfw_error_callback(int error, const char* description)
 
 void BaseScene::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-	if (BaseScene::scrHeight == 0 || BaseScene::scrWidth == 0)
-	{
-		glViewport(0, 0, width, height);
-		BaseScene::scrWidth = width;
-		BaseScene::scrHeight = height;
-	}
-	else
-	{
-		std::cout << "Height and Width already set\n";
-	}
-	
-	
+	glViewport(0, 0, width, height);
+	BaseScene::scrWidth = width;
+	BaseScene::scrHeight = height;
 }
 
 BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight, SceneType sceneType)
-	: glfwVersionMajor(glfwVersionMajor), glfwVersionMinor(glfwVersionMinor), title(title), sceneType(sceneType){
+	: glfwVersionMajor(glfwVersionMajor), glfwVersionMinor(glfwVersionMinor), title(title), sceneType(sceneType) {
 
 	BaseScene::scrWidth = scrWidth;
 	BaseScene::scrHeight = scrHeight;
@@ -41,7 +32,7 @@ BaseScene::BaseScene(int glfwVersionMajor, int glfwVersionMinor, const char* tit
 BaseScene::~BaseScene()
 {
 	BaseScene::instances--;
-	if (instances == 0)
+	if (instances == 1)
 	{
 		//delete window;
 	}

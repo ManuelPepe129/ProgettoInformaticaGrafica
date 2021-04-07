@@ -29,9 +29,37 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	currentId("aaaaaaaa")
 { }
 
+bool Scene::init()
+{
+	if (BaseScene::init()) {
+		octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
+		cameraBR = new BoundingRegion(cameraPos, 1.0f);
+		return true;
+	}
+	return false;
+}
+
+void Scene::prepare(Box& box)
+{
+	octree->update(box);
+}
+
 /*
 	main loop methods
 */
+
+void Scene::newFrame(Box& box)
+{
+	// clear old positions and sizes
+	box.positions.clear();
+	box.sizes.clear();
+
+	// process pending
+	octree->processPending();
+	octree->update(box);
+	
+	BaseScene::newFrame();
+}
 
 // process input
 void Scene::processInput(float dt) {
@@ -60,21 +88,39 @@ void Scene::processInput(float dt) {
 		// set camera pos
 		if (Keyboard::key(GLFW_KEY_W)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::FORWARD, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_S)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::BACKWARD, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_D)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::RIGHT, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_A)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::LEFT, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_SPACE)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::UP, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)) {
 			cameras[activeCamera]->updateCameraPos(CameraDirection::DOWN, dt);
+			cameraBR->center = cameraPos;
+			octree->checkCollisionsSelf(*cameraBR);
+			octree->checkCollisionsChildren(*cameraBR);
 		}
 
 		// set matrices
@@ -167,8 +213,10 @@ RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float ma
 		std::string id = generateId();
 		rb->instanceId = id;
 		instances.insert(id, rb);
+		octree->addToPending(rb, models);
 		return rb;
 	}
+
 	return nullptr;
 }
 
@@ -222,6 +270,8 @@ void Scene::cleanup() {
 	models.traverse([](Model* model)->void {
 		model->cleanup();
 	});
+
+	octree->destroy();
 
 	if (BaseScene::instances == 1) {
 		glfwDestroyWindow(window);

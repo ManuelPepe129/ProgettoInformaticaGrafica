@@ -23,7 +23,7 @@ class Menu : public BaseScene
 public:
 	Menu(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight);
 
-	void init();
+	virtual bool init();
 
 	virtual void render();
 
