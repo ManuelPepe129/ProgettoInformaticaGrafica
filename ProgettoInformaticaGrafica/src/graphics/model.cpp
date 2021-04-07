@@ -5,8 +5,8 @@
 #include "../algorithms/states.hpp"
 
 
-Model::Model(std::string id, BoundTypes BoundType, unsigned int maxNoInstances, unsigned int flags) 
-	: id(id), boundType(boundType), switches(flags), currentNoInstances(0), maxNoInstances(maxNoInstances)
+Model::Model(std::string id, BoundTypes BoundType, unsigned int flags) 
+	: id(id), boundType(boundType), switches(flags), currentNoInstances(0)
 { }
 
 void Model::init()
@@ -16,12 +16,6 @@ void Model::init()
 
 RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos)
 {
-	if (currentNoInstances >= maxNoInstances)
-	{
-		std::cout << "Too much instances \n";
-		return nullptr; // all slots filled
-	}
-
 	instances.push_back(new RigidBody(id, size, mass, pos));
 	return instances[currentNoInstances++];
 }
@@ -81,7 +75,7 @@ void Model::initInstances()
 	}
 }
 
-void Model::loadModel(std::string path) 
+void Model::loadModel(const std::string& path) 
 {
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);

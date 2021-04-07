@@ -5,8 +5,8 @@
 
 class Cube : public Model {
 public:
-	Cube(unsigned int maxNoInstances)
-		: Model("cube", BoundTypes::AABB, maxNoInstances, CONST_INSTANCES | NO_TEX) {}
+	Cube()
+		: Model("cube", BoundTypes::AABB, CONST_INSTANCES | NO_TEX) {}
 
 	void init() {
 		int noVertices = 36;

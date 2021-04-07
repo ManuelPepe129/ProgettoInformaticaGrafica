@@ -4,8 +4,8 @@
 
 class Sphere : public Model {
 public:
-	Sphere(unsigned int maxNoInstances)
-		: Model("sphere", BoundTypes::SPHERE, maxNoInstances, NO_TEX | DYNAMIC)
+	Sphere()
+		: Model("sphere", BoundTypes::SPHERE, NO_TEX | DYNAMIC)
 	{
 
 	}

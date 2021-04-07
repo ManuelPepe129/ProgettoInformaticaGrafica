@@ -41,12 +41,12 @@ public:
 
 	std::vector<RigidBody*> instances;
 
-	unsigned int maxNoInstances;
+	//unsigned int maxNoInstances;
 	unsigned int currentNoInstances;
 
 	unsigned int switches;
 
-	Model(std::string id, BoundTypes boundType, unsigned int maxNoInstances, unsigned int flags = 0);
+	Model(std::string id, BoundTypes boundType, unsigned int flags = 0);
 
 	// initialize method
 	virtual void init();
@@ -55,7 +55,7 @@ public:
 
 	void initInstances();
 
-	void loadModel(std::string path);
+	void loadModel(const std::string& path);
 
 	virtual void render(Shader shader, float dt, Scene* scene, bool setModel = true);
 

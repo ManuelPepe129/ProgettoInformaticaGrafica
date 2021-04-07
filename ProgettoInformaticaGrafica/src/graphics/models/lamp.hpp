@@ -11,8 +11,8 @@ class Lamp : public Cube {
 public:
 	glm::vec3 lightColor;
 
-	Lamp(unsigned int maxNoInstances, glm::vec3 lightColor = glm::vec3(1.0f))
-		: Cube(maxNoInstances),  lightColor(lightColor)
+	Lamp(glm::vec3 lightColor = glm::vec3(1.0f))
+		: Cube(),  lightColor(lightColor)
 	{
 		id="lamp";
 	}

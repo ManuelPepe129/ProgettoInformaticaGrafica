@@ -56,7 +56,11 @@ std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 
 int main() {
 	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
-	menu.init();
+	if (!menu.init())
+	{
+		std::cout << "Could not initialize Menu\n";
+		return -1;
+	}
 
 	while (!menu.shouldClose() && !(menu.GetState() == MenuState::NEW_GAME))
 	{
@@ -99,13 +103,13 @@ int main() {
 
 		// MODELS
 
-		Lamp lamp(4);
+		Lamp lamp;
 		scene.registerModel(&lamp);
 
-		Model maze("maze", BoundTypes::AABB, 1, NO_TEX);
+		Model maze("maze", BoundTypes::AABB, NO_TEX);
 		maze.loadModel("assets/models/maze/maze.obj");
 		scene.registerModel(&maze);
-		scene.generateInstance("maze", glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
 
 		Box box;
 		box.init();

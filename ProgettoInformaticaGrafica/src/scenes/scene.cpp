@@ -32,6 +32,7 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 bool Scene::init()
 {
 	if (BaseScene::init()) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 		octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
 		cameraBR = new BoundingRegion(cameraPos, 1.0f);
 		return true;
