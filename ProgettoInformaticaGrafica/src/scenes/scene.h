@@ -19,9 +19,10 @@
 
 #include "../algorithms/states.hpp"
 #include "../algorithms/trie.hpp"
-#include "../algorithms/octree.h"
 
 #include "../entities/entitybase.h"
+#include "../physics/rigidbody.h"
+#include <queue>
 
 class Model;
 class EntityBase;
@@ -29,13 +30,13 @@ class EntityBase;
 class Scene : public BaseScene
 {
 public:
-	trie::Trie<Model*> models;
+	std::map<std::string,Model*> models;
 	trie::Trie<RigidBody*> instances;
 	std::vector<EntityBase*> entities;
 
 	std::vector<RigidBody*>instancesToDelete;
 
-	Octree::Node* octree;
+	//Octree::Node* octree;
 
 	/*
 		constructor
@@ -51,13 +52,13 @@ public:
 	virtual bool init();
 
 	// prepare for main loop (after object generation, etc)
-	void prepare(Box& box);
+	//void prepare(Box& box);
 
 	/*
 		main loop methods
 	*/
 
-	virtual void newFrame(Box& box);
+	virtual void newFrame();
 
 	virtual void update(double dt);
 
@@ -71,7 +72,7 @@ public:
 	// set uniform shader varaibles (lighting, etc)
 	virtual void renderShader(Shader shader, bool applyLighting = true);
 
-	void renderInstances(std::string modelId, Shader shader, float dt);
+	void renderInstances(std::string modelId, Shader shader);
 
 	virtual void render();
 
@@ -99,6 +100,17 @@ public:
 
 	std::string currentId;
 	std::string generateId();
+
+	// collision methods
+	void setBox(Box* box);
+	Box* box;
+
+	void checkCollision(double dt);
+
+	std::vector<BoundingRegion> objects;
+	std::queue<BoundingRegion> queue;
+
+	void addToPending(RigidBody* instance);
 
 	/*
 		cleanup method
@@ -132,5 +144,8 @@ public:
 	glm::vec3 cameraPos;
 
 	BoundingRegion* cameraBR;
-
+	private:
+		void updateEntities(double dt);
+		void updateBoundings(double dt);
+		void updateInstancies(double dt);
 };

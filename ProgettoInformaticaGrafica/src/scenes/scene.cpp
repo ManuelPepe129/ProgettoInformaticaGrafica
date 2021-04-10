@@ -17,6 +17,11 @@ std::string Scene::generateId()
 	return currentId;
 }
 
+void Scene::setBox(Box* box)
+{
+	this->box = box;
+}
+
 /*
 	constructor
 */
@@ -33,31 +38,33 @@ bool Scene::init()
 {
 	if (BaseScene::init()) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
-		octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
-		cameraBR = new BoundingRegion(cameraPos, 1.0f);
+		//octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
+		cameraBR = new BoundingRegion(cameraPos, 0.3f);
 		return true;
 	}
 	return false;
 }
 
+/*
 void Scene::prepare(Box& box)
 {
-	octree->update(box);
+	//octree->update(box);
 }
+*/
 
 /*
 	main loop methods
 */
 
-void Scene::newFrame(Box& box)
+void Scene::newFrame()
 {
 	// clear old positions and sizes
-	box.positions.clear();
-	box.sizes.clear();
+	box->positions.clear();
+	box->sizes.clear();
 
 	// process pending
-	octree->processPending();
-	octree->update(box);
+	//octree->processPending();
+	//octree->update(box);
 	
 	BaseScene::newFrame();
 }
@@ -66,10 +73,50 @@ void Scene::update(double dt)
 {
 	BaseScene::update();
 
-	for (EntityBase* entity : entities)
+	updateInstancies(dt);
+
+	updateEntities(dt);
+
+	cameraBR->center = cameras[activeCamera]->cameraPos;
+
+	updateBoundings(dt);
+
+	checkCollision(dt);
+}
+
+void Scene::checkCollision(double dt)
+{
+	for (int i = 0; i < objects.size(); ++i)
 	{
-		entity->update(dt);
+		BoundingRegion br = objects[i];
+		if (States::isActive(&br.instance->state, INSTANCE_MOVED))
+		{
+			br.transform();
+			for (int j = 0; j < objects.size(); ++j)
+			{
+				BoundingRegion other = objects[j];
+				if (br.instance->instanceId != other.instance->instanceId)
+				{
+					//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
+					if (br.intersectsWith(other))
+					{
+						std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+					}
+				}
+			}
+			
+		}
+		else 
+		{
+			if (br.intersectsWith(*cameraBR))
+			{
+				//std::cout << "Collision with camera" << std::endl;
+				cameras[activeCamera]->reverseCameraPos(dt);
+			}
+		}
+		
 	}
+	//std::cout << "-----" << std::endl;
 }
 
 // process input
@@ -77,63 +124,8 @@ void Scene::processInput(float dt) {
 	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
 		setShouldClose(true);
 	}
-	if (Keyboard::keyWentDown(GLFW_KEY_P)) {
-		glm::vec3 pos = cameraPos;
-		std::cout << "[x: " << pos.x << ", y: " << pos.y
-			<< ", z:" << pos.z << "]\n";
-	}
-	if (activeCamera != -1 && activeCamera < cameras.size()) {
-		// active camera exists
-		/*
-		// set camera direction
-		double mouseDX = Mouse::getDX();
-		double mouseDY = Mouse::getDY();
-		if ( mouseDX != 0.0 || mouseDY != 0)
-		{
-			cameras[activeCamera]->updateCameraDirection(mouseDX, mouseDY);
-		}
-
-		// set camera zoom
-		//cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
-
-		// set camera pos
-		if (Keyboard::key(GLFW_KEY_W)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::FORWARD, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		if (Keyboard::key(GLFW_KEY_S)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::BACKWARD, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		if (Keyboard::key(GLFW_KEY_D)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::RIGHT, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		if (Keyboard::key(GLFW_KEY_A)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::LEFT, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		if (Keyboard::key(GLFW_KEY_SPACE)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::UP, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)) {
-			cameras[activeCamera]->updateCameraPos(CameraDirection::DOWN, dt);
-			cameraBR->center = cameraPos;
-			octree->checkCollisionsSelf(*cameraBR);
-			octree->checkCollisionsChildren(*cameraBR);
-		}
-		*/
+	if (activeCamera != -1 && activeCamera < cameras.size())
+	{
 
 		// set matrices
 		view = cameras[activeCamera]->getViewMatrix();
@@ -154,7 +146,8 @@ void Scene::processInput(float dt) {
 }
 
 // set uniform shader varaibles (lighting, etc)
-void Scene::renderShader(Shader shader, bool applyLighting) {
+void Scene::renderShader(Shader shader, bool applyLighting)
+{
 	// activate shader
 	shader.activate();
 
@@ -164,12 +157,15 @@ void Scene::renderShader(Shader shader, bool applyLighting) {
 	shader.set3Float("viewPos", cameraPos);
 
 	// lighting
-	if (applyLighting) {
+	if (applyLighting)
+	{
 		// point lights
 		unsigned int noLights = pointLights.size();
 		unsigned int noActiveLights = 0;
-		for (unsigned int i = 0; i < noLights; i++) {
-			if (States::isActive(&activePointLights, i)) {
+		for (unsigned int i = 0; i < noLights; i++)
+		{
+			if (States::isActive(&activePointLights, i))
+			{
 				// i'th light is active
 				pointLights[i]->render(shader, noActiveLights);
 				noActiveLights++;
@@ -180,8 +176,10 @@ void Scene::renderShader(Shader shader, bool applyLighting) {
 		// spot lights
 		noLights = spotLights.size();
 		noActiveLights = 0;
-		for (unsigned int i = 0; i < noLights; i++) {
-			if (States::isActive(&activeSpotLights, i)) {
+		for (unsigned int i = 0; i < noLights; i++)
+		{
+			if (States::isActive(&activeSpotLights, i))
+			{
 				// i'th spot light active
 				spotLights[i]->render(shader, noActiveLights);
 				noActiveLights++;
@@ -194,7 +192,7 @@ void Scene::renderShader(Shader shader, bool applyLighting) {
 	}
 }
 
-void Scene::renderInstances(std::string modelId, Shader shader, float dt)
+void Scene::renderInstances(std::string modelId, Shader shader)
 {
 	if (models[modelId])
 	{
@@ -202,13 +200,13 @@ void Scene::renderInstances(std::string modelId, Shader shader, float dt)
 	}
 	else 
 	{
-		std::cout << "Cannot find model with " << modelId << " id\n";
+		std::cerr << "Cannot find model with " << modelId << " id\n";
 	}
 }
 
 void Scene::render()
 {
-	std::cout << "Render function not defined without shader input" << std::endl;
+	std::cerr << "Render function not defined without shader input\n";
 }
 
 void Scene::addEntity(EntityBase* entity)
@@ -218,7 +216,11 @@ void Scene::addEntity(EntityBase* entity)
 
 void Scene::registerModel(Model* model)
 {
-	models.insert(model->id, model);
+	if (models.count(model->id) == 0 )
+	{
+		models.insert(std::pair<std::string,Model*>(model->id, model));
+	}
+		
 }
 
 RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos)
@@ -230,34 +232,36 @@ RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float ma
 		std::string id = generateId();
 		rb->instanceId = id;
 		instances.insert(id, rb);
-		octree->addToPending(rb, models);
+		addToPending(rb);
 		return rb;
 	}
 
 	return nullptr;
 }
-
 void Scene::initInstances()
 {
-	models.traverse([](Model* model)->void {
+	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		Model* model = it->second;
 		model->initInstances();
-	});
+	}
 }
 
 void Scene::loadModels()
 {
-	models.traverse([](Model* model)->void {
+	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		Model* model = it->second;
 		model->init();
-	});
+	}
 }
 
 void Scene::removeInstance(std::string instanceId)
 {
-	/*
-	*	remove all locations
-	*	- Scene::instances
-	*	- Model::instances
-	*/
+	// remove all locations
+	//	- Scene::instances
+	//	- Model::instances
+	
 
 	std::string targetModel = instances[instanceId]->modelId;
 
@@ -265,7 +269,22 @@ void Scene::removeInstance(std::string instanceId)
 
 	instances[instanceId] = nullptr;
 
+	for (int i = 0; i < objects.size();i++)
+	{
+		if (objects[i].instance->instanceId == instanceId)
+		{
+			std::cout << "deleting br " << objects[i].instance->instanceId << std::endl;
+			for (int j = 0; j < models[targetModel]->boundingRegions.size();++j)
+			{
+				objects.erase(objects.begin() + i);
+			}
+			
+			break;
+		}
+	}
+
 	instances.erase(instanceId);
+	
 }
 
 void Scene::markForDeletion(std::string instanceId)
@@ -278,17 +297,30 @@ void Scene::clearDeadInstances()
 {
 	for (RigidBody* rb : instancesToDelete)
 	{
+		//std::cout << "Deleting " << rb->instanceId << '\n';
 		removeInstance(rb->instanceId);
 	}
 	instancesToDelete.clear();
 }
 
-void Scene::cleanup() {
-	models.traverse([](Model* model)->void {
-		model->cleanup();
-	});
+void Scene::addToPending(RigidBody* instance)
+{
+	for (BoundingRegion br : models[instance->modelId]->boundingRegions)
+	{
+		br.instance = instance;
+		br.transform();
+		objects.push_back(br);
+	}
+}
 
-	octree->destroy();
+void Scene::cleanup() {
+	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		Model* model = it->second;
+		model->cleanup();
+	}
+
+	//octree->destroy();
 
 	if (BaseScene::instances == 1) {
 		glfwDestroyWindow(window);
@@ -298,5 +330,38 @@ void Scene::cleanup() {
 
 Camera* Scene::getActiveCamera() {
 	return (activeCamera >= 0 && activeCamera < cameras.size()) ? cameras[activeCamera] : nullptr;
+}
+
+void Scene::updateEntities(double dt)
+{
+	for (int i = 0; i < entities.size(); ++i)
+	{
+		entities[i]->update(dt);
+	}
+}
+
+void Scene::updateBoundings(double dt)
+{
+	for (BoundingRegion br : objects)
+	{
+		if (States::isActive(&br.instance->state, INSTANCE_MOVED))
+		{
+			br.transform();
+		}
+		box->positions.push_back(br.calculateCenter());
+		box->sizes.push_back(br.calculateDimensions());
+	}
+}
+
+void Scene::updateInstancies(double dt)
+{
+	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		Model* model = it->second;
+		if (model->currentNoInstances > 0)
+		{
+			model->update(dt);
+		}
+	}
 }
 

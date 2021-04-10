@@ -96,9 +96,6 @@
     <ClCompile Include="src\scenes\basescene.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\algorithms\octree.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="src\algorithms\durationlogger.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\entities\player.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\enemy.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,9 +213,6 @@
     <ClInclude Include="src\scenes\basescene.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\algorithms\octree.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\models\plane.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -232,6 +229,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\player.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\enemy.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

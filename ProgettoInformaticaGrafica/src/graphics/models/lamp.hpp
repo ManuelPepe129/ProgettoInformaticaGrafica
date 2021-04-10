@@ -17,10 +17,10 @@ public:
 		id="lamp";
 	}
 
-	void render(Shader shader, Scene *scene, bool setModel = true) {
+	void render(Shader shader, bool setModel = true) {
 		// set light color
 		shader.set3Float("lightColor", lightColor);
 
-		Cube::render(shader, scene, setModel);
+		Cube::render(shader, setModel);
 	}
 };

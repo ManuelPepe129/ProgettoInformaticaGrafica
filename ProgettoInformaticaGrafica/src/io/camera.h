@@ -38,6 +38,7 @@ public:
 
 	void updateCameraDirection(double dx, double dy); // moving mouse
 	void updateCameraPos(CameraDirection direction, double dt); // keyboard input
+	void reverseCameraPos(double dt); // keyboard input
 	void updateCameraZoom(double dy); // scroll wheel
 
 	glm::mat4 getViewMatrix();
@@ -45,6 +46,7 @@ public:
 
 private:
 	void updateCameraVectors();
+	CameraDirection lastDirection;
 };
 
 #endif

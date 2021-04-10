@@ -1,29 +1,28 @@
 #include "player.h"
 
+
 #include "../graphics/models/cube.hpp"
 
 Player::Player(Scene& scene)
-	:EntityBase(scene)
+	:EntityBase("Player", "",scene)
 {
 }
 
 void Player::setPlayerCamera(Camera* camera)
 {
 	this->camera = camera;
-	cameraBR = new BoundingRegion(camera->cameraPos, 1.0f);
+	//cameraBR = new BoundingRegion(camera->cameraPos, 1.0f);
 }
 
-void Player::init()
+void Player::init(glm::vec3 size, float mass, glm::vec3 pos)
 {
-	std::cout << "Player init\n";
-	// Model* cube = new Cube();
-	// setModel(*cube);
-	// cube->size = glm::vec3(10.0f);
+	std::cerr << "Initialize with setPlayerCamera\n";
 }
 
 void Player::update(double dt)
 {
-	if (camera) {
+	if (camera)
+	{
 		// player camera exists
 		camera->hasMoved = false;
 
@@ -39,52 +38,47 @@ void Player::update(double dt)
 		//cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
 
 		// set camera pos
-		if (Keyboard::key(GLFW_KEY_W)) {
+		if (Keyboard::key(GLFW_KEY_W)) 
+		{
 			camera->updateCameraPos(CameraDirection::FORWARD, dt);
-			checkCollisions();
+			//checkCollisions();
 		}
-		if (Keyboard::key(GLFW_KEY_S)) {
+		if (Keyboard::key(GLFW_KEY_S)) 
+		{
 			camera->updateCameraPos(CameraDirection::BACKWARD, dt);
-			cameraBR->center = camera->cameraPos;
-			scene.octree->checkCollisionsSelf(*cameraBR);
-			scene.octree->checkCollisionsChildren(*cameraBR);
+			//cameraBR->center = camera->cameraPos;
+			//scene.octree->checkCollisionsSelf(*cameraBR);
+			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
-		if (Keyboard::key(GLFW_KEY_D)) {
+		if (Keyboard::key(GLFW_KEY_D)) 
+		{
 			camera->updateCameraPos(CameraDirection::RIGHT, dt);
-			cameraBR->center = camera->cameraPos;
-			scene.octree->checkCollisionsSelf(*cameraBR);
-			scene.octree->checkCollisionsChildren(*cameraBR);
+			//cameraBR->center = camera->cameraPos;
+			//scene.octree->checkCollisionsSelf(*cameraBR);
+			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
-		if (Keyboard::key(GLFW_KEY_A)) {
+		if (Keyboard::key(GLFW_KEY_A))
+		{
 			camera->updateCameraPos(CameraDirection::LEFT, dt);
-			cameraBR->center = camera->cameraPos;
-			scene.octree->checkCollisionsSelf(*cameraBR);
-			scene.octree->checkCollisionsChildren(*cameraBR);
+			//cameraBR->center = camera->cameraPos;
+			//scene.octree->checkCollisionsSelf(*cameraBR);
+			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
-		if (Keyboard::key(GLFW_KEY_SPACE)) {
+		if (Keyboard::key(GLFW_KEY_SPACE)) 
+		{
 			camera->updateCameraPos(CameraDirection::UP, dt);
-			cameraBR->center = camera->cameraPos;
-			scene.octree->checkCollisionsSelf(*cameraBR);
-			scene.octree->checkCollisionsChildren(*cameraBR);
+			//cameraBR->center = camera->cameraPos;
+			//scene.octree->checkCollisionsSelf(*cameraBR);
+			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
-		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)) {
+		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT))
+		{
 			camera->updateCameraPos(CameraDirection::DOWN, dt);
-			cameraBR->center = camera->cameraPos;
-			scene.octree->checkCollisionsSelf(*cameraBR);
-			scene.octree->checkCollisionsChildren(*cameraBR);
+			//cameraBR->center = camera->cameraPos;
+			//scene.octree->checkCollisionsSelf(*cameraBR);
+			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
+		
 	}
 }
 
-void Player::render()
-{
-	EntityBase::render();
-}
-
-bool Player::checkCollisions()
-{
-	cameraBR->center = camera->cameraPos;
-	scene.octree->checkCollisionsSelf(*cameraBR);
-	scene.octree->checkCollisionsChildren(*cameraBR);
-	return false;
-}

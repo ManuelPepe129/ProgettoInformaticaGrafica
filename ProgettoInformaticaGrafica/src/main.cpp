@@ -39,16 +39,23 @@
 #include "io/camera.h"
 
 #include "algorithms/states.hpp"
-#include "algorithms/octree.h"
 
 #include "scenes/menu.h"
 #include "scenes/scene.h"
 
 #include "entities/player.h"
+#include "entities/enemy.h"
+
+#include "physics/rigidbody.h"
+#include "physics/environment.h"
 
 //Joystick mainJ(0);
 
 Camera cam;
+
+Model axe("axe", BoundTypes::AABB, DYNAMIC);
+
+void processInput(double dt, Scene* scene);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 	out << "[x: " << v.x << ", y: " << v.y
@@ -56,7 +63,8 @@ std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 	return out;
 }
 
-int main() {
+int main()
+{
 	Menu menu(3, 3, "Progetto Informatica Grafica", 800, 600);
 	if (!menu.init())
 	{
@@ -75,10 +83,11 @@ int main() {
 		menu.newFrame();
 
 	}
+
 	if (!menu.shouldClose())
 	{
 		Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
-		menu.cleanup();
+		
 
 		//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 		if (!scene.init()) {
@@ -109,21 +118,28 @@ int main() {
 		scene.registerModel(&lamp);
 
 		// TODO set maze material
-		Model maze("maze", BoundTypes::AABB, NO_TEX);
+		Model maze("maze", BoundTypes::AABB, NO_TEX | CONST_INSTANCES);
 		maze.loadModel("assets/models/maze/maze.obj");
 		scene.registerModel(&maze);
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+
+		axe.loadModel("assets/models/axe/scene.gltf");
+		scene.registerModel(&axe);
 
 		Box box;
 		box.init();
 
 		Player* player = new Player(scene);
-		player->init();
-		//player->setModelShader(shader);
 		player->setPlayerCamera(&cam);
 		scene.addEntity(player);
 
-		// load all model data
+		Cube enemyModel(DYNAMIC);
+		Enemy* enemy = new Enemy(enemyModel.id, scene);
+		scene.registerModel(&enemyModel);
+		enemy->init(glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		enemy->setPath(glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f));
+		scene.addEntity(enemy);
+
 		scene.loadModels();
 
 		// LIGHTS
@@ -157,6 +173,8 @@ int main() {
 			States::activate(&scene.activePointLights, i);
 		}
 
+		std::cout << lamp.boundingRegions.size() << std::endl;
+
 		SpotLight spotLight(
 			cam.cameraPos, cam.cameraFront,
 			glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
@@ -167,7 +185,8 @@ int main() {
 
 		scene.initInstances();
 
-		scene.prepare(box);
+		//scene.prepare(box);
+		scene.setBox(&box);
 
 		double dt = 0.0f; // tme btwn frames
 		double lastFrame = 0.0f; // time of last frame
@@ -182,14 +201,33 @@ int main() {
 
 			// process input
 			scene.processInput(dt);
+			processInput(dt, &scene);
 
 			//player.render(dt);
+			//scene.render();
 
 			scene.renderShader(shader);
-			scene.renderInstances(maze.id, shader, dt);
+			scene.renderInstances(maze.id, shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(enemyModel.id, shader);
+
+			// remove launch objects if too far
+			for (int i = 0; i < axe.currentNoInstances; i++) {
+				if (glm::length(cam.cameraPos - axe.instances[i]->pos) > 100.0f) {
+					scene.markForDeletion(axe.instances[i]->instanceId);
+				}
+			}
+
+			if (axe.currentNoInstances > 0)
+			{
+				axe.update(dt);
+				scene.renderShader(shader);
+				scene.renderInstances(axe.id, shader);
+			}
 
 			scene.renderShader(lampShader, false);
-			scene.renderInstances(lamp.id, lampShader, dt);
+			scene.renderInstances(lamp.id, lampShader);
 
 			scene.renderShader(boxShader, false);
 			box.render(boxShader);
@@ -197,12 +235,26 @@ int main() {
 			textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
 			// send new frame to window
-			scene.newFrame(box);
-			//scene.clearDeadInstances();
+			scene.newFrame();
+			scene.clearDeadInstances();
 		}
-
+		menu.cleanup();
 		scene.cleanup();
 	}
 
 	return 0;
+}
+
+void processInput(double dt, Scene* scene)
+{
+	if (Keyboard::keyWentDown(GLFW_KEY_1))
+	{
+		std::cout << "Launch axe\n";
+		RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos);
+		if (rb) {
+			// instance generated
+			rb->transferEnergy(100.0f, cam.cameraFront);
+			rb->applyAcceleration(Environment::gravitationalAcceleration);
+		}
+	}
 }

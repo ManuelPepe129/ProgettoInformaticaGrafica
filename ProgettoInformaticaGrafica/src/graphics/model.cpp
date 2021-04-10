@@ -17,6 +17,7 @@ void Model::init()
 RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos)
 {
 	instances.push_back(new RigidBody(id, size, mass, pos));
+	//std::cout << "Model: " << id << " now has " << currentNoInstances+1<<" instancies" << std::endl;
 	return instances[currentNoInstances++];
 }
 
@@ -82,7 +83,7 @@ void Model::loadModel(const std::string& path)
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "Could not load model at " << path << std::endl << import.GetErrorString() << std::endl;
+		std::cerr << "Could not load model at " << path << std::endl << import.GetErrorString() << std::endl;
 		return;
 	}
 
@@ -99,22 +100,21 @@ void Model::update(double dt)
 
 		for (int i = 0; i < currentNoInstances; ++i)
 		{
-			if (doUpdate)
+			if (doUpdate && !States::isActive(&instances[i]->state, INSTANCE_DEAD))
 			{
-				instances[i]->update(0.0f);
+				instances[i]->update(dt);
 				States::activate(&instances[i]->state, INSTANCE_MOVED);
 			}
 			else
 			{
 				States::deactivate(&instances[i]->state, INSTANCE_MOVED);
 			}
-
 		}
 	}
 }
 
 
-void Model::render(Shader shader, Scene* scene, bool setModel)
+void Model::render(Shader shader, bool setModel)
 {
 	if (setModel)
 	{
@@ -125,7 +125,6 @@ void Model::render(Shader shader, Scene* scene, bool setModel)
 	{
 		// update VBO data
 		std::vector<glm::vec3> positions, sizes;
-
 
 		for (int i = 0; i < currentNoInstances; ++i)
 		{
@@ -188,6 +187,11 @@ void Model::cleanup()
 glm::vec3 Model::getPosition()
 {
 	return rb.pos;
+}
+
+glm::vec3 Model::getSize()
+{
+	return rb.size;
 }
 
 

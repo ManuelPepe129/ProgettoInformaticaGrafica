@@ -1,6 +1,5 @@
 #include "bounds.h"
 
-#include "octree.h"
 
 /*
 		Constructors

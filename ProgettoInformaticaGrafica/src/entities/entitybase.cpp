@@ -1,28 +1,13 @@
 #include "entitybase.h"
 
-EntityBase::EntityBase(Scene& scene)
-	: scene(scene)
+EntityBase::EntityBase(const std::string& name, const std::string& modelId, Scene& scene)
+	: name(name),modelId(modelId), scene(scene)
 {
 
 }
 
-void EntityBase::setModel(Model& model)
+void EntityBase::init(glm::vec3 size, float mass, glm::vec3 pos)
 {
-	this->model = &model;
-	scene.registerModel(&model);
-	scene.generateInstance(model.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+	rigidBody = scene.generateInstance(modelId, size, mass, pos);
 }
 
-void EntityBase::setModelShader(Shader& shader)
-{
-	this->shader = &shader;
-}
-
-void EntityBase::render()
-{
-	if (model && shader)
-	{
-		scene.renderShader(*shader);
-		model->render(*shader, &scene);
-	}
-}

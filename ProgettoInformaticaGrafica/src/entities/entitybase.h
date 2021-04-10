@@ -7,19 +7,19 @@
 class EntityBase
 {
 public:
-	EntityBase(Scene& scene);
 
-	virtual void setModel(Model& model);
-	virtual void setModelShader(Shader& shader);
+	EntityBase(const std::string& name, const std::string& modelId, Scene& scene);
 
-	virtual void init()=0;
+	virtual void init(glm::vec3 size, float mass, glm::vec3 pos);
 	virtual void update(double dt)=0;
-	virtual void render()=0;
 
-protected:
-	Model* model;
-	Shader* shader;
+//protected:
+
+	const std::string name;
+	const std::string modelId;
 	Scene& scene;
+
+	RigidBody* rigidBody;
 
 	//bool initialized;
 };

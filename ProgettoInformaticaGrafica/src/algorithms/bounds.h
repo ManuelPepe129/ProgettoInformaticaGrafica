@@ -23,7 +23,7 @@ public:
 	RigidBody* instance;
 
 	// pointer for quick access to current octree node
-	Octree::Node* cell;
+	//Octree::Node* cell;
 
 	// sphere values
 	glm::vec3 center;

@@ -1,5 +1,4 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -32,7 +31,6 @@ public:
 	std::string id;
 
 	RigidBody rb;
-	glm::vec3 size;
 
 	BoundTypes boundType;
 
@@ -59,11 +57,13 @@ public:
 
 	virtual void update(double dt);
 
-	virtual void render(Shader shader, Scene* scene, bool setModel = true);
+	virtual void render(Shader shader, bool setModel = true);
 
 	void cleanup();
 
 	glm::vec3 getPosition();
+
+	glm::vec3 getSize();
 
 	void removeInstance(unsigned int idx);
 
@@ -72,7 +72,7 @@ public:
 	unsigned int getIdx(std::string id);
 
 protected:
-	bool noTex;
+	//bool noTex;
 
 	std::string directory;
 
@@ -86,5 +86,3 @@ protected:
 	BufferObject posVBO;
 	BufferObject sizeVBO;
 };
-
-#endif

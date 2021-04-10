@@ -9,14 +9,10 @@ public:
 
 	void setPlayerCamera(Camera* camera);
 
-	virtual void init();
+	virtual void init(glm::vec3 size, float mass, glm::vec3 pos);
 	virtual void update(double dt);
-	virtual void render();
 
 private: 
 	Camera* camera;
-	BoundingRegion* cameraBR;
-
-	bool checkCollisions();
 };
 
