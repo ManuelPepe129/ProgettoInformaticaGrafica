@@ -112,6 +112,8 @@ public:
 
 	void addToPending(RigidBody* instance);
 
+	const int getPoints() const;
+
 	/*
 		cleanup method
 	*/
@@ -144,8 +146,10 @@ public:
 	glm::vec3 cameraPos;
 
 	BoundingRegion* cameraBR;
-	private:
+private:
 		void updateEntities(double dt);
 		void updateBoundings(double dt);
 		void updateInstancies(double dt);
+
+		int points;
 };

@@ -5,7 +5,7 @@
 class Player : public EntityBase
 {
 public:
-	Player(Scene& scene);
+	Player(Scene* scene);
 
 	void setPlayerCamera(Camera* camera);
 

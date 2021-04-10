@@ -31,7 +31,8 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	: BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
 	activeCamera(-1),
 	activePointLights(0), activeSpotLights(0),
-	currentId("aaaaaaaa")
+	currentId("aaaaaaaa"),
+	points(0)
 { }
 
 bool Scene::init()
@@ -65,7 +66,7 @@ void Scene::newFrame()
 	// process pending
 	//octree->processPending();
 	//octree->update(box);
-	
+
 	BaseScene::newFrame();
 }
 
@@ -89,24 +90,35 @@ void Scene::checkCollision(double dt)
 	for (int i = 0; i < objects.size(); ++i)
 	{
 		BoundingRegion br = objects[i];
-		if (States::isActive(&br.instance->state, INSTANCE_MOVED))
+		if (States::isActive(&br.instance->state, INSTANCE_MOVED) && !States::isActive(&instances[br.instance->instanceId]->state, INSTANCE_DEAD))
 		{
 			br.transform();
-			for (int j = 0; j < objects.size(); ++j)
+			if (br.instance->modelId == "axe")
 			{
-				BoundingRegion other = objects[j];
-				if (br.instance->instanceId != other.instance->instanceId)
+				for (int j = 0; j < objects.size(); ++j)
 				{
-					//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
-					if (br.intersectsWith(other))
+					BoundingRegion other = objects[j];
+					if (br.instance->instanceId != other.instance->instanceId && !States::isActive(&instances[other.instance->instanceId]->state, INSTANCE_DEAD))
 					{
-						std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+						other.transform();
+						//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
+						if (br.intersectsWith(other))
+						{
+							if (other.instance->modelId == "monster")
+							{
+								markForDeletion(other.instance->instanceId);
+								points++;
+							}
+							std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+							markForDeletion(br.instance->instanceId);
+							break;
+						}
 					}
 				}
+				continue;
 			}
-			
 		}
-		else 
+		else
 		{
 			if (br.intersectsWith(*cameraBR))
 			{
@@ -114,14 +126,16 @@ void Scene::checkCollision(double dt)
 				cameras[activeCamera]->reverseCameraPos(dt);
 			}
 		}
-		
+
 	}
 	//std::cout << "-----" << std::endl;
 }
 
 // process input
-void Scene::processInput(float dt) {
-	if (Keyboard::key(GLFW_KEY_ESCAPE)) {
+void Scene::processInput(float dt)
+{
+	if (Keyboard::key(GLFW_KEY_ESCAPE))
+	{
 		setShouldClose(true);
 	}
 	if (activeCamera != -1 && activeCamera < cameras.size())
@@ -138,7 +152,8 @@ void Scene::processInput(float dt) {
 		// set pos at end
 		cameraPos = cameras[activeCamera]->cameraPos;
 
-		if (States::isIndexActive(&activeSpotLights, 0)) {
+		if (States::isIndexActive(&activeSpotLights, 0))
+		{
 			spotLights[0]->position = cameraPos;
 			spotLights[0]->direction = cameras[activeCamera]->cameraFront;
 		}
@@ -198,7 +213,7 @@ void Scene::renderInstances(std::string modelId, Shader shader)
 	{
 		models[modelId]->render(shader, this);
 	}
-	else 
+	else
 	{
 		std::cerr << "Cannot find model with " << modelId << " id\n";
 	}
@@ -216,11 +231,12 @@ void Scene::addEntity(EntityBase* entity)
 
 void Scene::registerModel(Model* model)
 {
-	if (models.count(model->id) == 0 )
+	if (models.count(model->id) == 0)
 	{
-		models.insert(std::pair<std::string,Model*>(model->id, model));
+		//std::cout << "Registering model " << model->id << std::endl;
+		models.insert(std::pair<std::string, Model*>(model->id, model));
 	}
-		
+
 }
 
 RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos)
@@ -261,7 +277,6 @@ void Scene::removeInstance(std::string instanceId)
 	// remove all locations
 	//	- Scene::instances
 	//	- Model::instances
-	
 
 	std::string targetModel = instances[instanceId]->modelId;
 
@@ -269,22 +284,22 @@ void Scene::removeInstance(std::string instanceId)
 
 	instances[instanceId] = nullptr;
 
-	for (int i = 0; i < objects.size();i++)
+	for (int i = 0; i < objects.size(); i++)
 	{
 		if (objects[i].instance->instanceId == instanceId)
 		{
 			std::cout << "deleting br " << objects[i].instance->instanceId << std::endl;
-			for (int j = 0; j < models[targetModel]->boundingRegions.size();++j)
+			for (int j = 0; j < models[targetModel]->boundingRegions.size(); ++j)
 			{
 				objects.erase(objects.begin() + i);
 			}
-			
+
 			break;
 		}
 	}
 
 	instances.erase(instanceId);
-	
+
 }
 
 void Scene::markForDeletion(std::string instanceId)
@@ -297,7 +312,7 @@ void Scene::clearDeadInstances()
 {
 	for (RigidBody* rb : instancesToDelete)
 	{
-		//std::cout << "Deleting " << rb->instanceId << '\n';
+		std::cout << "Deleting " << rb->instanceId << " of model " << rb->modelId << '\n';
 		removeInstance(rb->instanceId);
 	}
 	instancesToDelete.clear();
@@ -313,6 +328,11 @@ void Scene::addToPending(RigidBody* instance)
 	}
 }
 
+const int Scene::getPoints() const
+{
+	return points;
+}
+
 void Scene::cleanup() {
 	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
 	{
@@ -322,13 +342,15 @@ void Scene::cleanup() {
 
 	//octree->destroy();
 
-	if (BaseScene::instances == 1) {
+	if (BaseScene::instances == 1)
+	{
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
 }
 
-Camera* Scene::getActiveCamera() {
+Camera* Scene::getActiveCamera()
+{
 	return (activeCamera >= 0 && activeCamera < cameras.size()) ? cameras[activeCamera] : nullptr;
 }
 
@@ -347,6 +369,7 @@ void Scene::updateBoundings(double dt)
 		if (States::isActive(&br.instance->state, INSTANCE_MOVED))
 		{
 			br.transform();
+			//std::cout << br.instance->modelId << std::endl;
 		}
 		box->positions.push_back(br.calculateCenter());
 		box->sizes.push_back(br.calculateDimensions());

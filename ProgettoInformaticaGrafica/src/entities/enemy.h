@@ -5,7 +5,8 @@ class Enemy :
     public EntityBase
 {
 public:
-	Enemy(const std::string& modelId, Scene& scene);
+	Enemy();
+	Enemy(const std::string& modelId, Scene* scene);
 
 	void setPath(glm::vec3 start, glm::vec3 end, float speed = 10.0f);
 

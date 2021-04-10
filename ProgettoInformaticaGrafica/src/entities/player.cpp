@@ -3,7 +3,7 @@
 
 #include "../graphics/models/cube.hpp"
 
-Player::Player(Scene& scene)
+Player::Player(Scene* scene)
 	:EntityBase("Player", "",scene)
 {
 }

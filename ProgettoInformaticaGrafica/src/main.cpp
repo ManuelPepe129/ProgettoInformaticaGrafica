@@ -49,6 +49,11 @@
 #include "physics/rigidbody.h"
 #include "physics/environment.h"
 
+struct Path {
+	glm::vec3 start;
+	glm::vec3 end;
+};
+
 //Joystick mainJ(0);
 
 Camera cam;
@@ -129,16 +134,34 @@ int main()
 		Box box;
 		box.init();
 
-		Player* player = new Player(scene);
+		Player* player = new Player(&scene);
 		player->setPlayerCamera(&cam);
 		scene.addEntity(player);
 
-		Cube enemyModel(DYNAMIC);
-		Enemy* enemy = new Enemy(enemyModel.id, scene);
-		scene.registerModel(&enemyModel);
-		enemy->init(glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
-		enemy->setPath(glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f));
-		scene.addEntity(enemy);
+		std::vector<Enemy*> enemies;
+		std::vector<glm::vec3> enemyPositions =
+		{
+			glm::vec3(0.0f)
+		};
+		std::vector<Path> enemyPaths =
+		{
+			Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
+			Path{glm::vec3(-12.3f, 0.0f, 0.0f), glm::vec3(14.4f, 0.0f, 0.0f)},
+			Path{glm::vec3(15.5f, 0.0f, -5.2f), glm::vec3(15.5f, 0.0f, 6.2f)}
+		};
+
+		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC);
+		enemyModel.loadModel("assets/models/monster/scene.glb");
+		for (int i = 0; i < enemyPaths.size(); ++i)
+		{
+			Enemy* enemy = new Enemy(enemyModel.id, &scene);
+			scene.registerModel(&enemyModel);
+			//enemy->init(glm::vec3(1.0f), 1.0f, enemyPositions[i]);
+			enemy->init(glm::vec3(1.0f), 1.0f, enemyPaths[i].start);
+			enemy->setPath(enemyPaths[i].start, enemyPaths[i].end);
+			scene.addEntity(enemy);
+			enemies.push_back(enemy);
+		}
 
 		scene.loadModels();
 
@@ -185,7 +208,6 @@ int main()
 
 		scene.initInstances();
 
-		//scene.prepare(box);
 		scene.setBox(&box);
 
 		double dt = 0.0f; // tme btwn frames
@@ -232,8 +254,8 @@ int main()
 			scene.renderShader(boxShader, false);
 			box.render(boxShader);
 
-			textRenderer.render(textShader, std::to_string((int)currentTime), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-
+			textRenderer.render(textShader, std::to_string((int)currentTime), 140.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+			textRenderer.render(textShader, "Points: " + std::to_string(scene.getPoints()), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
 			// send new frame to window
 			scene.newFrame();
 			scene.clearDeadInstances();
@@ -247,6 +269,10 @@ int main()
 
 void processInput(double dt, Scene* scene)
 {
+	if (Keyboard::keyWentDown(GLFW_KEY_P))
+	{
+		std::cout << cam.cameraPos <<std::endl;
+	}
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{
 		std::cout << "Launch axe\n";

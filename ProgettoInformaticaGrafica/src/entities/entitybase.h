@@ -8,7 +8,7 @@ class EntityBase
 {
 public:
 
-	EntityBase(const std::string& name, const std::string& modelId, Scene& scene);
+	EntityBase(const std::string& name, const std::string& modelId, Scene* scene);
 
 	virtual void init(glm::vec3 size, float mass, glm::vec3 pos);
 	virtual void update(double dt)=0;
@@ -17,7 +17,7 @@ public:
 
 	const std::string name;
 	const std::string modelId;
-	Scene& scene;
+	Scene* scene;
 
 	RigidBody* rigidBody;
 

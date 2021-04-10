@@ -1,6 +1,12 @@
 #include "enemy.h"
 
-Enemy::Enemy(const std::string& modelId, Scene& scene)
+Enemy::Enemy()
+	: EntityBase("enemy", "enemy", nullptr)
+{
+	
+}
+
+Enemy::Enemy(const std::string& modelId, Scene* scene)
 	:EntityBase("enemy", modelId, scene), t(0.0f)
 { }
 
@@ -30,8 +36,12 @@ void Enemy::update(double dt)
 		end = tmp;
 	}
 	*/
-	if (length(end - rigidBody->pos) <= 0.1f)
+	if (rigidBody)
 	{
-		setPath(end, start, speed);
+		if (length(end - rigidBody->pos) <= 0.1f)
+		{
+			setPath(end, start, speed);
+		}
 	}
+	
 }

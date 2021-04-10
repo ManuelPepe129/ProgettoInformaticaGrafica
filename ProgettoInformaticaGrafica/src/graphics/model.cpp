@@ -116,34 +116,38 @@ void Model::update(double dt)
 
 void Model::render(Shader shader, bool setModel)
 {
-	if (setModel)
+	if (currentNoInstances > 0)
 	{
-		shader.setMat4("model", glm::mat4(1.0f));
-	}
-
-	if (!States::isActive(&switches, CONST_INSTANCES))
-	{
-		// update VBO data
-		std::vector<glm::vec3> positions, sizes;
-
-		for (int i = 0; i < currentNoInstances; ++i)
+		if (setModel)
 		{
-			positions.push_back(instances[i]->pos);
-			sizes.push_back(instances[i]->size);
+			shader.setMat4("model", glm::mat4(1.0f));
 		}
-		posVBO.bind();
-		posVBO.updateData<glm::vec3>(0, currentNoInstances, &positions[0]);
 
-		sizeVBO.bind();
-		sizeVBO.updateData<glm::vec3>(0, currentNoInstances, &sizes[0]);
+		if (!States::isActive(&switches, CONST_INSTANCES))
+		{
+			// update VBO data
+			std::vector<glm::vec3> positions, sizes;
+
+			for (int i = 0; i < currentNoInstances; ++i)
+			{
+				positions.push_back(instances[i]->pos);
+				sizes.push_back(instances[i]->size);
+			}
+			posVBO.bind();
+			posVBO.updateData<glm::vec3>(0, currentNoInstances, &positions[0]);
+
+			sizeVBO.bind();
+			sizeVBO.updateData<glm::vec3>(0, currentNoInstances, &sizes[0]);
+		}
+
+		shader.setFloat("material.shininess", 0.5f);
+
+		for (unsigned int i = 0; i < meshes.size(); ++i)
+		{
+			meshes[i].render(shader, currentNoInstances);
+		}
 	}
-
-	shader.setFloat("material.shininess", 0.5f);
-
-	for (unsigned int i = 0; i < meshes.size(); ++i)
-	{
-		meshes[i].render(shader, currentNoInstances);
-	}
+	
 }
 
 void Model::removeInstance(unsigned int idx)
