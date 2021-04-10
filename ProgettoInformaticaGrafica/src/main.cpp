@@ -146,8 +146,13 @@ int main()
 		std::vector<Path> enemyPaths =
 		{
 			Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
-			Path{glm::vec3(-12.3f, 0.0f, 0.0f), glm::vec3(14.4f, 0.0f, 0.0f)},
-			Path{glm::vec3(15.5f, 0.0f, -5.2f), glm::vec3(15.5f, 0.0f, 6.2f)}
+			Path{glm::vec3(-13.4f, 0.0f, 4.0f), glm::vec3(11.6f, 0.0f, 4.0f)},
+			Path{glm::vec3(12.5f, 0.0f, -5.3f), glm::vec3(12.5f, 0.0f, 7.7f)},
+			Path{glm::vec3(15.5f, 0.0f, -5.2f), glm::vec3(15.5f, 0.0f, 6.2f)},
+			Path{glm::vec3(-12.2, 0.0f, -4.8f), glm::vec3(15.8f, 0.0f, -4.8f)},
+			Path{glm::vec3(-26.0f, 0.0f, -.3f), glm::vec3(-26.0f, 0.0f, 14.9f)},
+			Path{glm::vec3(-28.7f, 0.0f, 19.2f), glm::vec3(-4.0f, 0.0f, 19.2f)},
+			Path{glm::vec3(-31.3, 0.0f, 21.7), glm::vec3(-2.0f, 0.0f, 21.41)}
 		};
 
 		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC);

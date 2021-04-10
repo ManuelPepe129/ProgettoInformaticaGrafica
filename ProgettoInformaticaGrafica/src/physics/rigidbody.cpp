@@ -1,5 +1,9 @@
 #include "rigidbody.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 bool RigidBody::operator==(RigidBody rb) {
 	return instanceId == rb.instanceId;
 }
@@ -12,14 +16,22 @@ RigidBody::RigidBody()
 	: state(0)
 { }
 
-RigidBody::RigidBody(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 velocity, glm::vec3 acceleration)
-	: modelId(modelId), size(size), mass(mass), pos(pos), velocity(velocity), acceleration(acceleration), state(0)
+RigidBody::RigidBody(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 rot)
+	: modelId(modelId), size(size), mass(mass), pos(pos), rot(rot), velocity(glm::vec3(0.0f)), acceleration(glm::vec3(0.0f)), state(0)
 {}
 
 void RigidBody::update(float dt)
 {
 	pos += velocity * dt + 0.5f * acceleration * (dt * dt);
 	velocity += acceleration * dt;
+
+	// calculate rotation matrix
+	glm::mat4 rotMat = glm::toMat4(glm::quat(rot));
+
+	// model = trans * rot * scale = T * R * S
+	model = glm::translate(glm::mat4(1.0f), pos); // M = I * T = T
+	model = model * rotMat; // M = M * R = T * R
+	model = glm::scale(model, size); // M = M * S = T * R * S
 }
 
 void RigidBody::applyForce(glm::vec3 force)
