@@ -1,13 +1,20 @@
 #include "menu.h"
 
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // std::pair
+#include <stdexcept> // std::runtime_error
+#include <sstream> // std::stringstream
+#include <algorithm>
+
 static void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
 Menu::Menu(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight)
-	:BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
-	playerName("")
+	:BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight)	
 {
 	sceneType = SceneType::MENU;
 	currentMenuState = MenuState::MAIN_MENU;
@@ -77,6 +84,45 @@ void Menu::render()
 		{
 			currentMenuState = MenuState::RULES;
 		}
+		if (buttonCentered(" Leaderboard  "))
+		{
+			// File pointer
+			std::fstream fin;
+
+			// Open an existing file
+			fin.open("leaderboard.txt", std::ios::in);
+
+			// Read the Data from the file
+			// as String Vector
+			std::vector<std::string> row;
+			std::string line, word, temp;
+
+			while (getline(fin,line)) {
+
+				row.clear();
+
+				//std::cout << line << std::endl;
+
+				// used for breaking words
+				std::stringstream s(line);
+
+				// read every column data of a row and
+				// store it in a string variable, 'word'
+				while (std::getline(s, word, ',')) {
+
+					// add all the column data
+					// of a row to a vector
+					row.push_back(word);
+					//std::cout << word << std::endl;
+				}
+				scores.push_back(Score{ row[0], row[1], row[2] });
+
+			}
+
+			sortScores();
+
+			currentMenuState = MenuState::LEADERBOARD;
+		}
 		if (buttonCentered(" Credits"))
 		{
 			currentMenuState = MenuState::CREDITS;
@@ -90,8 +136,14 @@ void Menu::render()
 		textCentered("Insert Player Name");
 		if (textInputCentered("", buf1, 64, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			playerName = std::string(buf1);
+			BaseScene::playerName = std::string(buf1);
 			currentMenuState = MenuState::NEW_GAME;
+		}
+		break;
+	case MenuState::LEADERBOARD:
+		for (int i = 0; i < scores.size(); ++i)
+		{
+			textCentered(scores[i].name + " " + scores[i].time + " " + scores[i].points);
 		}
 		break;
 	case MenuState::CREDITS:
@@ -148,11 +200,6 @@ void Menu::cleanup()
 	
 }
 
-const std::string Menu::getPlayerName() const
-{
-	return playerName;
-}
-
 bool Menu::buttonCentered(const char* label, float alignment)
 {
 	//ImGuiStyle& style = ImGui::GetStyle();
@@ -166,6 +213,13 @@ bool Menu::buttonCentered(const char* label, float alignment)
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 25);
 
 	return ImGui::Button(label, ImVec2(BaseScene::scrWidth / 5, BaseScene::scrHeight / 10));
+}
+
+void Menu::sortScores()
+{
+	std::sort(scores.begin(), scores.end(), [](const Score& lhs, const Score& rhs) {
+		return lhs.points > rhs.points;
+	});
 }
 
 void Menu::textCentered(std::string text) {

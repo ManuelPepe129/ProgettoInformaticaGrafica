@@ -6,6 +6,8 @@ unsigned int BaseScene::scrHeight = 0;
 unsigned int BaseScene::instances = 0;
 GLFWwindow* BaseScene::window = nullptr;
 
+std::string BaseScene::playerName = "";
+
 static void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -96,7 +98,8 @@ bool BaseScene::init()
 		/*
 			set rendering parameters
 		*/
-		glEnable(GL_DEPTH_TEST); // doesn't show vertices not visible to camera (back of object)
+
+		glEnable(GL_DEPTH_TEST ); // doesn't show vertices not visible to camera (back of object)
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -123,6 +126,11 @@ void BaseScene::setBackgroundColor(glm::vec4 background)
 GLFWwindow* BaseScene::getWindow()
 {
 	return window;
+}
+
+const std::string BaseScene::getPlayerName() const
+{
+	return playerName;
 }
 
 void BaseScene::processInput(float dt)

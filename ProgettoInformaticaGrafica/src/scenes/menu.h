@@ -20,6 +20,13 @@ enum class MenuState
 	RULES
 };
 
+struct Score
+{
+	std::string name;
+	std::string time;
+	std::string points;
+};
+
 class Menu : public BaseScene
 {
 public:
@@ -40,12 +47,12 @@ public:
 		return currentMenuState;
 	}
 
-	const std::string getPlayerName()const;
-
 private:
 	bool buttonCentered(const char* label, float alignment = 0.5f);
 
-	std::string playerName;
+	std::vector<Score> scores;
+
+	void sortScores();
 
 	void textCentered(std::string text);
 

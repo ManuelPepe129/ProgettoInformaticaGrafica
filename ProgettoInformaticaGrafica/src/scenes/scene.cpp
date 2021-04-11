@@ -149,7 +149,7 @@ void Scene::processInput(float dt)
 	{
 		setShouldClose(true);
 	}
-	if (Keyboard::key(GLFW_KEY_V))
+	if (Keyboard::keyWentDown(GLFW_KEY_V))
 	{
 		endGame();
 	}
@@ -249,7 +249,8 @@ void Scene::endGame()
 {
 	std::string file_name = "leaderboard.txt";
 	std::ofstream out(file_name.c_str(), std::ios::app);
-	out << points << '/n';
+	std::cout << BaseScene::playerName << "," << (int)glfwGetTime() << "," << std::to_string(points) << std::endl;
+	out << BaseScene::playerName << ',' << (int)glfwGetTime() << ',' << std::to_string(points) << std::endl;
 	out.close();
 }
 
@@ -310,7 +311,7 @@ void Scene::removeInstance(std::string instanceId)
 	std::string targetModel = instances[instanceId]->modelId;
 
 	models[targetModel]->removeInstance(instanceId);
-
+	//delete(instances[instanceId]);
 	instances[instanceId] = nullptr;
 
 	for (int i = 0; i < objects.size(); i++)

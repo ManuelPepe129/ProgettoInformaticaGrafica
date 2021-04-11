@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <vector>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -43,7 +44,7 @@ public:
 	// update screen after frame
 	virtual void newFrame();
 
-	bool shouldClose() {
+	virtual bool shouldClose() {
 		return glfwWindowShouldClose(window);
 	}
 
@@ -55,13 +56,21 @@ public:
 	void setBackgroundColor(float r, float g, float b, float a=1.0f);
 	void setBackgroundColor(glm::vec4 background);
 
+	/*
+	*	Getters
+	*/
+
 	GLFWwindow* getWindow();
+
+	virtual const std::string getPlayerName() const;
 
 	SceneType sceneType;
 
 protected:
 	// window object
 	static GLFWwindow* window;
+
+	static std::string playerName;
 
 	glm::vec4 background;
 

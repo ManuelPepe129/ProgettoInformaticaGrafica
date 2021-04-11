@@ -7,7 +7,9 @@ Enemy::Enemy()
 }
 
 Enemy::Enemy(const std::string& modelId, Scene* scene)
-	:EntityBase("enemy", modelId, scene), t(0.0f)
+	:EntityBase("enemy", modelId, scene),
+	respawnDelay(15.0f),
+	respawnTimer(respawnDelay)
 { }
 
 void Enemy::setPath(glm::vec3 start, glm::vec3 end, float speed)
@@ -21,26 +23,25 @@ void Enemy::setPath(glm::vec3 start, glm::vec3 end, float speed)
 void Enemy::init(glm::vec3 size, float mass, glm::vec3 pos)
 {
 	EntityBase::init(size, mass, pos);
+	setPath(start, end, speed);
 }
 
 void Enemy::update(double dt)
 {
-	/*
-	t = t + dt / time > 1.0f ? 1.0f : t + dt / time;
-	rigidBody->pos = Tween::linear(start, end, t);
-	if (t == 1.0f)
-	{
-		t = 0.0f;
-		glm::vec3 tmp = start;
-		start = end;
-		end = tmp;
-	}
-	*/
-	if (rigidBody)
+	if (rigidBody && !States::isActive(&rigidBody->state, INSTANCE_DEAD))
 	{
 		if (length(end - rigidBody->pos) <= 0.1f)
 		{
 			setPath(end, start, speed);
+		}
+	}
+	else
+	{
+		respawnTimer -= dt;
+		if (respawnTimer <= 0)
+		{
+			respawnTimer = respawnDelay;
+			init(glm::vec3(1.0f), 1.0f, start);
 		}
 	}
 	

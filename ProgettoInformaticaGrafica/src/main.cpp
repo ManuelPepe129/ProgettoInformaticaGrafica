@@ -131,10 +131,7 @@ int main()
 		scene.addEntity(player);
 
 		std::vector<Enemy*> enemies;
-		std::vector<glm::vec3> enemyPositions =
-		{
-			glm::vec3(0.0f)
-		};
+
 		std::vector<Path> enemyPaths =
 		{
 			Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
@@ -145,7 +142,12 @@ int main()
 			Path{glm::vec3(-26.0f, 0.0f, -.3f), glm::vec3(-26.0f, 0.0f, 14.9f)},
 			Path{glm::vec3(-28.7f, 0.0f, 19.2f), glm::vec3(-4.0f, 0.0f, 19.2f)},
 			Path{glm::vec3(24.5f, 0.0f, 16.4f), glm::vec3(18.0f, 0.0f, 16.4f)},
-			Path{glm::vec3(-31.3, 0.0f, 21.7), glm::vec3(-2.0f, 0.0f, 21.41)}
+			Path{glm::vec3(-31.3f, 0.0f, 21.7f), glm::vec3(-2.0f, 0.0f, 21.41)},
+			Path{glm::vec3(25.2f, 0.0f, 0.0f),glm::vec3(25.2f, 0.0f, 16.4f)},
+			Path{glm::vec3(1.0f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 21.6f)},
+			Path{glm::vec3(30.6f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 0.0f)},
+			Path{glm::vec3(-30.8f, 0.0f, -23.2f),glm::vec3(-30.8f, 0.0f, -2.5f)},
+			Path{glm::vec3(-30.8f, 0.0f, -2.5f),glm::vec3(-30.8f, 0.0f, 21.5f)}
 		};
 
 		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC);
@@ -154,7 +156,6 @@ int main()
 		{
 			Enemy* enemy = new Enemy(enemyModel.id, &scene);
 			scene.registerModel(&enemyModel);
-			//enemy->init(glm::vec3(1.0f), 1.0f, enemyPositions[i]);
 			enemy->init(glm::vec3(1.0f), 1.0f, enemyPaths[i].start);
 			enemy->setPath(enemyPaths[i].start, enemyPaths[i].end);
 			scene.addEntity(enemy);
