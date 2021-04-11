@@ -13,7 +13,9 @@
 enum class MenuState
 {
 	MAIN_MENU,
+	GET_NAME,
 	NEW_GAME,
+	LEADERBOARD,
 	CREDITS,
 	RULES
 };
@@ -34,15 +36,21 @@ public:
 
 	virtual void cleanup();
 
-	bool buttonCentered(const char* label, float alignment = 0.5f);
-
-	void textCentered(std::string text);
-
-	MenuState GetState() {
+	const MenuState GetState() const{
 		return currentMenuState;
 	}
 
+	const std::string getPlayerName()const;
+
 private:
+	bool buttonCentered(const char* label, float alignment = 0.5f);
+
+	std::string playerName;
+
+	void textCentered(std::string text);
+
+	bool textInputCentered(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags=0);
+
 	MenuState currentMenuState;
 };
 

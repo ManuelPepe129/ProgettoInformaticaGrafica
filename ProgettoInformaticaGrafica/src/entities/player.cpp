@@ -3,8 +3,8 @@
 
 #include "../graphics/models/cube.hpp"
 
-Player::Player(Scene* scene)
-	:EntityBase("Player", "",scene)
+Player::Player(const std::string& name ,Scene* scene)
+	:EntityBase(name, "",scene)
 {
 }
 

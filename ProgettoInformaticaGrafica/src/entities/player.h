@@ -5,7 +5,7 @@
 class Player : public EntityBase
 {
 public:
-	Player(Scene* scene);
+	Player(const std::string& name, Scene* scene);
 
 	void setPlayerCamera(Camera* camera);
 

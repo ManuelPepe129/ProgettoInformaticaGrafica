@@ -134,7 +134,7 @@ int main()
 		Box box;
 		box.init();
 
-		Player* player = new Player(&scene);
+		Player* player = new Player(menu.getPlayerName(),&scene);
 		player->setPlayerCamera(&cam);
 		scene.addEntity(player);
 
@@ -152,6 +152,7 @@ int main()
 			Path{glm::vec3(-12.2, 0.0f, -4.8f), glm::vec3(15.8f, 0.0f, -4.8f)},
 			Path{glm::vec3(-26.0f, 0.0f, -.3f), glm::vec3(-26.0f, 0.0f, 14.9f)},
 			Path{glm::vec3(-28.7f, 0.0f, 19.2f), glm::vec3(-4.0f, 0.0f, 19.2f)},
+			Path{glm::vec3(24.5f, 0.0f, 16.4f), glm::vec3(18.0f, 0.0f, 16.4f)},
 			Path{glm::vec3(-31.3, 0.0f, 21.7), glm::vec3(-2.0f, 0.0f, 21.41)}
 		};
 

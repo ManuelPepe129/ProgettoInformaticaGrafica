@@ -1,5 +1,8 @@
 #include "scene.h"
 
+#include <iostream>
+#include <fstream>
+
 std::string Scene::generateId()
 {
 	for (int i = currentId.length() - 1; i >= 0; --i)
@@ -138,6 +141,10 @@ void Scene::processInput(float dt)
 	{
 		setShouldClose(true);
 	}
+	if (Keyboard::key(GLFW_KEY_V))
+	{
+		endGame();
+	}
 	if (activeCamera != -1 && activeCamera < cameras.size())
 	{
 
@@ -222,6 +229,14 @@ void Scene::renderInstances(std::string modelId, Shader shader)
 void Scene::render()
 {
 	std::cerr << "Render function not defined without shader input\n";
+}
+
+void Scene::endGame()
+{
+	std::string file_name = "leaderboard.txt";
+	std::ofstream out(file_name.c_str(), std::ios::app);
+	out << points << '/n';
+	out.close();
 }
 
 void Scene::addEntity(EntityBase* entity)

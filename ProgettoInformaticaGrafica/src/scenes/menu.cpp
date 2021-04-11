@@ -6,55 +6,14 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 Menu::Menu(int glfwVersionMajor, int glfwVersionMinor, const char* title, unsigned int scrWidth, unsigned int scrHeight)
-	:BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight)
+	:BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
+	playerName("")
 {
 	sceneType = SceneType::MENU;
 	currentMenuState = MenuState::MAIN_MENU;
 }
 
 bool Menu::init() {
-	/*
-	// Setup window
-	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit())
-		return;
-
-	// GL 3.0 + GLSL 130
-	const char* glsl_version = "#version 130";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	// Create window with graphics context
-	window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
-	if (window == NULL)
-		return;
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1); // Enable vsync
-
-		// Initialize OpenGL loader
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-	bool err = gl3wInit() != 0;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-	bool err = glewInit() != GLEW_OK;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-	bool err = gladLoadGL() == 0;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD2)
-	bool err = gladLoadGL(glfwGetProcAddress) == 0; // glad2 recommend using the windowing library loader instead of the (optionally) bundled one.
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
-	bool err = false;
-	glbinding::Binding::initialize();
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING3)
-	bool err = false;
-	glbinding::initialize([](const char* name) { return (glbinding::ProcAddress)glfwGetProcAddress(name); });
-#else
-	bool err = false; // If you use IMGUI_IMPL_OPENGL_LOADER_CUSTOM, your loader is likely to requires some form of initialization.
-#endif
-	if (err)
-	{
-		std::cout << "Failed to initialize OpenGL loader!" << std::endl;
-		return;
-	}
-	*/
-
 	// init window
 	if (BaseScene::init()) {
 		// Setup Dear ImGui context
@@ -106,13 +65,13 @@ void Menu::render()
 
 	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
+	char buf1[64] = "";
 	switch (currentMenuState)
 	{
 	case MenuState::MAIN_MENU:
 		if (buttonCentered("New Game"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 		{
-			currentMenuState = MenuState::NEW_GAME;
+			currentMenuState = MenuState::GET_NAME;
 		}
 		if (buttonCentered(" Rules  "))
 		{
@@ -125,6 +84,14 @@ void Menu::render()
 		if (buttonCentered("  Close "))
 		{
 			setShouldClose(true);
+		}
+		break;
+	case MenuState::GET_NAME:
+		textCentered("Insert Player Name");
+		if (textInputCentered("", buf1, 64, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			playerName = std::string(buf1);
+			currentMenuState = MenuState::NEW_GAME;
 		}
 		break;
 	case MenuState::CREDITS:
@@ -181,6 +148,11 @@ void Menu::cleanup()
 	
 }
 
+const std::string Menu::getPlayerName() const
+{
+	return playerName;
+}
+
 bool Menu::buttonCentered(const char* label, float alignment)
 {
 	//ImGuiStyle& style = ImGui::GetStyle();
@@ -205,6 +177,13 @@ void Menu::textCentered(std::string text) {
 
 	ImGui::Text(text.c_str());
 	ImGui::Text("");
+}
+
+bool Menu::textInputCentered(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags)
+{
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + BaseScene::scrWidth/5);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 25);
+	return ImGui::InputText(label, buf, buf_size, flags);
 }
 
 void Menu::processInput(float dt)

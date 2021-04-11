@@ -77,6 +77,12 @@ public:
 	virtual void render();
 
 	/*
+	* Game State methods
+	*/
+
+	void endGame();
+
+	/*
 	*	Model / instance methods
 	*/
 
