@@ -23,6 +23,7 @@
 #include "../entities/entitybase.h"
 #include "../physics/rigidbody.h"
 #include <queue>
+#include "../graphics/text.h"
 
 class Model;
 class EntityBase;
@@ -75,6 +76,7 @@ public:
 	void renderInstances(std::string modelId, Shader shader);
 
 	virtual void render();
+	void renderText();
 
 	/*
 	* Game State methods
@@ -158,4 +160,7 @@ private:
 		void updateInstancies(double dt);
 
 		int points;
+
+		TextRenderer textRenderer;
+		Shader textShader;
 };

@@ -101,13 +101,6 @@ int main()
 			return -1;
 		}
 
-		/*
-		*	Text Rendering Library
-		*/
-
-		TextRenderer textRenderer("assets/fonts/comic.ttf", 48);
-		textRenderer.init();
-
 		scene.cameras.push_back(&cam);
 		scene.activeCamera = 0;
 
@@ -115,7 +108,6 @@ int main()
 		Shader shader("assets/shaders/instanced_vs.glsl", "assets/shaders/core_fs.glsl");
 		Shader lampShader("assets/shaders/instanced_vs.glsl", "assets/shaders/lamp_fs.glsl");
 		Shader boxShader("assets/shaders/box_vs.glsl", "assets/shaders/box_fs.glsl");
-		Shader textShader("assets/shaders/glyph_vs.glsl", "assets/shaders/glyph_fs.glsl");
 
 		// MODELS
 
@@ -260,8 +252,8 @@ int main()
 			scene.renderShader(boxShader, false);
 			box.render(boxShader);
 
-			textRenderer.render(textShader, std::to_string((int)currentTime), 140.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-			textRenderer.render(textShader, "Points: " + std::to_string(scene.getPoints()), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+			scene.renderText();
+
 			// send new frame to window
 			scene.newFrame();
 			scene.clearDeadInstances();

@@ -35,7 +35,8 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	activeCamera(-1),
 	activePointLights(0), activeSpotLights(0),
 	currentId("aaaaaaaa"),
-	points(0)
+	points(0),
+	textRenderer(TextRenderer("assets/fonts/comic.ttf", 48))
 { }
 
 bool Scene::init()
@@ -44,6 +45,13 @@ bool Scene::init()
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 		//octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
 		cameraBR = new BoundingRegion(cameraPos, 0.3f);
+
+		/*
+		*	Text Rendering Library
+		*/
+
+		textRenderer.init();
+		textShader = Shader("assets/shaders/glyph_vs.glsl", "assets/shaders/glyph_fs.glsl");
 		return true;
 	}
 	return false;
@@ -229,6 +237,12 @@ void Scene::renderInstances(std::string modelId, Shader shader)
 void Scene::render()
 {
 	std::cerr << "Render function not defined without shader input\n";
+}
+
+void Scene::renderText()
+{
+	textRenderer.render(textShader, std::to_string((int)glfwGetTime()), 140.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+	textRenderer.render(textShader, "Points: " + std::to_string(points), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
 }
 
 void Scene::endGame()
