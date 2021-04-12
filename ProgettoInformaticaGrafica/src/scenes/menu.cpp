@@ -141,9 +141,10 @@ void Menu::render()
 		}
 		break;
 	case MenuState::LEADERBOARD:
+		textCentered("Hall of Fame");
 		for (int i = 0; i < scores.size(); ++i)
 		{
-			textCentered(scores[i].name + " " + scores[i].time + " " + scores[i].points);
+			textCentered(std::to_string(i) + ". " + scores[i].name + " " + scores[i].time + "s " + scores[i].points + " points");
 		}
 		break;
 	case MenuState::CREDITS:
@@ -250,10 +251,16 @@ void Menu::processInput(float dt)
 			break;
 		case MenuState::NEW_GAME:
 			break;
+		case MenuState::GET_NAME:
+			currentMenuState = MenuState::MAIN_MENU;
+			break;
 		case MenuState::CREDITS:
 			currentMenuState = MenuState::MAIN_MENU;
 			break;
 		case MenuState::RULES:
+			currentMenuState = MenuState::MAIN_MENU;
+			break;
+		case MenuState::LEADERBOARD:
 			currentMenuState = MenuState::MAIN_MENU;
 			break;
 		default:

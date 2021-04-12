@@ -18,6 +18,7 @@
 
 #include "../physics/rigidbody.h"
 #include "../algorithms/bounds.h"
+#include "material.h"
 
 // model switches
 #define DYNAMIC				(unsigned int)1
@@ -54,6 +55,8 @@ public:
 	void initInstances();
 
 	void loadModel(const std::string& path);
+
+	void setMaterial(Material material);
 
 	virtual void update(double dt);
 

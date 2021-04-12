@@ -75,6 +75,12 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
 	ArrayObject::clear();
 }
 
+void Mesh::setMaterial(Material material)
+{
+	diffuse = aiColor4D(material.diffuse.x, material.diffuse.y, material.diffuse.z, 1.0f);
+	specular = aiColor4D(material.specular.x, material.specular.y, material.specular.z, 1.0f);
+}
+
 void Mesh::render(Shader shader, unsigned int noInstances)
 {
 	if (noTex) {

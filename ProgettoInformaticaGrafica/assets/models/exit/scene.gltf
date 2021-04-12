@@ -6,6 +6,18 @@
     "scene" : 0,
     "scenes" : [
         {
+            "extras" : {
+                "glTF2ExportSettings" : {
+                    "export_animations" : 0,
+                    "export_apply" : 1,
+                    "export_current_frame" : 0,
+                    "export_extras" : 1,
+                    "export_format" : "GLTF_SEPARATE",
+                    "export_morph" : 0,
+                    "export_skins" : 0,
+                    "export_texture_dir" : "textures"
+                }
+            },
             "name" : "Scene",
             "nodes" : [
                 0
@@ -15,19 +27,26 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Exit",
-            "scale" : [
-                0.0056579322554171085,
-                0.07143867760896683,
-                0.16772428154945374
-            ]
+            "name" : "Exit"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Material2",
-            "pbrMetallicRoughness" : {}
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Exit",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
         }
     ],
     "meshes" : [
@@ -46,20 +65,32 @@
             ]
         }
     ],
+    "textures" : [
+        {
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "exit",
+            "uri" : "textures/exit.jpg"
+        }
+    ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
             "count" : 24,
             "max" : [
-                1,
-                1,
-                1
+                0.0056579322554171085,
+                0.07143867760896683,
+                0.16772428154945374
             ],
             "min" : [
-                -1,
-                -1,
-                -1
+                -0.0056579322554171085,
+                -0.07143867760896683,
+                -0.16772428154945374
             ],
             "type" : "VEC3"
         },

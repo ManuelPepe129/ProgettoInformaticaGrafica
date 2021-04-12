@@ -119,6 +119,14 @@ int main()
 		maze.loadModel("assets/models/maze/maze.obj");
 		scene.registerModel(&maze);
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		//maze.setMaterial(Material::jade);
+
+		/*
+		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
+		exit.loadModel("assets/models/exit/scene.gltf");
+		scene.registerModel(&exit);
+		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		*/
 
 		axe.loadModel("assets/models/axe/scene.gltf");
 		scene.registerModel(&axe);
@@ -195,8 +203,6 @@ int main()
 			States::activate(&scene.activePointLights, i);
 		}
 
-		std::cout << lamp.boundingRegions.size() << std::endl;
-
 		SpotLight spotLight(
 			cam.cameraPos, cam.cameraFront,
 			glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
@@ -229,6 +235,8 @@ int main()
 
 			scene.renderShader(shader);
 			scene.renderInstances(maze.id, shader);
+			//scene.renderShader(shader);
+			//scene.renderInstances(exit.id, shader);
 
 			scene.renderShader(shader);
 			scene.renderInstances(enemyModel.id, shader);

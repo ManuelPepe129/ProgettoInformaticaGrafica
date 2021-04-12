@@ -14,6 +14,7 @@
 #include "models/box.hpp"
 
 #include "../algorithms/bounds.h"
+#include "material.h"
 
 struct Vertex {
 	glm::vec3 pos;
@@ -55,6 +56,8 @@ public:
 
 	// load vertex and index data
 	void loadData(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+
+	void setMaterial(Material material);
 
 	void render(Shader shader, unsigned int noInstances);
 

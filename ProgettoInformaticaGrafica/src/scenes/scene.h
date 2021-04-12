@@ -153,7 +153,7 @@ public:
 	glm::mat4 projection;
 	glm::vec3 cameraPos;
 
-	BoundingRegion* cameraBR;
+	
 private:
 		void updateEntities(double dt);
 		void updateBoundings(double dt);
@@ -163,4 +163,7 @@ private:
 
 		TextRenderer textRenderer;
 		Shader textShader;
+
+		BoundingRegion* cameraBR;
+		BoundingRegion* ExitBR;
 };

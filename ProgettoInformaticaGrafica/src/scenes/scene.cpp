@@ -45,6 +45,7 @@ bool Scene::init()
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 		//octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
 		cameraBR = new BoundingRegion(cameraPos, 0.3f);
+		ExitBR = new BoundingRegion(glm::vec3(-32.0f,0.0f,-1.5f), 0.3f);
 
 		/*
 		*	Text Rendering Library
@@ -138,6 +139,10 @@ void Scene::checkCollision(double dt)
 			}
 		}
 
+	}
+	if (ExitBR->intersectsWith(*cameraBR))
+	{
+		std::cout << "Collision with exit" << std::endl;
 	}
 	//std::cout << "-----" << std::endl;
 }
@@ -404,6 +409,8 @@ void Scene::updateBoundings(double dt)
 		box->positions.push_back(br.calculateCenter());
 		box->sizes.push_back(br.calculateDimensions());
 	}
+	//box->positions.push_back(ExitBR->calculateCenter());
+	//box->sizes.push_back(ExitBR->calculateDimensions());
 }
 
 void Scene::updateInstancies(double dt)

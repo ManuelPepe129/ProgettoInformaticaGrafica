@@ -92,6 +92,14 @@ void Model::loadModel(const std::string& path)
 	processNode(scene->mRootNode, scene);
 }
 
+void Model::setMaterial(Material material)
+{
+	for (unsigned int i = 0; i < meshes.size(); ++i)
+	{
+		meshes[i].setMaterial(material);
+	}
+}
+
 void Model::update(double dt)
 {
 	if (!States::isActive(&switches, CONST_INSTANCES))
@@ -276,13 +284,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	//std::cout << "min.x: " << min[0] << " min.y: " << min[1] << " min.z: " << min[2] << std::endl;
 
 	// process min/max for BR
-	const glm::vec3 dx = glm::vec3(0.05f);
 	if (boundType == BoundTypes::AABB)
 	{
 		// assign max and min
-		br.min = min - dx;
+		br.min = min ;
 		br.ogMin = br.min;
-		br.max = max + dx;
+		br.max = max;
 		br.ogMax = br.max;
 	}
 	else 
