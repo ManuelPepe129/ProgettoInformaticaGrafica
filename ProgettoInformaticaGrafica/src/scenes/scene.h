@@ -28,6 +28,12 @@
 class Model;
 class EntityBase;
 
+enum class GameState
+{
+	GAME_OVER,
+	PLAYING
+};
+
 class Scene : public BaseScene
 {
 public:
@@ -36,6 +42,8 @@ public:
 	std::vector<EntityBase*> entities;
 
 	std::vector<RigidBody*>instancesToDelete;
+
+	GameState state;
 
 	//Octree::Node* octree;
 
@@ -82,7 +90,7 @@ public:
 	* Game State methods
 	*/
 
-	void endGame();
+	void onGameOver();
 
 	/*
 	*	Model / instance methods

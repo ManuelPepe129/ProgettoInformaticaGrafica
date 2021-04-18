@@ -17,7 +17,7 @@ void Enemy::setPath(glm::vec3 start, glm::vec3 end, float speed)
 	this->start = start;
 	this->end = end;
 	this->speed = speed;
-	rigidBody->velocity = glm::normalize(end - start);
+	rigidBody->velocity = glm::normalize(end - start)*speed;
 }
 
 void Enemy::init(glm::vec3 size, float mass, glm::vec3 pos)

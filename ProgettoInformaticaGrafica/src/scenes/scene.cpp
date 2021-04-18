@@ -3,27 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-std::string Scene::generateId()
-{
-	for (int i = currentId.length() - 1; i >= 0; --i)
-	{
-		if ((int)currentId[i] != (int)'z')
-		{
-			currentId[i] = (char)(((int)currentId[i]) + 1);
-			break;
-		}
-		else
-		{
-			currentId[i] = 'a';
-		}
-	}
-	return currentId;
-}
 
-void Scene::setBox(Box* box)
-{
-	this->box = box;
-}
 
 /*
 	constructor
@@ -32,6 +12,7 @@ void Scene::setBox(Box* box)
 Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	const char* title, unsigned int scrWidth, unsigned int scrHeight)
 	: BaseScene(glfwVersionMajor, glfwVersionMinor, title, scrWidth, scrHeight),
+	state(GameState::PLAYING),
 	activeCamera(-1),
 	activePointLights(0), activeSpotLights(0),
 	currentId("aaaaaaaa"),
@@ -43,7 +24,6 @@ bool Scene::init()
 {
 	if (BaseScene::init()) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
-		//octree = new Octree::Node(BoundingRegion(glm::vec3(-35.0f, -5.0f, -25.0f), glm::vec3(35.0f, 5.0f, 25.0f)));
 		cameraBR = new BoundingRegion(cameraPos, 0.3f);
 		ExitBR = new BoundingRegion(glm::vec3(-32.0f,0.0f,-1.5f), 0.3f);
 
@@ -59,13 +39,6 @@ bool Scene::init()
 }
 
 /*
-void Scene::prepare(Box& box)
-{
-	//octree->update(box);
-}
-*/
-
-/*
 	main loop methods
 */
 
@@ -74,10 +47,6 @@ void Scene::newFrame()
 	// clear old positions and sizes
 	box->positions.clear();
 	box->sizes.clear();
-
-	// process pending
-	//octree->processPending();
-	//octree->update(box);
 
 	BaseScene::newFrame();
 }
@@ -143,6 +112,7 @@ void Scene::checkCollision(double dt)
 	if (ExitBR->intersectsWith(*cameraBR))
 	{
 		std::cout << "Collision with exit" << std::endl;
+		onGameOver();
 	}
 	//std::cout << "-----" << std::endl;
 }
@@ -156,7 +126,7 @@ void Scene::processInput(float dt)
 	}
 	if (Keyboard::keyWentDown(GLFW_KEY_V))
 	{
-		endGame();
+		onGameOver();
 	}
 	if (activeCamera != -1 && activeCamera < cameras.size())
 	{
@@ -250,13 +220,15 @@ void Scene::renderText()
 	textRenderer.render(textShader, "Points: " + std::to_string(points), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
 }
 
-void Scene::endGame()
+void Scene::onGameOver()
 {
 	std::string file_name = "leaderboard.txt";
 	std::ofstream out(file_name.c_str(), std::ios::app);
 	std::cout << BaseScene::playerName << "," << (int)glfwGetTime() << "," << std::to_string(points) << std::endl;
 	out << BaseScene::playerName << ',' << (int)glfwGetTime() << ',' << std::to_string(points) << std::endl;
 	out.close();
+	state = GameState::GAME_OVER;
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // enable cursor
 }
 
 void Scene::addEntity(EntityBase* entity)
@@ -272,6 +244,28 @@ void Scene::registerModel(Model* model)
 		models.insert(std::pair<std::string, Model*>(model->id, model));
 	}
 
+}
+
+std::string Scene::generateId()
+{
+	for (int i = currentId.length() - 1; i >= 0; --i)
+	{
+		if ((int)currentId[i] != (int)'z')
+		{
+			currentId[i] = (char)(((int)currentId[i]) + 1);
+			break;
+		}
+		else
+		{
+			currentId[i] = 'a';
+		}
+	}
+	return currentId;
+}
+
+void Scene::setBox(Box* box)
+{
+	this->box = box;
 }
 
 RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos)
@@ -374,8 +368,6 @@ void Scene::cleanup() {
 		Model* model = it->second;
 		model->cleanup();
 	}
-
-	//octree->destroy();
 
 	if (BaseScene::instances == 1)
 	{

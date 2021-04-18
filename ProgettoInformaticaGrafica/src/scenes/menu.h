@@ -43,9 +43,7 @@ public:
 
 	virtual void cleanup();
 
-	const MenuState GetState() const{
-		return currentMenuState;
-	}
+	MenuState currentMenuState;
 
 private:
 	bool buttonCentered(const char* label, float alignment = 0.5f);
@@ -58,6 +56,6 @@ private:
 
 	bool textInputCentered(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags=0);
 
-	MenuState currentMenuState;
+	
 };
 

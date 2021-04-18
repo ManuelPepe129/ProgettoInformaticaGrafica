@@ -77,7 +77,7 @@ int main()
 		return -1;
 	}
 
-	while (!menu.shouldClose() && !(menu.GetState() == MenuState::NEW_GAME))
+	while (!menu.shouldClose() && !(menu.currentMenuState == MenuState::NEW_GAME))
 	{
 		// process input
 		menu.processInput(0.0f);
@@ -218,7 +218,7 @@ int main()
 		double dt = 0.0f; // tme btwn frames
 		double lastFrame = 0.0f; // time of last frame
 		glfwSetTime(0.0f);
-		while (!scene.shouldClose())
+		while (!scene.shouldClose() && scene.state != GameState::GAME_OVER)
 		{
 			double currentTime = glfwGetTime();
 			dt = currentTime - lastFrame;
