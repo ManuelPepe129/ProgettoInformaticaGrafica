@@ -103,7 +103,7 @@ public:
 	void registerModel(Model* model);
 
 	// generate an instance based on modelId
-	RigidBody* generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos);
+	RigidBody* generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 rot = glm::vec3(0.0f));
 
 	void initInstances();
 

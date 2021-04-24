@@ -15,6 +15,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/trigonometric.hpp>      // all the GLSL trigonometric functions: radians, cos, asin, etc.
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -48,6 +49,7 @@
 
 #include "physics/rigidbody.h"
 #include "physics/environment.h"
+#include <glm/gtx/norm.hpp>
 
 struct Path {
 	glm::vec3 start;
@@ -61,6 +63,7 @@ Camera cam;
 Model axe("axe", BoundTypes::AABB, DYNAMIC);
 
 void processInput(double dt, Scene* scene);
+glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 	out << "[x: " << v.x << ", y: " << v.y
@@ -119,16 +122,23 @@ int main()
 		maze.loadModel("assets/models/maze/maze.obj");
 		scene.registerModel(&maze);
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
-		//maze.setMaterial(Material::jade);
+		maze.setMaterial(Material::grey);
 
 		/*
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
-		exit.loadModel("assets/models/exit/scene.gltf");
+		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
 		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
 		*/
 
-		axe.loadModel("assets/models/axe/scene.gltf");
+		/*
+		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
+		painting.loadModel("assets/models/paintintgs/deChirico/DeChirico.obj");
+		scene.registerModel(&painting);
+		scene.generateInstance(painting.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		*/
+
+		axe.loadModel("assets/models/axe/axe.obj");
 		scene.registerModel(&axe);
 
 		Box box;
@@ -158,7 +168,7 @@ int main()
 			Path{glm::vec3(-30.8f, 0.0f, -2.5f),glm::vec3(-30.8f, 0.0f, 21.5f)}
 		};
 
-		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC);
+		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC | NO_TEX);
 		enemyModel.loadModel("assets/models/monster/scene.glb");
 		for (int i = 0; i < enemyPaths.size(); ++i)
 		{
@@ -235,15 +245,16 @@ int main()
 
 			scene.renderShader(shader);
 			scene.renderInstances(maze.id, shader);
-			//scene.renderShader(shader);
-			//scene.renderInstances(exit.id, shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(exit.id, shader);
 
 			scene.renderShader(shader);
 			scene.renderInstances(enemyModel.id, shader);
 
 			// remove launch objects if too far
 			for (int i = 0; i < axe.currentNoInstances; i++) {
-				if (glm::length(cam.cameraPos - axe.instances[i]->pos) > 100.0f) {
+				if (axe.instances[i]->pos.y < -5.0f) {
 					scene.markForDeletion(axe.instances[i]->instanceId);
 				}
 			}
@@ -283,11 +294,18 @@ void processInput(double dt, Scene* scene)
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{
 		std::cout << "Launch axe\n";
+		;
+		//float angle =glm::pi<float>()- glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(1.0, 0.0, 0.0))));
+		//float y =glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(0.0, 1.0, 0.0))));
+		//float z = glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(0.0, 0.0, 1.0))));
 		RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos);
+		//std::cout << rb->rot << std::endl;
+		
 		if (rb) {
 			// instance generated
 			rb->transferEnergy(100.0f, cam.cameraFront);
 			rb->applyAcceleration(Environment::gravitationalAcceleration);
 		}
+		
 	}
 }

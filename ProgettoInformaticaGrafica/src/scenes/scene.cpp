@@ -268,9 +268,9 @@ void Scene::setBox(Box* box)
 	this->box = box;
 }
 
-RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos)
+RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 rot)
 {
-	RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
+	RigidBody* rb = models[modelId]->generateInstance(size, mass, pos, rot);
 
 	if (rb)
 	{

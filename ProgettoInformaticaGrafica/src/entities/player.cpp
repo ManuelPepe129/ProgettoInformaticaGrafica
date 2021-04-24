@@ -64,6 +64,8 @@ void Player::update(double dt)
 			//scene.octree->checkCollisionsSelf(*cameraBR);
 			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
+
+		/*
 		if (Keyboard::key(GLFW_KEY_SPACE)) 
 		{
 			camera->updateCameraPos(CameraDirection::UP, dt);
@@ -78,6 +80,7 @@ void Player::update(double dt)
 			//scene.octree->checkCollisionsSelf(*cameraBR);
 			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
+		*/
 		
 	}
 }

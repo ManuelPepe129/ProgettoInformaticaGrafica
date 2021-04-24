@@ -8,7 +8,8 @@ struct Material {
     glm::vec3 diffuse;
     glm::vec3 specular;
     float shininess;
-
+    
+    static Material grey;
     static Material emerald;
     static Material jade;
     static Material obsidian;

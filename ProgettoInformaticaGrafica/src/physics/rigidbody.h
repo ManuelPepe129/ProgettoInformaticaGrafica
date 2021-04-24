@@ -36,7 +36,11 @@ public:
 
 	RigidBody();
 
-	RigidBody(std::string modelId, glm::vec3 size = glm::vec3(1.0f),float mass = 1.0f, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 rot = glm::vec3(0.0f));
+	RigidBody(std::string modelId,
+		glm::vec3 size = glm::vec3(1.0f),
+		float mass = 1.0f, 
+		glm::vec3 pos = glm::vec3(0.0f), 
+		glm::vec3 rot = glm::vec3(0.0f));
 
 	bool operator==(RigidBody rb);
 	bool operator==(std::string id);

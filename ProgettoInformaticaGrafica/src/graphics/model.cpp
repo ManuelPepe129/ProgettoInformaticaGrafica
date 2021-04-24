@@ -14,50 +14,51 @@ void Model::init()
 
 }
 
-RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos)
+RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 rot)
 {
-	instances.push_back(new RigidBody(id, size, mass, pos));
+	instances.push_back(new RigidBody(id, size, mass, pos, rot));
 	//std::cout << "Model: " << id << " now has " << currentNoInstances+1<<" instancies" << std::endl;
 	return instances[currentNoInstances++];
 }
 
 void Model::initInstances()
 {
-	glm::vec3* posData = nullptr;
-	glm::vec3* sizeData = nullptr;
+	glm::mat4* modelData = nullptr;
+	glm::mat3* normalModelData = nullptr;
 	GLenum usage = GL_DYNAMIC_DRAW;
 
-	std::vector<glm::vec3> positions, sizes;
+	std::vector<glm::mat4> models(currentNoInstances);
+	std::vector<glm::mat3> normalModels(currentNoInstances);
 
 	if (States::isActive(&switches, CONST_INSTANCES))
 	{
 		// set data pointers
 		for (unsigned int i = 0; i < instances.size(); ++i)
 		{
-			positions.push_back(instances[i]->pos);
-			sizes.push_back(instances[i]->size);
+			models[i] = instances[i]->model;
+			normalModels[i] = instances[i]->normalModel;
 		}
 
-		if (positions.size() > 0)
+		if (currentNoInstances > 0)
 		{
-			posData = &positions[0];
-			sizeData = &sizes[0];
+			modelData = &models[0];
+			normalModelData = &normalModels[0];
 		}
 
 		usage = GL_STATIC_DRAW;
 	}
 
 	// generate positions VBO
-	posVBO = BufferObject(GL_ARRAY_BUFFER);
-	posVBO.generate();
-	posVBO.bind();
-	posVBO.setData<glm::vec3>(UPPER_BOUND, posData, GL_DYNAMIC_DRAW);
+	modelVBO = BufferObject(GL_ARRAY_BUFFER);
+	modelVBO.generate();
+	modelVBO.bind();
+	modelVBO.setData<glm::mat4>(UPPER_BOUND, modelData, GL_DYNAMIC_DRAW);
 
 	// generate size VBO
-	sizeVBO = BufferObject(GL_ARRAY_BUFFER);
-	sizeVBO.generate();
-	sizeVBO.bind();
-	sizeVBO.setData<glm::vec3>(UPPER_BOUND, sizeData, GL_DYNAMIC_DRAW);
+	normalModelVBO = BufferObject(GL_ARRAY_BUFFER);
+	normalModelVBO.generate();
+	normalModelVBO.bind();
+	normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModelData, GL_DYNAMIC_DRAW);
 
 	// set attribute pointers for each mesh
 	for (unsigned int i = 0; i < meshes.size(); ++i) {
@@ -65,12 +66,18 @@ void Model::initInstances()
 		meshes[i].VAO.bind();
 
 		// set vertex attrib pointers
+		
 		// positions
-		posVBO.bind();
-		posVBO.setAttPointer<glm::vec3>(3, 3, GL_FLOAT, 1, 0, 1);
+		modelVBO.bind();
+		modelVBO.setAttPointer<glm::vec4>(3, 4, GL_FLOAT, 4, 0, 1);
+		modelVBO.setAttPointer<glm::vec4>(4, 4, GL_FLOAT, 4, 1, 1);
+		modelVBO.setAttPointer<glm::vec4>(5, 4, GL_FLOAT, 4, 2, 1);
+		modelVBO.setAttPointer<glm::vec4>(6, 4, GL_FLOAT, 4, 3, 1);
 		// size
-		sizeVBO.bind();
-		sizeVBO.setAttPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1);
+		normalModelVBO.bind();
+		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 0, 1);
+		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 1, 1);
+		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 2, 1);
 
 		ArrayObject::clear();
 	}
@@ -134,18 +141,22 @@ void Model::render(Shader shader, bool setModel)
 		if (!States::isActive(&switches, CONST_INSTANCES))
 		{
 			// update VBO data
-			std::vector<glm::vec3> positions, sizes;
+			std::vector<glm::mat4> models(currentNoInstances);
+			std::vector<glm::mat3> normalModels(currentNoInstances);
 
 			for (int i = 0; i < currentNoInstances; ++i)
 			{
-				positions.push_back(instances[i]->pos);
-				sizes.push_back(instances[i]->size);
+				// add updated matrices
+				models[i] = instances[i]->model;
+				normalModels[i] = instances[i]->normalModel;
 			}
-			posVBO.bind();
-			posVBO.updateData<glm::vec3>(0, currentNoInstances, &positions[0]);
 
-			sizeVBO.bind();
-			sizeVBO.updateData<glm::vec3>(0, currentNoInstances, &sizes[0]);
+			// set transformation data
+			modelVBO.bind();
+			modelVBO.updateData<glm::mat4>(0, currentNoInstances, &models[0]);
+			normalModelVBO.bind();
+			normalModelVBO.updateData<glm::mat3>(0, currentNoInstances, &normalModels[0]);
+
 		}
 
 		shader.setFloat("material.shininess", 0.5f);
@@ -192,8 +203,8 @@ void Model::cleanup()
 		meshes[i].cleanup();
 	}
 
-	posVBO.cleanup();
-	sizeVBO.cleanup();
+	normalModelVBO.cleanup();
+	modelVBO.cleanup();
 }
 
 glm::vec3 Model::getPosition()
@@ -267,6 +278,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		// textures
 		if (mesh->mTextureCoords[0]) 
 		{
+			
 			vertex.texCoord = glm::vec2(
 				mesh->mTextureCoords[0][i].x,
 				mesh->mTextureCoords[0][i].y
@@ -356,6 +368,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
 			ret = Mesh(br, textures);
+
+			for (Texture tex : textures) {
+				std::cout << tex.dir <<"/"<< tex.path <<  std::endl;
+			}
 		}
 	}
 

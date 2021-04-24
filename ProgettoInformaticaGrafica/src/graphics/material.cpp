@@ -26,6 +26,7 @@ Material Material::green_rubber = { glm::vec3(0.0, 0.05, 0.0), glm::vec3(0.4, 0.
 Material Material::red_rubber = { glm::vec3(0.05, 0.0, 0.0), glm::vec3(0.5, 0.4, 0.4), glm::vec3(0.7, 0.04, 0.04), .078125 };
 Material Material::white_rubber = { glm::vec3(0.05, 0.05, 0.05), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.7, 0.7, 0.7), .078125 };
 Material Material::yellow_rubber = { glm::vec3(0.05, 0.05, 0.0), glm::vec3(0.5, 0.5, 0.4), glm::vec3(0.7, 0.7, 0.04), .078125 };
+Material Material::grey = { glm::vec3(0.25, 0.25, 0.25), glm::vec3(0.4, 0.4, 0.4), glm::vec3(0.4, 0.4, 0.4), 0.6 };
 
 Material Material::mix(Material m1, Material m2, float mix) {
 	return {

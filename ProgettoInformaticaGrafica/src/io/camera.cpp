@@ -55,6 +55,7 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 		cameraPos -= cameraUp * velocity;
 		break;
 	}
+	cameraPos.y = 0.0f;
 
 	hasMoved = true;
 }
@@ -83,7 +84,7 @@ void Camera::reverseCameraPos(double dt)
 		cameraPos += cameraUp * velocity;
 		break;
 	}
-
+	cameraPos.y = 0.0f;
 	hasMoved = false;
 }
 
