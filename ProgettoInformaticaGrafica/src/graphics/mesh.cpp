@@ -90,6 +90,7 @@ void Mesh::render(Shader shader, unsigned int noInstances)
 		shader.setInt("noTex", 1);
 	}
 	else {
+		shader.setInt("noTex", 0);
 		// textures
 		unsigned int diffuseIdx = 0;
 		unsigned int specularIdx = 0;
