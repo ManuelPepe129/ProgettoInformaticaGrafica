@@ -167,7 +167,10 @@ private:
 		void updateBoundings(double dt);
 		void updateInstancies(double dt);
 
-		int points;
+		void handleCameraCollision(RigidBody& other);
+
+		unsigned int points;
+		unsigned int lives;
 
 		TextRenderer textRenderer;
 		Shader textShader;

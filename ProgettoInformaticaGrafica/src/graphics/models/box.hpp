@@ -110,10 +110,10 @@ public:
         ArrayObject::clear();
     }
 
-    void addInstance(BoundingRegion br, glm::vec3 pos, glm::vec3 size) {
-        positions.push_back(br.calculateCenter() * size + pos);
+    void addInstance(glm::vec3 pos, glm::vec3 size) {
+        positions.push_back(pos);
 
-        sizes.push_back(br.calculateDimensions() * size);
+        sizes.push_back( size);
     }
 
     void cleanup() {

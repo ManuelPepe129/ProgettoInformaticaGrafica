@@ -3,8 +3,6 @@
 #include <iostream>
 #include <fstream>
 
-
-
 /*
 	constructor
 */
@@ -17,6 +15,7 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	activePointLights(0), activeSpotLights(0),
 	currentId("aaaaaaaa"),
 	points(0),
+	lives(1),
 	textRenderer(TextRenderer("assets/fonts/comic.ttf", 48))
 { }
 
@@ -25,7 +24,7 @@ bool Scene::init()
 	if (BaseScene::init()) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 		cameraBR = new BoundingRegion(cameraPos, 0.3f);
-		ExitBR = new BoundingRegion(glm::vec3(-32.0f,0.0f,-1.5f), 0.3f);
+		ExitBR = new BoundingRegion(glm::vec3(-32.0f, 0.0f, -1.5f), 0.3f);
 
 		/*
 		*	Text Rendering Library
@@ -98,12 +97,18 @@ void Scene::checkCollision(double dt)
 				}
 				continue;
 			}
+			else if (br.intersectsWith(*cameraBR))
+			{
+				handleCameraCollision(*br.instance);
+				cameras[activeCamera]->reverseCameraPos(dt);
+			}
 		}
 		else
 		{
+			// handle camera collisions
 			if (br.intersectsWith(*cameraBR))
 			{
-				//std::cout << "Collision with camera" << std::endl;
+				handleCameraCollision(*br.instance);
 				cameras[activeCamera]->reverseCameraPos(dt);
 			}
 		}
@@ -341,7 +346,12 @@ void Scene::clearDeadInstances()
 {
 	for (RigidBody* rb : instancesToDelete)
 	{
-		std::cout << "Deleting " << rb->instanceId << " of model " << rb->modelId << '\n';
+		/*
+			std::cout << "Deleting " << rb->instanceId << " of model " << rb->modelId << '\n';
+			std::cout << "[x: " << rb->pos.x << ", y: " << rb->pos.y
+				<< ", z:" << rb->pos.z << "]\n";
+		*/
+		
 		removeInstance(rb->instanceId);
 	}
 	instancesToDelete.clear();
@@ -398,8 +408,7 @@ void Scene::updateBoundings(double dt)
 			br.transform();
 			//std::cout << br.instance->modelId << std::endl;
 		}
-		box->positions.push_back(br.calculateCenter());
-		box->sizes.push_back(br.calculateDimensions());
+		box->addInstance(br.calculateCenter(), br.calculateDimensions());
 	}
 	//box->positions.push_back(ExitBR->calculateCenter());
 	//box->sizes.push_back(ExitBR->calculateDimensions());
@@ -413,6 +422,25 @@ void Scene::updateInstancies(double dt)
 		if (model->currentNoInstances > 0)
 		{
 			model->update(dt);
+		}
+	}
+}
+
+void Scene::handleCameraCollision(RigidBody& other)
+{
+	if (other.modelId == "candy")
+	{
+		lives++;
+		markForDeletion(other.instanceId);
+	}
+	else if (other.modelId == "monster")
+	{
+		lives--;
+		markForDeletion(other.instanceId);
+		if (lives <= 0)
+		{
+			std::cout << "TODO: riattivare game over\n";
+			//state = GameState::GAME_OVER;
 		}
 	}
 }
