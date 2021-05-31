@@ -20,10 +20,19 @@ void Camera::updateCameraDirection(double dx, double dy) {
 	yaw += dx;
 	pitch += dy;
 
+	if (yaw > 360.0f)
+	{
+		yaw -= 360.0f;
+	}
+	else if (yaw < -360.0f)
+	{
+		yaw += 360.0f;
+	}
+
 	if (pitch > 89.0f) {
 		pitch = 89.0f;
 	}
-	if (pitch < -89.0f) {
+	else if (pitch < -89.0f) {
 		pitch = -89.0f;
 	}
 
@@ -55,7 +64,9 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 		cameraPos -= cameraUp * velocity;
 		break;
 	}
-	cameraPos.y = 0.0f;
+
+	// TODO: scommentare
+	//cameraPos.y = 0.0f;
 
 	hasMoved = true;
 }
