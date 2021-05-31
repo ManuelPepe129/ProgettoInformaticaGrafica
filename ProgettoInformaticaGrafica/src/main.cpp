@@ -63,7 +63,6 @@ Camera cam;
 Model axe("axe", BoundTypes::AABB, DYNAMIC);
 
 void processInput(double dt, Scene* scene);
-glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 	out << "[x: " << v.x << ", y: " << v.y
@@ -87,7 +86,7 @@ int main()
 
 		menu.render();
 		menu.update();
-		
+
 		menu.newFrame();
 
 	}
@@ -95,7 +94,7 @@ int main()
 	if (!menu.shouldClose())
 	{
 		Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
-		
+
 
 		//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 		if (!scene.init()) {
@@ -124,19 +123,24 @@ int main()
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
 		maze.setMaterial(Material::grey);
 
-		/*
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
-		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
-		*/
+		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(-31.4f, .50f, -3.5f));
 
-		/*
+		Model candy("candy", BoundTypes::AABB, CONST_INSTANCES | NO_TEX);
+		candy.loadModel("assets/models/candy/candy.obj");
+		candy.setMaterial(Material::cyan_plastic);
+		scene.registerModel(&candy);
+		scene.generateInstance(candy.id, glm::vec3(2.0f), 1.0f, glm::vec3(0.0f));
+
 		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
-		painting.loadModel("assets/models/paintintgs/deChirico/DeChirico.obj");
+		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
 		scene.registerModel(&painting);
-		scene.generateInstance(painting.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
-		*/
+		//scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(0.0f), glm::vec3(glm::pi<float>()/2.0f,0.0f, glm::pi<float>()));
+		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(20.0f, 0.2f, -1.7f), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()));
+		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()));
+		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()));
 
 		axe.loadModel("assets/models/axe/axe.obj");
 		scene.registerModel(&axe);
@@ -144,7 +148,7 @@ int main()
 		Box box;
 		box.init();
 
-		Player* player = new Player(menu.getPlayerName(),&scene);
+		Player* player = new Player(menu.getPlayerName(), &scene);
 		player->setPlayerCamera(&cam);
 		scene.addEntity(player);
 
@@ -247,7 +251,13 @@ int main()
 			scene.renderInstances(maze.id, shader);
 
 			scene.renderShader(shader);
+			scene.renderInstances(candy.id, shader);
+
+			scene.renderShader(shader);
 			scene.renderInstances(exit.id, shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(painting.id, shader);
 
 			scene.renderShader(shader);
 			scene.renderInstances(enemyModel.id, shader);
@@ -289,23 +299,19 @@ void processInput(double dt, Scene* scene)
 {
 	if (Keyboard::keyWentDown(GLFW_KEY_P))
 	{
-		std::cout << cam.cameraPos <<std::endl;
+		std::cout << cam.cameraPos << std::endl;
 	}
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{
-		std::cout << "Launch axe\n";
-		;
-		//float angle =glm::pi<float>()- glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(1.0, 0.0, 0.0))));
-		//float y =glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(0.0, 1.0, 0.0))));
-		//float z = glm::acos(glm::length(glm::cross(cam.cameraFront, glm::vec3(0.0, 0.0, 1.0))));
-		RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos);
-		//std::cout << rb->rot << std::endl;
-		
+		//std::cout << "Launch axe\n";
+		RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos, glm::vec3(0.0, glm::radians(-cam.yaw + 90.0), 0.0));
+
 		if (rb) {
 			// instance generated
 			rb->transferEnergy(100.0f, cam.cameraFront);
 			rb->applyAcceleration(Environment::gravitationalAcceleration);
 		}
-		
+
+
 	}
 }
