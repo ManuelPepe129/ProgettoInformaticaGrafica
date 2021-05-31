@@ -9,21 +9,22 @@ Enemy::Enemy()
 Enemy::Enemy(const std::string& modelId, Scene* scene)
 	:EntityBase("enemy", modelId, scene),
 	respawnDelay(15.0f),
-	respawnTimer(respawnDelay)
+	respawnTimer(respawnDelay),
+	maxSpeed(10)
 { }
 
 void Enemy::setPath(glm::vec3 start, glm::vec3 end, float speed)
 {
 	this->start = start;
 	this->end = end;
-	this->speed = speed;
+	this->speed = speed > maxSpeed ? maxSpeed : speed;
 	rigidBody->velocity = glm::normalize(end - start)*speed;
 }
 
 void Enemy::init(glm::vec3 size, float mass, glm::vec3 pos)
 {
 	EntityBase::init(size, mass, pos);
-	setPath(start, end, speed);
+	setPath(start, end, speed++);
 }
 
 void Enemy::update(double dt)
@@ -32,7 +33,7 @@ void Enemy::update(double dt)
 	{
 		if (length(end - rigidBody->pos) <= 0.1f)
 		{
-			setPath(end, start, speed);
+			setPath(end, start, speed++);
 		}
 	}
 	else

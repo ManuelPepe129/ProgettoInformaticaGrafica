@@ -19,6 +19,7 @@ protected:
 
 	float t;
 	float speed;
+	float maxSpeed;
 	float respawnDelay;
 	float respawnTimer;
 };
