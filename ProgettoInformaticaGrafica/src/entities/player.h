@@ -2,6 +2,8 @@
 
 #include "entitybase.h"
 
+#define DEBUG 1
+
 class Player : public EntityBase
 {
 public:

@@ -1,8 +1,5 @@
 #include "player.h"
 
-
-#include "../graphics/models/cube.hpp"
-
 Player::Player(const std::string& name ,Scene* scene)
 	:EntityBase(name, "",scene)
 {
@@ -41,46 +38,30 @@ void Player::update(double dt)
 		if (Keyboard::key(GLFW_KEY_W)) 
 		{
 			camera->updateCameraPos(CameraDirection::FORWARD, dt);
-			//checkCollisions();
 		}
 		if (Keyboard::key(GLFW_KEY_S)) 
 		{
 			camera->updateCameraPos(CameraDirection::BACKWARD, dt);
-			//cameraBR->center = camera->cameraPos;
-			//scene.octree->checkCollisionsSelf(*cameraBR);
-			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_D)) 
 		{
 			camera->updateCameraPos(CameraDirection::RIGHT, dt);
-			//cameraBR->center = camera->cameraPos;
-			//scene.octree->checkCollisionsSelf(*cameraBR);
-			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_A))
 		{
 			camera->updateCameraPos(CameraDirection::LEFT, dt);
-			//cameraBR->center = camera->cameraPos;
-			//scene.octree->checkCollisionsSelf(*cameraBR);
-			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
 
-		/*
+#ifdef DEBUG
 		if (Keyboard::key(GLFW_KEY_SPACE)) 
 		{
 			camera->updateCameraPos(CameraDirection::UP, dt);
-			//cameraBR->center = camera->cameraPos;
-			//scene.octree->checkCollisionsSelf(*cameraBR);
-			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
 		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT))
 		{
 			camera->updateCameraPos(CameraDirection::DOWN, dt);
-			//cameraBR->center = camera->cameraPos;
-			//scene.octree->checkCollisionsSelf(*cameraBR);
-			//scene.octree->checkCollisionsChildren(*cameraBR);
 		}
-		*/
+#endif
 		
 	}
 }
