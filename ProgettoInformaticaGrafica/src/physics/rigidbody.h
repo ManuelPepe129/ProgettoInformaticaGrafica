@@ -6,6 +6,7 @@
 
 #define INSTANCE_DEAD	(unsigned char)0b00000001
 #define INSTANCE_MOVED	(unsigned char)0b00000010
+#define NO_COLLISION	(unsigned char)0b00000100
 
 class RigidBody {
 public:

@@ -37,7 +37,7 @@ enum class GameState
 class Scene : public BaseScene
 {
 public:
-	std::map<std::string,Model*> models;
+	std::map<std::string, Model*> models;
 	trie::Trie<RigidBody*> instances;
 	std::vector<EntityBase*> entities;
 
@@ -161,20 +161,20 @@ public:
 	glm::mat4 projection;
 	glm::vec3 cameraPos;
 
-	
+
 private:
-		void updateEntities(double dt);
-		void updateBoundings(double dt);
-		void updateInstancies(double dt);
+	void updateEntities(double dt);
+	void updateBoundings(double dt);
+	void updateInstancies(double dt);
 
-		void handleCameraCollision(RigidBody& other);
+	void handleCameraCollision(RigidBody& other);
 
-		unsigned int points;
-		unsigned int lives;
+	unsigned int points;
+	unsigned int lives;
 
-		TextRenderer textRenderer;
-		Shader textShader;
+	TextRenderer textRenderer;
+	Shader textShader;
 
-		BoundingRegion* cameraBR;
-		BoundingRegion* ExitBR;
+	BoundingRegion* cameraBR;
+	BoundingRegion* ExitBR;
 };

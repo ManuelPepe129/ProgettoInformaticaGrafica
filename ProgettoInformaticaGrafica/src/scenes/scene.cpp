@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 
 #include <iostream>
 #include <fstream>
@@ -44,6 +44,7 @@ bool Scene::init()
 void Scene::newFrame()
 {
 	// clear old positions and sizes
+	box->rotations.clear();
 	box->positions.clear();
 	box->sizes.clear();
 
@@ -70,7 +71,7 @@ void Scene::checkCollision(double dt)
 	for (int i = 0; i < objects.size(); ++i)
 	{
 		BoundingRegion br = objects[i];
-		if (States::isActive(&br.instance->state, INSTANCE_MOVED) && !States::isActive(&instances[br.instance->instanceId]->state, INSTANCE_DEAD))
+		if (States::isActive(&br.instance->state, INSTANCE_MOVED) && !States::isActive(&instances[br.instance->instanceId]->state, INSTANCE_DEAD) && !States::isActive(&instances[br.instance->instanceId]->state, (unsigned char)NO_COLLISION))
 		{
 			br.transform();
 			if (br.instance->modelId == "axe")
@@ -128,10 +129,6 @@ void Scene::processInput(float dt)
 	if (Keyboard::key(GLFW_KEY_ESCAPE))
 	{
 		setShouldClose(true);
-	}
-	if (Keyboard::keyWentDown(GLFW_KEY_V))
-	{
-		onGameOver();
 	}
 	if (activeCamera != -1 && activeCamera < cameras.size())
 	{
@@ -351,7 +348,7 @@ void Scene::clearDeadInstances()
 			std::cout << "[x: " << rb->pos.x << ", y: " << rb->pos.y
 				<< ", z:" << rb->pos.z << "]\n";
 		*/
-		
+
 		removeInstance(rb->instanceId);
 	}
 	instancesToDelete.clear();
@@ -363,7 +360,10 @@ void Scene::addToPending(RigidBody* instance)
 	{
 		br.instance = instance;
 		br.transform();
-		objects.push_back(br);
+		if (!States::isActive(&instance->state, (unsigned char)NO_COLLISION))
+		{
+			objects.push_back(br);
+		}
 	}
 }
 
@@ -403,12 +403,19 @@ void Scene::updateBoundings(double dt)
 {
 	for (BoundingRegion br : objects)
 	{
-		if (States::isActive(&br.instance->state, INSTANCE_MOVED))
+		if (!States::isActive(&br.instance->state, (unsigned char)NO_COLLISION))
 		{
-			br.transform();
-			//std::cout << br.instance->modelId << std::endl;
+			if (States::isActive(&br.instance->state, INSTANCE_MOVED))
+			{
+				br.transform();
+				//std::cout << br.instance->modelId << std::endl;
+			}
+
+			box->rotations.push_back(br.instance->rot);
+			box->positions.push_back(br.calculateCenter());
+			box->sizes.push_back(br.calculateDimensions());
+
 		}
-		box->addInstance(br.calculateCenter(), br.calculateDimensions());
 	}
 	//box->positions.push_back(ExitBR->calculateCenter());
 	//box->sizes.push_back(ExitBR->calculateDimensions());
