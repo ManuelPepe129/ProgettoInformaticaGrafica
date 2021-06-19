@@ -220,6 +220,11 @@ void Scene::renderText()
 {
 	textRenderer.render(textShader, std::to_string((int)glfwGetTime()), 140.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 	textRenderer.render(textShader, "Points: " + std::to_string(points), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+	textRenderer.render(textShader, "Lives:", 515.0f, 470.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+	for (unsigned int i = 0; i < lives; ++i) {
+		textRenderer.render(textShader, "<3", 600.0f + i * 25.0f, 470.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+	}
+	
 }
 
 void Scene::onGameOver()
@@ -373,7 +378,7 @@ const int Scene::getPoints() const
 }
 
 void Scene::cleanup() {
-	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	for (auto it = models.begin(); it != models.end(); ++it)
 	{
 		Model* model = it->second;
 		model->cleanup();
