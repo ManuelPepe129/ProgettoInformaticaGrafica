@@ -391,6 +391,8 @@ void Scene::cleanup() {
 	{
 		Model* model = it->second;
 		model->cleanup();
+		free(model);
+		model = nullptr;
 	}
 
 	if (BaseScene::instances == 1)
