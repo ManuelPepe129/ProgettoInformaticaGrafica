@@ -119,18 +119,37 @@ int main()
 		maze.loadModel("assets/models/maze/scene.gltf");
 		scene.registerModel(&maze);
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
-		maze.setMaterial(Material::grey);
+		//maze.setMaterial(Material::grey);
+
+		Model floor("floor", BoundTypes::AABB, CONST_INSTANCES);
+		floor.loadModel("assets/models/floor/floor.obj");
+		scene.registerModel(&floor);
+		scene.generateInstance(floor.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, -1.f, 0.0f));
+
+		Model book("book", BoundTypes::AABB, CONST_INSTANCES);
+		book.loadModel("assets/models/book/books.obj");
+		scene.registerModel(&book);
+		scene.generateInstance(book.id, glm::vec3(1.0f), 1.0f, glm::vec3(10.5f, -1.0f, -2.7f));
 
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
 		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(-31.4f, .50f, -3.5f));
 
+		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
+		couch.loadModel("assets/models/couch/couch.obj");
+		//couch.loadModel("assets/models/exit/exit.obj");
+		scene.registerModel(&couch);
+		scene.generateInstance(couch.id, glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f));
+
 		Model candy("candy", BoundTypes::AABB, CONST_INSTANCES | NO_TEX);
 		candy.loadModel("assets/models/candy/candy.obj");
 		candy.setMaterial(Material::cyan_plastic);
 		scene.registerModel(&candy);
-		scene.generateInstance(candy.id, glm::vec3(2.0f), 1.0f, glm::vec3(0.0f));
+		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, 0.0f, 9.14f));
+		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, 0.0f, -7.31f));
+		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, 0.f, -22.53f));
+		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, 0.f, -10.33f));
 
 		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
 		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
@@ -150,8 +169,6 @@ int main()
 		player->setPlayerCamera(&cam);
 		scene.addEntity(player);
 
-		std::vector<Enemy*> enemies;
-
 		std::vector<Path> enemyPaths =
 		{
 			Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
@@ -170,6 +187,8 @@ int main()
 			Path{glm::vec3(-30.8f, 0.0f, -2.5f),glm::vec3(-30.8f, 0.0f, 21.5f)}
 		};
 
+		std::vector<Enemy*> enemies(enemyPaths.size());
+
 		Model enemyModel("monster", BoundTypes::AABB, DYNAMIC | NO_TEX);
 		enemyModel.loadModel("assets/models/monster/scene.glb");
 		for (int i = 0; i < enemyPaths.size(); ++i)
@@ -179,7 +198,7 @@ int main()
 			enemy->init(glm::vec3(1.0f), 1.0f, enemyPaths[i].start);
 			enemy->setPath(enemyPaths[i].start, enemyPaths[i].end);
 			scene.addEntity(enemy);
-			enemies.push_back(enemy);
+			enemies[i] = enemy;
 		}
 
 		scene.loadModels();
@@ -249,6 +268,15 @@ int main()
 			scene.renderInstances(maze.id, shader);
 
 			scene.renderShader(shader);
+			scene.renderInstances(floor.id, shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(couch.id, shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(book.id, shader);
+
+			scene.renderShader(shader);
 			scene.renderInstances(candy.id, shader);
 
 			scene.renderShader(shader);
@@ -288,6 +316,13 @@ int main()
 		}
 		menu.cleanup();
 		scene.cleanup();
+		delete player;
+		for (unsigned int i = 0; i < enemies.size(); ++i)
+		{
+			delete enemies[i];
+			enemies[i] = nullptr;
+		}
+		enemies.clear();
 	}
 
 	return 0;
@@ -295,21 +330,34 @@ int main()
 
 void processInput(double dt, Scene* scene)
 {
+
 	if (Keyboard::keyWentDown(GLFW_KEY_P))
 	{
 		std::cout << cam.cameraPos << std::endl;
 	}
+
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{
 		//std::cout << "Launch axe\n";
-		RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos, glm::vec3(0.0, glm::radians(-cam.yaw + 90.0), 0.0));
+		if (scene)
+		{
+			if (scene->getAxes() > 0)
+			{
+				RigidBody* rb = scene->generateInstance(axe.id, glm::vec3(.50f), 1.0f, cam.cameraPos, glm::vec3(0.0, glm::radians(-cam.yaw + 90.0), 0.0));
+				scene->removeAxe();
+				if (rb) {
+					// instance generated
+					rb->transferEnergy(100.0f, cam.cameraFront);
+					rb->applyAcceleration(Environment::gravitationalAcceleration);
+				}
+			}
+			else
+			{
+				std::cout << "not enough axes\n";
+			}
 
-		if (rb) {
-			// instance generated
-			rb->transferEnergy(100.0f, cam.cameraFront);
-			rb->applyAcceleration(Environment::gravitationalAcceleration);
 		}
 
-
 	}
+
 }
