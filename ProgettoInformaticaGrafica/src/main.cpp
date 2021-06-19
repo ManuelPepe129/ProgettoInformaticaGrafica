@@ -60,8 +60,6 @@ struct Path {
 
 Camera cam;
 
-Model axe("axe", BoundTypes::AABB, DYNAMIC);
-
 void processInput(double dt, Player* scene);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
@@ -141,7 +139,7 @@ int main()
 		scene.registerModel(&couch);
 		scene.generateInstance(couch.id, glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f));
 
-		Model candy("candy", BoundTypes::AABB, CONST_INSTANCES | NO_TEX);
+		Model candy("candy", BoundTypes::AABB, NO_TEX);
 		candy.loadModel("assets/models/candy/candy.obj");
 		candy.setMaterial(Material::cyan_plastic);
 		scene.registerModel(&candy);
@@ -158,6 +156,7 @@ int main()
 		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
 		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
 
+		Model axe("axe", BoundTypes::AABB, DYNAMIC);
 		axe.loadModel("assets/models/axe/axe.obj");
 		scene.registerModel(&axe);
 
@@ -315,7 +314,7 @@ int main()
 		}
 
 		delete player;
-		
+
 		for (unsigned int i = 0; i < enemies.size(); ++i)
 		{
 			delete enemies[i];
@@ -362,7 +361,7 @@ void processInput(double dt, Player* player)
 		{
 			player->throwAxe();
 		}
-		
+
 
 	}
 
