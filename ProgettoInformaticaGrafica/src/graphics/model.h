@@ -24,6 +24,7 @@
 #define DYNAMIC				(unsigned int)1
 #define CONST_INSTANCES		(unsigned int)2 //  10
 #define NO_TEX				(unsigned int)4	// 100
+#define NO_COLLISION			(unsigned int)8	// 1000
 
 class Scene; // forward declaration
 

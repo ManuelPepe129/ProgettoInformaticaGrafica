@@ -5,7 +5,7 @@
 #include "../algorithms/states.hpp"
 
 
-Model::Model(std::string id, BoundTypes BoundType, unsigned int flags) 
+Model::Model(std::string id, BoundTypes BoundType, unsigned int flags)
 	: id(id), boundType(boundType), switches(flags), currentNoInstances(0)
 { }
 
@@ -66,7 +66,7 @@ void Model::initInstances()
 		meshes[i].VAO.bind();
 
 		// set vertex attrib pointers
-		
+
 		// positions
 		modelVBO.bind();
 		modelVBO.setAttPointer<glm::vec4>(3, 4, GL_FLOAT, 4, 0, 1);
@@ -76,14 +76,14 @@ void Model::initInstances()
 		// size
 		normalModelVBO.bind();
 		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 0, 1);
-		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 1, 1);
-		normalModelVBO.setAttPointer<glm::vec3>(7, 3, GL_FLOAT, 3, 2, 1);
+		normalModelVBO.setAttPointer<glm::vec3>(8, 3, GL_FLOAT, 3, 1, 1);
+		normalModelVBO.setAttPointer<glm::vec3>(9, 3, GL_FLOAT, 3, 2, 1);
 
 		ArrayObject::clear();
 	}
 }
 
-void Model::loadModel(const std::string& path) 
+void Model::loadModel(const std::string& path)
 {
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -166,7 +166,7 @@ void Model::render(Shader shader, bool setModel)
 			meshes[i].render(shader, currentNoInstances);
 		}
 	}
-	
+
 }
 
 void Model::removeInstance(unsigned int idx)
@@ -276,9 +276,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		);
 
 		// textures
-		if (mesh->mTextureCoords[0]) 
+		if (mesh->mTextureCoords[0])
 		{
-			
+
 			vertex.texCoord = glm::vec2(
 				mesh->mTextureCoords[0][i].x,
 				mesh->mTextureCoords[0][i].y
@@ -299,12 +299,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	if (boundType == BoundTypes::AABB)
 	{
 		// assign max and min
-		br.min = min ;
+		br.min = min;
 		br.ogMin = br.min;
 		br.max = max;
 		br.ogMax = br.max;
 	}
-	else 
+	else
 	{
 		// calculate max distance from the center
 		br.center = BoundingRegion(min, max).calculateCenter();
@@ -314,7 +314,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			float radiusSquared = 0.0f; // distance for this vertex
-			for (int j = 0; j < 3; j++) 
+			for (int j = 0; j < 3; j++)
 			{
 				radiusSquared += (vertices[i].pos[j] - br.center[j]) * (vertices[i].pos[j] - br.center[j]);
 			}
@@ -369,9 +369,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 			ret = Mesh(br, textures);
 
+			/*
 			for (Texture tex : textures) {
 				std::cout << tex.dir <<"/"<< tex.path <<  std::endl;
 			}
+			*/
 		}
 	}
 
