@@ -32,8 +32,6 @@ class Model {
 public:
 	std::string id;
 
-	RigidBody rb;
-
 	BoundTypes boundType;
 
 	std::vector<Mesh> meshes;
@@ -66,8 +64,6 @@ public:
 	virtual void render(Shader shader, bool setModel = true);
 
 	void cleanup();
-
-	glm::vec3 getPosition();
 
 	glm::vec3 getSize();
 

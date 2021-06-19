@@ -28,36 +28,45 @@ RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos, gl
 
 void Model::initInstances()
 {
-	glm::mat4* modelData = nullptr;
-	glm::mat3* normalModelData = nullptr;
 	GLenum usage = GL_DYNAMIC_DRAW;
 
-	std::vector<glm::mat4> models(currentNoInstances);
-	std::vector<glm::mat3> normalModels(currentNoInstances);
+	glm::mat4* modelData = nullptr;
+	glm::mat3* normalModelData = nullptr;
+
+	std::vector<glm::mat4>* models = new std::vector<glm::mat4>();
+	std::vector<glm::mat3>* normalModels = new std::vector<glm::mat3>();
+
+	int size = UPPER_BOUND;
 
 	if (States::isActive(&switches, CONST_INSTANCES))
 	{
 		// set data pointers
-		for (unsigned int i = 0; i < instances.size(); ++i)
+		for (unsigned int i = 0; i < instances.size(); i++)
 		{
-			models[i] = instances[i]->model;
-			normalModels[i] = instances[i]->normalModel;
+			models->push_back(instances[i]->model);
+			normalModels->push_back(instances[i]->normalModel);
+		}
+
+		if (currentNoInstances) {
+			modelData = models->data();
+			normalModelData = normalModels->data();
 		}
 
 		usage = GL_STATIC_DRAW;
+		size = instances.size();
 	}
 
 	// generate positions VBO
 	modelVBO = BufferObject(GL_ARRAY_BUFFER);
 	modelVBO.generate();
 	modelVBO.bind();
-	modelVBO.setData<glm::mat4>(UPPER_BOUND, models.data(), usage);
+	modelVBO.setData<glm::mat4>(size, modelData, usage);
 
 	// generate size VBO
 	normalModelVBO = BufferObject(GL_ARRAY_BUFFER);
 	normalModelVBO.generate();
 	normalModelVBO.bind();
-	normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModels.data(), usage);
+	normalModelVBO.setData<glm::mat3>(size, normalModelData, usage);
 
 	// set attribute pointers for each mesh
 	for (unsigned int i = 0; i < meshes.size(); ++i) {
@@ -214,17 +223,6 @@ void Model::cleanup()
 	normalModelVBO.cleanup();
 	modelVBO.cleanup();
 }
-
-glm::vec3 Model::getPosition()
-{
-	return rb.pos;
-}
-
-glm::vec3 Model::getSize()
-{
-	return rb.size;
-}
-
 
 void Model::processNode(aiNode* node, const aiScene* scene)
 {

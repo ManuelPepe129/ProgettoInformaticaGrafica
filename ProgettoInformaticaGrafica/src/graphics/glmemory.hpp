@@ -17,9 +17,12 @@ public:
 	// type of buffer (GL_ARRAY_BUFFER || GL_ELEMENT_ARRAY_BUFFER, etc)
 	GLenum type;
 
-	BufferObject() {}
+	/*
+		constructor
+	*/
 
-	BufferObject(GLenum type) 
+	// default and initialize with type
+	BufferObject(GLenum type = GL_ARRAY_BUFFER)
 		: type(type) {}
 
 	// generate object
