@@ -64,8 +64,6 @@ public:
 	void cleanup();
 
 private:
-	unsigned int VBO, EBO;
-
 	bool noTex;
 
 	void setup();
