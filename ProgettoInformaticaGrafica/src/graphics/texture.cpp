@@ -16,7 +16,7 @@ void Texture::load(bool flip) {
 
 	int width, height, nChannels;
 
-	unsigned char* data = stbi_load((dir + "/" + path).c_str(), &width, &height, &nChannels, 0);
+	unsigned char* data = stbi_load((dir + '/' + path).c_str(), &width, &height, &nChannels, 0);
 
 	GLenum colorMode = GL_RGB;
 	switch (nChannels) {
@@ -39,7 +39,7 @@ void Texture::load(bool flip) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 	else {
-		std::cout << "Image not loaded at " << path << std::endl;
+		std::cerr << "Image not loaded at " << path << std::endl;
 	}
 
 	stbi_image_free(data);
@@ -47,4 +47,8 @@ void Texture::load(bool flip) {
 
 void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::cleanup() {
+	glDeleteTextures(1, &id);
 }

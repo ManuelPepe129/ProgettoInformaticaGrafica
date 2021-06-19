@@ -17,6 +17,8 @@ public:
 
 	void bind();
 
+	void cleanup();
+
 	// texture object
 	unsigned int id;
 	aiTextureType type;

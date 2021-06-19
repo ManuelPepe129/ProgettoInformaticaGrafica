@@ -9,6 +9,11 @@ Model::Model(std::string id, BoundTypes BoundType, unsigned int flags)
 	: id(id), boundType(boundType), switches(flags), currentNoInstances(0)
 { }
 
+Model::~Model()
+{
+	cleanup();
+}
+
 void Model::init()
 {
 
@@ -39,12 +44,6 @@ void Model::initInstances()
 			normalModels[i] = instances[i]->normalModel;
 		}
 
-		if (currentNoInstances > 0)
-		{
-			modelData = &models[0];
-			normalModelData = &normalModels[0];
-		}
-
 		usage = GL_STATIC_DRAW;
 	}
 
@@ -52,13 +51,13 @@ void Model::initInstances()
 	modelVBO = BufferObject(GL_ARRAY_BUFFER);
 	modelVBO.generate();
 	modelVBO.bind();
-	modelVBO.setData<glm::mat4>(UPPER_BOUND, modelData, GL_DYNAMIC_DRAW);
+	modelVBO.setData<glm::mat4>(UPPER_BOUND, models.data(), usage);
 
 	// generate size VBO
 	normalModelVBO = BufferObject(GL_ARRAY_BUFFER);
 	normalModelVBO.generate();
 	normalModelVBO.bind();
-	normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModelData, GL_DYNAMIC_DRAW);
+	normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModels.data(), usage);
 
 	// set attribute pointers for each mesh
 	for (unsigned int i = 0; i < meshes.size(); ++i) {
@@ -198,6 +197,15 @@ unsigned int Model::getIdx(std::string id)
 
 void Model::cleanup()
 {
+	// free all instances
+	for (unsigned int i = 0, len = instances.size(); i < len; i++) {
+		if (instances[i]) {
+			free(instances[i]);
+		}
+	}
+
+	instances.clear();
+
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].cleanup();

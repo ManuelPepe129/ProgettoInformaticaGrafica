@@ -48,6 +48,8 @@ public:
 
 	Model(std::string id, BoundTypes boundType, unsigned int flags = 0);
 
+	~Model();
+
 	// initialize method
 	virtual void init();
 
