@@ -88,7 +88,6 @@ int main()
 		menu.update();
 
 		menu.newFrame();
-
 	}
 
 	if (!menu.shouldClose())
@@ -116,9 +115,8 @@ int main()
 		Lamp lamp;
 		scene.registerModel(&lamp);
 
-		// TODO set maze material
-		Model maze("maze", BoundTypes::AABB, NO_TEX | CONST_INSTANCES);
-		maze.loadModel("assets/models/maze/maze.obj");
+		Model maze("maze", BoundTypes::AABB, CONST_INSTANCES);
+		maze.loadModel("assets/models/maze/scene.gltf");
 		scene.registerModel(&maze);
 		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
 		maze.setMaterial(Material::grey);
@@ -138,9 +136,9 @@ int main()
 		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
 		scene.registerModel(&painting);
 		//scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(0.0f), glm::vec3(glm::pi<float>()/2.0f,0.0f, glm::pi<float>()));
-		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(20.0f, 0.2f, -1.7f), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()));
-		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()));
-		scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()));
+		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(20.0f, 0.2f, -1.7f), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
+		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
+		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
 
 		axe.loadModel("assets/models/axe/axe.obj");
 		scene.registerModel(&axe);
@@ -279,8 +277,8 @@ int main()
 			scene.renderShader(lampShader, false);
 			scene.renderInstances(lamp.id, lampShader);
 
-			scene.renderShader(boxShader, false);
-			box.render(boxShader);
+			//scene.renderShader(boxShader, false);
+			//box.render(boxShader);
 
 			scene.renderText();
 
