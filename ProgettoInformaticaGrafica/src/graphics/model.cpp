@@ -189,7 +189,8 @@ void Model::removeInstance(unsigned int idx)
 void Model::removeInstance(std::string instanceId)
 {
 	unsigned int idx = getIdx(instanceId);
-	removeInstance(idx);
+	if (idx != -1)
+		removeInstance(idx);
 }
 
 unsigned int Model::getIdx(std::string id)
