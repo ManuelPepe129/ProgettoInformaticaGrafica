@@ -54,7 +54,7 @@ void Scene::newFrame()
 	box->rotations.clear();
 	box->positions.clear();
 	box->sizes.clear();
-
+	cameras[activeCamera]->resetDirections();
 	BaseScene::newFrame();
 }
 
@@ -109,7 +109,7 @@ void Scene::checkCollision(double dt)
 			else if (br.intersectsWith(*cameraBR))
 			{
 				handleCameraCollision(*br.instance);
-				cameras[activeCamera]->reverseCameraPos(dt);
+				cameras[activeCamera]->revertCameraPos(dt);
 			}
 		}
 		else
@@ -118,7 +118,7 @@ void Scene::checkCollision(double dt)
 			if (br.intersectsWith(*cameraBR))
 			{
 				handleCameraCollision(*br.instance);
-				cameras[activeCamera]->reverseCameraPos(dt);
+				cameras[activeCamera]->revertCameraPos(dt);
 			}
 		}
 
@@ -461,8 +461,8 @@ void Scene::handleCameraCollision(RigidBody& other)
 		markForDeletion(other.instanceId);
 		if (lives <= 0)
 		{
-			std::cout << "TODO: riattivare game over\n";
-			//state = GameState::GAME_OVER;
+			//std::cout << "TODO: riattivare game over\n";
+			state = GameState::GAME_OVER;
 		}
 	}
 }

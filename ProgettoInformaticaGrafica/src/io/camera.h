@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
 
 enum class CameraDirection {
 	NONE = 0,
@@ -32,21 +33,26 @@ public:
 	float pitch; // y-axis
 	float speed;
 	float sensitivity;
-	float zoom;
+
 
 	Camera(glm::vec3 position = glm::vec3(0.0f));
 
 	void updateCameraDirection(double dx, double dy); // moving mouse
 	void updateCameraPos(CameraDirection direction, double dt); // keyboard input
-	void reverseCameraPos(double dt); // keyboard input
+	void revertCameraPos(double dt); // keyboard input
 	void updateCameraZoom(double dy); // scroll wheel
+
+	void resetDirections();
 
 	glm::mat4 getViewMatrix();
 	float getZoom();
 
 private:
 	void updateCameraVectors();
-	CameraDirection lastDirection;
+
+	std::vector<CameraDirection> lastDirections;
+
+	float zoom;
 };
 
 #endif

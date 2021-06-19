@@ -9,8 +9,7 @@ Camera::Camera(glm::vec3 position)
 	sensitivity(1.0f),
 	zoom(45.0f),
 	cameraFront(glm::vec3(1.0f, 0.0f, 0.0f)),
-	hasMoved(false),
-	lastDirection(CameraDirection::FORWARD)
+	hasMoved(false)
 {
 	updateCameraVectors();
 }
@@ -42,7 +41,7 @@ void Camera::updateCameraDirection(double dx, double dy) {
 void Camera::updateCameraPos(CameraDirection direction, double dt) {
 	float velocity = (float)dt * speed;
 
-	lastDirection = direction;
+	lastDirections.push_back(direction);
 
 	switch (direction) {
 	case CameraDirection::FORWARD:
@@ -71,30 +70,32 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 	hasMoved = true;
 }
 
-void Camera::reverseCameraPos(double dt)
+void Camera::revertCameraPos(double dt)
 {
 	float velocity = (float)dt * speed;
-
-	switch (lastDirection) {
-	case CameraDirection::FORWARD:
-		cameraPos -= cameraFront * velocity;
-		break;
-	case CameraDirection::BACKWARD:
-		cameraPos += cameraFront * velocity;
-		break;
-	case CameraDirection::RIGHT:
-		cameraPos -= cameraRight * velocity;
-		break;
-	case CameraDirection::LEFT:
-		cameraPos += cameraRight * velocity;
-		break;
-	case CameraDirection::UP:
-		cameraPos -= cameraUp * velocity;
-		break;
-	case CameraDirection::DOWN:
-		cameraPos += cameraUp * velocity;
-		break;
+	for (CameraDirection direction : lastDirections) {
+		switch (direction) {
+		case CameraDirection::FORWARD:
+			cameraPos -= cameraFront * velocity;
+			break;
+		case CameraDirection::BACKWARD:
+			cameraPos += cameraFront * velocity;
+			break;
+		case CameraDirection::RIGHT:
+			cameraPos -= cameraRight * velocity;
+			break;
+		case CameraDirection::LEFT:
+			cameraPos += cameraRight * velocity;
+			break;
+		case CameraDirection::UP:
+			cameraPos -= cameraUp * velocity;
+			break;
+		case CameraDirection::DOWN:
+			cameraPos += cameraUp * velocity;
+			break;
+		}
 	}
+	lastDirections.clear();
 	cameraPos.y = 0.0f;
 	hasMoved = false;
 }
@@ -109,6 +110,11 @@ void Camera::updateCameraZoom(double dy) {
 	else { // > 45.0f
 		zoom = 45.0f;
 	}
+}
+
+void Camera::resetDirections()
+{
+	lastDirections.clear();
 }
 
 glm::mat4 Camera::getViewMatrix() {
