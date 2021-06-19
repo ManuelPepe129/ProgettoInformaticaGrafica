@@ -16,8 +16,15 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	currentId("aaaaaaaa"),
 	points(0),
 	lives(1),
+	axes(5),
 	textRenderer(TextRenderer("assets/fonts/comic.ttf", 48))
 { }
+
+Scene::~Scene()
+{
+	delete cameraBR;
+	delete ExitBR;
+}
 
 bool Scene::init()
 {
@@ -89,6 +96,7 @@ void Scene::checkCollision(double dt)
 							{
 								markForDeletion(other.instance->instanceId);
 								points++;
+								addAxes(2);
 							}
 							std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
 							markForDeletion(br.instance->instanceId);
@@ -220,11 +228,12 @@ void Scene::renderText()
 {
 	textRenderer.render(textShader, std::to_string((int)glfwGetTime()), 140.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 	textRenderer.render(textShader, "Points: " + std::to_string(points), 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
-	textRenderer.render(textShader, "Lives:", 515.0f, 470.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+	textRenderer.render(textShader, "Axes: " + std::to_string(axes), 540.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+	textRenderer.render(textShader, "Lives:", 540.0f, 490.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
 	for (unsigned int i = 0; i < lives; ++i) {
-		textRenderer.render(textShader, "<3", 600.0f + i * 25.0f, 470.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
+		textRenderer.render(textShader, "<3", 625.0f + i * 25.0f, 490.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.5f));
 	}
-	
+
 }
 
 void Scene::onGameOver()
@@ -320,7 +329,7 @@ void Scene::removeInstance(std::string instanceId)
 	//delete(instances[instanceId]);
 	instances[instanceId] = nullptr;
 
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		if (objects[i].instance->instanceId == instanceId)
 		{
@@ -338,7 +347,7 @@ void Scene::removeInstance(std::string instanceId)
 
 }
 
-void Scene::markForDeletion(std::string instanceId)
+void Scene::markForDeletion( std::string instanceId)
 {
 	States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
 	instancesToDelete.push_back(instances[instanceId]);
@@ -443,6 +452,7 @@ void Scene::handleCameraCollision(RigidBody& other)
 	if (other.modelId == "candy")
 	{
 		lives++;
+		addAxes(2);
 		markForDeletion(other.instanceId);
 	}
 	else if (other.modelId == "monster")
@@ -457,3 +467,17 @@ void Scene::handleCameraCollision(RigidBody& other)
 	}
 }
 
+void Scene::removeAxe()
+{
+	axes--;
+}
+
+const unsigned int Scene::getAxes() const
+{
+	return axes;
+}
+
+void Scene::addAxes(const unsigned int axes)
+{
+	this->axes += axes;
+}

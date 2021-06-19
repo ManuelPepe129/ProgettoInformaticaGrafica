@@ -54,6 +54,8 @@ public:
 	Scene(int glfwVersionMajor, int glfwVersionMinor,
 		const char* title, unsigned int scrWidth, unsigned int scrHeight);
 
+	~Scene();
+
 	/*
 	*	initialization
 	*/
@@ -109,9 +111,9 @@ public:
 
 	void loadModels();
 
-	void removeInstance(std::string instanceId);
+	void removeInstance( std::string instanceId);
 
-	void markForDeletion(std::string instanceId);
+	void markForDeletion( std::string instanceId);
 	void clearDeadInstances();
 
 	std::string currentId;
@@ -129,6 +131,10 @@ public:
 	void addToPending(RigidBody* instance);
 
 	const int getPoints() const;
+
+	void removeAxe();
+	const unsigned int getAxes()const;
+	void addAxes(const unsigned int axes);
 
 	/*
 		cleanup method
@@ -168,6 +174,8 @@ private:
 	void updateInstancies(double dt);
 
 	void handleCameraCollision(RigidBody& other);
+
+	unsigned int axes;
 
 	unsigned int points;
 	unsigned int lives;
