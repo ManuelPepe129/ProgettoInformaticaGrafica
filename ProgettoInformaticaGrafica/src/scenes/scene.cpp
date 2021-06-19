@@ -211,7 +211,7 @@ void Scene::renderInstances(std::string modelId, Shader shader)
 {
 	if (models[modelId])
 	{
-		models[modelId]->render(shader, this);
+		models[modelId]->render(shader);
 	}
 	else
 	{
@@ -323,11 +323,10 @@ void Scene::removeInstance(std::string instanceId)
 	//	- Scene::instances
 	//	- Model::instances
 
-	std::string targetModel = instances[instanceId]->modelId;
+	RigidBody* instance = instances[instanceId];
+	std::string targetModel = instance->modelId;
 
 	models[targetModel]->removeInstance(instanceId);
-	//delete(instances[instanceId]);
-	instances[instanceId] = nullptr;
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 	{
@@ -342,15 +341,17 @@ void Scene::removeInstance(std::string instanceId)
 			break;
 		}
 	}
-
+	delete instances[instanceId];
+	instances[instanceId] = nullptr;
 	instances.erase(instanceId);
-
 }
 
 void Scene::markForDeletion( std::string instanceId)
 {
-	States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
-	instancesToDelete.push_back(instances[instanceId]);
+	RigidBody* instance = instances[instanceId];
+
+	States::activate(&instance->state, INSTANCE_DEAD);
+	instancesToDelete.push_back(instance);
 }
 
 void Scene::clearDeadInstances()
@@ -364,6 +365,7 @@ void Scene::clearDeadInstances()
 		*/
 
 		removeInstance(rb->instanceId);
+		rb = nullptr;
 	}
 	instancesToDelete.clear();
 }
