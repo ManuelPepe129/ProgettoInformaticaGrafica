@@ -2,17 +2,17 @@
 
 // contructor
 Shader::Shader() {}
-Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath) {
+Shader::Shader(const std::string& vertexShaderPath, const std::string& fragShaderPath) {
 	generate(vertexShaderPath, fragShaderPath);
 }
 
-void Shader::generate(const char* vertexShaderPath, const char* fragShaderPath) {
+void Shader::generate(const std::string& vertexShaderPath, const std::string& fragShaderPath) {
 	int success;
 	char infoLog[512];
 
 	// compile shaders
-	GLuint vertexShader = compileShader(vertexShaderPath, GL_VERTEX_SHADER);
-	GLuint fragShader = compileShader(fragShaderPath, GL_FRAGMENT_SHADER);
+	GLuint vertexShader = compileShader(vertexShaderPath.c_str(), GL_VERTEX_SHADER);
+	GLuint fragShader = compileShader(fragShaderPath.c_str(), GL_FRAGMENT_SHADER);
 
 	// create program
 	id = glCreateProgram();

@@ -21,10 +21,10 @@ public:
 
 	// contructor
 	Shader();
-	Shader(const char* vertexShaderPath, const char* fragShaderPath);
+	Shader(const std::string& vertexShaderPath, const std::string& fragShaderPath);
 
 	// generate
-	void generate(const char* vertexShaderPath, const char* fragShaderPath);
+	void generate(const std::string& vertexShaderPath, const std::string& fragShaderPath);
 
 	// activate shader
 	void activate();
