@@ -1,6 +1,8 @@
 #pragma once
 
 #include "entitybase.h"
+#include "../io/joystick.h"
+#include "../physics/environment.h"
 
 #define DEBUG 0
 
@@ -14,7 +16,13 @@ public:
 	virtual void init(glm::vec3 size, float mass, glm::vec3 pos);
 	virtual void update(double dt);
 
+	void throwAxe();
+
 private: 
 	Camera* camera;
+
+	Joystick joystick;
+
+	bool axeThrown;
 };
 

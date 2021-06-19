@@ -49,8 +49,5 @@ const char* Joystick::getName() {
 }
 
 int Joystick::getId(int i) {
-	switch (i) {
-	case 0: return GLFW_JOYSTICK_1;
-	default: return -1;
-	};
+	return GLFW_JOYSTICK_1 + i;
 }

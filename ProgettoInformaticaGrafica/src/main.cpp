@@ -62,7 +62,7 @@ Camera cam;
 
 Model axe("axe", BoundTypes::AABB, DYNAMIC);
 
-void processInput(double dt, Scene* scene);
+void processInput(double dt, Player* scene);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
 	out << "[x: " << v.x << ", y: " << v.y
@@ -94,7 +94,6 @@ int main()
 	{
 		Scene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 
-
 		//GameScene scene(3, 3, "Progetto Informatica Grafica", 800, 600);
 		if (!scene.init()) {
 			std::cout << "Could not init game scene" << std::endl;
@@ -105,12 +104,12 @@ int main()
 		scene.cameras.push_back(&cam);
 		scene.activeCamera = 0;
 
-		// SHADERS===============================
+		/* SHADERS */
 		Shader shader("assets/shaders/instanced_vs.glsl", "assets/shaders/core_fs.glsl");
 		Shader lampShader("assets/shaders/instanced_vs.glsl", "assets/shaders/lamp_fs.glsl");
 		Shader boxShader("assets/shaders/box_vs.glsl", "assets/shaders/box_fs.glsl");
 
-		// MODELS
+		/* MODELS */
 
 		Lamp lamp;
 		scene.registerModel(&lamp);
@@ -259,7 +258,7 @@ int main()
 
 			// process input
 			scene.processInput(dt);
-			processInput(dt, &scene);
+			processInput(dt, player);
 
 			//player.render(dt);
 			//scene.render();
@@ -314,9 +313,9 @@ int main()
 			scene.newFrame();
 			scene.clearDeadInstances();
 		}
-		menu.cleanup();
-		scene.cleanup();
+
 		delete player;
+		
 		for (unsigned int i = 0; i < enemies.size(); ++i)
 		{
 			delete enemies[i];
@@ -328,7 +327,7 @@ int main()
 	return 0;
 }
 
-void processInput(double dt, Scene* scene)
+void processInput(double dt, Player* player)
 {
 
 	if (Keyboard::keyWentDown(GLFW_KEY_P))
@@ -339,6 +338,7 @@ void processInput(double dt, Scene* scene)
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{
 		//std::cout << "Launch axe\n";
+		/*
 		if (scene)
 		{
 			if (scene->getAxes() > 0)
@@ -357,6 +357,12 @@ void processInput(double dt, Scene* scene)
 			}
 
 		}
+		*/
+		if (player)
+		{
+			player->throwAxe();
+		}
+		
 
 	}
 
