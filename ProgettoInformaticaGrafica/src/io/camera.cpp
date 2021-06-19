@@ -66,7 +66,7 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 	}
 
 	// TODO: scommentare
-	//cameraPos.y = 0.0f;
+	cameraPos.y = 0.0f;
 
 	hasMoved = true;
 }
