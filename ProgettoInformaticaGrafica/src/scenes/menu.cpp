@@ -118,7 +118,7 @@ void Menu::render()
 				scores.push_back(Score{ row[0], row[1], row[2] });
 
 			}
-
+			fin.close();
 			sortScores();
 
 			currentMenuState = MenuState::LEADERBOARD;

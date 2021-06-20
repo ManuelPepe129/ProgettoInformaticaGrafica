@@ -137,7 +137,7 @@ int main()
 		couch.loadModel("assets/models/couch/couch.obj");
 		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
-		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f));
+		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f),0.0f));
 
 		Model candy("candy", BoundTypes::AABB, NO_TEX);
 		candy.loadModel("assets/models/candy/candy.obj");

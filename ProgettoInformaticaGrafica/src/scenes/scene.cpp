@@ -384,8 +384,8 @@ void Scene::removeInstance(std::string instanceId)
 			break;
 		}
 	}
-	delete instances[instanceId];
-	instances[instanceId] = nullptr;
+	//delete instances[instanceId];
+	//instances[instanceId] = nullptr;
 	instances.erase(instanceId);
 }
 
