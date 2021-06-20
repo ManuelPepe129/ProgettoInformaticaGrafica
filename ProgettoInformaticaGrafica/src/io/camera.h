@@ -7,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
+#define DEBUG 0
+
 enum class CameraDirection {
 	NONE = 0,
 	FORWARD,

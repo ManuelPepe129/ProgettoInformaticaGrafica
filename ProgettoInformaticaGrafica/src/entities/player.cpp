@@ -78,6 +78,17 @@ void Player::update(double dt)
 				camera->updateCameraPos(CameraDirection::BACKWARD, dt);
 			}
 
+#if DEBUG
+			if (Keyboard::key(GLFW_KEY_SPACE))
+			{
+				camera->updateCameraPos(CameraDirection::UP, dt);
+			}
+			if (Keyboard::key(GLFW_KEY_LEFT_SHIFT))
+			{
+				camera->updateCameraPos(CameraDirection::DOWN, dt);
+			}
+#endif
+
 			/*
 			std::cout << "Left Stick X Axis: " << joystick.axesState(0) << '\n';
 			std::cout << "Left Stick Y Axis: " << joystick.axesState(1) << '\n';
@@ -121,16 +132,7 @@ void Player::update(double dt)
 
 		
 
-#ifdef DEBUG
-		if (Keyboard::key(GLFW_KEY_SPACE)) 
-		{
-			camera->updateCameraPos(CameraDirection::UP, dt);
-		}
-		if (Keyboard::key(GLFW_KEY_LEFT_SHIFT))
-		{
-			camera->updateCameraPos(CameraDirection::DOWN, dt);
-		}
-#endif
+
 		
 	}
 }

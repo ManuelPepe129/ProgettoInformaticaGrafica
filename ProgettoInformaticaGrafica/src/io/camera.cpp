@@ -65,7 +65,9 @@ void Camera::updateCameraPos(CameraDirection direction, double dt) {
 	}
 
 	// TODO: scommentare
+#if !DEBUG
 	cameraPos.y = 0.0f;
+#endif
 
 	hasMoved = true;
 }
@@ -96,8 +98,11 @@ void Camera::revertCameraPos(double dt)
 		}
 	}
 	lastDirections.clear();
+#if !DEBUG
 	cameraPos.y = 0.0f;
+#endif // !DEBUG
 	hasMoved = false;
+	
 }
 
 void Camera::updateCameraZoom(double dy) {
