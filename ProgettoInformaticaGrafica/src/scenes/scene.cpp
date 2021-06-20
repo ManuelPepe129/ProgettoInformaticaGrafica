@@ -78,50 +78,35 @@ void Scene::checkCollision(double dt)
 	for (int i = 0; i < objects.size(); ++i)
 	{
 		BoundingRegion br = objects[i];
-		if (States::isActive(&br.instance->state, INSTANCE_MOVED) && !States::isActive(&instances[br.instance->instanceId]->state, INSTANCE_DEAD) && !States::isActive(&instances[br.instance->instanceId]->state, (unsigned char)NO_COLLISION))
+		if (!States::isActive(&instances[br.instance->instanceId]->state, INSTANCE_DEAD) && !States::isActive(&instances[br.instance->instanceId]->state, (unsigned char)NO_COLLISION))
 		{
-			br.transform();
-			if (br.instance->modelId == "axe")
+			if (States::isActive(&br.instance->state, INSTANCE_MOVED))
 			{
-				for (int j = 0; j < objects.size(); ++j)
+				br.transform();
+				if (br.instance->modelId == "axe")
 				{
-					BoundingRegion other = objects[j];
-					if (br.instance->instanceId != other.instance->instanceId && !States::isActive(&instances[other.instance->instanceId]->state, INSTANCE_DEAD))
-					{
-						other.transform();
-						//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
-						if (br.intersectsWith(other))
-						{
-							if (other.instance->modelId == "monster")
-							{
-								markForDeletion(other.instance->instanceId);
-								points++;
-								addAxes(2);
-							}
-							//std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
-							markForDeletion(br.instance->instanceId);
-							break;
-						}
-					}
+					handleAxeCollision(br);
 				}
-				continue;
+				else if (br.instance->modelId == "projectile")
+				{
+					handleProjectileCollision(br);
+				}
+				if (br.intersectsWith(*cameraBR))
+				{
+					handleCameraCollision(*br.instance);
+					cameras[activeCamera]->revertCameraPos(dt);
+				}
 			}
-			else if (br.intersectsWith(*cameraBR))
+			else
 			{
-				handleCameraCollision(*br.instance);
-				cameras[activeCamera]->revertCameraPos(dt);
+				// handle camera collisions
+				if (br.intersectsWith(*cameraBR))
+				{
+					handleCameraCollision(*br.instance);
+					cameras[activeCamera]->revertCameraPos(dt);
+				}
 			}
 		}
-		else
-		{
-			// handle camera collisions
-			if (br.intersectsWith(*cameraBR))
-			{
-				handleCameraCollision(*br.instance);
-				cameras[activeCamera]->revertCameraPos(dt);
-			}
-		}
-
 	}
 	if (ExitBR->intersectsWith(*cameraBR))
 	{
@@ -129,6 +114,64 @@ void Scene::checkCollision(double dt)
 		onGameOver();
 	}
 	//std::cout << "-----" << std::endl;
+}
+
+void Scene::handleProjectileCollision(BoundingRegion& br)
+{
+	for (int j = 0; j < objects.size(); ++j)
+	{
+		BoundingRegion other = objects[j];
+		if (br.instance->instanceId != other.instance->instanceId && !States::isActive(&instances[other.instance->instanceId]->state, INSTANCE_DEAD))
+		{
+			other.transform();
+			//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
+			if (br.intersectsWith(other))
+			{
+				if (other.instance->modelId != "monster")
+				{
+					if (other.instance->modelId == "axe")
+					{
+						markForDeletion(other.instance->instanceId);
+					}
+
+					std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+					markForDeletion(br.instance->instanceId);
+					break;
+				}
+
+			}
+		}
+	}
+}
+
+void Scene::handleAxeCollision(BoundingRegion& br)
+{
+	for (int j = 0; j < objects.size(); ++j)
+	{
+		BoundingRegion other = objects[j];
+		if (br.instance->instanceId != other.instance->instanceId && !States::isActive(&instances[other.instance->instanceId]->state, INSTANCE_DEAD))
+		{
+			other.transform();
+			//std::cout << "Checking instance " << br.instance->instanceId << " of " << br.instance->modelId << " with instance" << other.instance->instanceId <<" of " << other.instance->modelId << std::endl;
+			if (br.intersectsWith(other))
+			{
+				if (other.instance->modelId == "monster")
+				{
+					markForDeletion(other.instance->instanceId);
+					points++;
+					addAxes(2);
+				}
+				else if (other.instance->modelId == "projectile")
+				{
+					markForDeletion(other.instance->instanceId);
+				}
+
+				std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+				markForDeletion(br.instance->instanceId);
+				break;
+			}
+		}
+	}
 }
 
 // process input
@@ -332,7 +375,7 @@ void Scene::removeInstance(std::string instanceId)
 	{
 		if (objects[i].instance->instanceId == instanceId)
 		{
-			std::cout << "deleting br " << objects[i].instance->instanceId << std::endl;
+			//std::cout << "deleting br " << objects[i].instance->instanceId << std::endl;
 			for (int j = 0; j < models[targetModel]->boundingRegions.size(); ++j)
 			{
 				objects.erase(objects.begin() + i);
@@ -346,7 +389,7 @@ void Scene::removeInstance(std::string instanceId)
 	instances.erase(instanceId);
 }
 
-void Scene::markForDeletion( std::string instanceId)
+void Scene::markForDeletion(std::string instanceId)
 {
 	RigidBody* instance = instances[instanceId];
 
@@ -459,7 +502,7 @@ void Scene::handleCameraCollision(RigidBody& other)
 		addAxes(2);
 		markForDeletion(other.instanceId);
 	}
-	else if (other.modelId == "monster")
+	else if (other.modelId == "monster" || other.modelId == "projectile")
 	{
 		lives--;
 		markForDeletion(other.instanceId);

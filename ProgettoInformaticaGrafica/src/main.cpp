@@ -131,7 +131,7 @@ int main()
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
-		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.4f, .50f, -3.5f));
+		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.7f, .50f, -3.5f));
 
 		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
 		couch.loadModel("assets/models/couch/couch.obj");
@@ -160,6 +160,10 @@ int main()
 		axe.loadModel("assets/models/axe/axe.obj");
 		scene.registerModel(&axe);
 
+		Model projectile("projectile", BoundTypes::SPHERE, DYNAMIC | NO_TEX);
+		projectile.loadModel("assets/models/sphere/scene.gltf");
+		scene.registerModel(&projectile);
+
 		Box box;
 		box.init();
 
@@ -169,7 +173,7 @@ int main()
 
 		std::vector<Path> enemyPaths =
 		{
-			Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
+			//Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
 			Path{glm::vec3(-13.4f, 0.0f, 4.0f), glm::vec3(11.6f, 0.0f, 4.0f)},
 			Path{glm::vec3(12.5f, 0.0f, -5.3f), glm::vec3(12.5f, 0.0f, 7.7f)},
 			Path{glm::vec3(15.5f, 0.0f, -5.2f), glm::vec3(15.5f, 0.0f, 6.2f)},
@@ -177,7 +181,7 @@ int main()
 			Path{glm::vec3(-26.0f, 0.0f, -.3f), glm::vec3(-26.0f, 0.0f, 14.9f)},
 			Path{glm::vec3(-28.7f, 0.0f, 19.2f), glm::vec3(-4.0f, 0.0f, 19.2f)},
 			Path{glm::vec3(24.5f, 0.0f, 16.4f), glm::vec3(18.0f, 0.0f, 16.4f)},
-			Path{glm::vec3(-31.3f, 0.0f, 21.7f), glm::vec3(-2.0f, 0.0f, 21.41)},
+			Path{glm::vec3(-31.3f, 0.0f, 21.7f), glm::vec3(-2.0f, 0.0f, 21.7)},
 			Path{glm::vec3(25.2f, 0.0f, 0.0f),glm::vec3(25.2f, 0.0f, 16.4f)},
 			Path{glm::vec3(1.0f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 21.6f)},
 			Path{glm::vec3(30.6f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 0.0f)},
@@ -286,18 +290,20 @@ int main()
 			scene.renderShader(shader);
 			scene.renderInstances(enemyModel.getId(), shader);
 
-			// remove launch objects if too far
-			for (unsigned int i = 0; i < axe.getNoInstances(); i++) {
-				if (axe.instances[i]->pos.y < -5.0f) {
-					scene.markForDeletion(axe.instances[i]->instanceId);
-				}
-			}
-
+			// Render axes
 			if (axe.getNoInstances() > 0)
 			{
 				axe.update(dt);
 				scene.renderShader(shader);
 				scene.renderInstances(axe.getId(), shader);
+			}
+
+			// Render enemy projectiles
+			if (projectile.getNoInstances() > 0)
+			{
+				projectile.update(dt);
+				scene.renderShader(shader);
+				scene.renderInstances(projectile.getId(), shader);
 			}
 
 			scene.renderShader(lampShader, false);

@@ -1,5 +1,9 @@
 #pragma once
+
 #include "entitybase.h"
+#include "../physics/environment.h"
+
+#define EnemySeeDistance 15.0f
 
 class Enemy :
     public EntityBase
@@ -17,10 +21,13 @@ protected:
 	glm::vec3 start;
 	glm::vec3 end;
 
-	float t;
+	
 	float speed;
 	float maxSpeed;
 	float respawnDelay;
 	float respawnTimer;
+
+	float shootDelay;
+	float shootTimer;
 };
 

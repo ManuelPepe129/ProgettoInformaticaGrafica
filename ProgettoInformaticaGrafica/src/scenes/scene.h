@@ -174,6 +174,8 @@ private:
 	void updateInstancies(double dt);
 
 	void handleCameraCollision(RigidBody& other);
+	void handleAxeCollision(BoundingRegion& br);
+	void handleProjectileCollision(BoundingRegion& br);
 
 	unsigned int axes;
 
