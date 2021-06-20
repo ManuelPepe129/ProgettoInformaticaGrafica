@@ -59,6 +59,8 @@ artifacts/
 # StyleCop
 StyleCopReport.xml
 
+!assets/**/*.obj
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
