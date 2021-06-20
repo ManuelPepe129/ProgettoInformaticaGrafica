@@ -63,8 +63,8 @@ Camera cam;
 void processInput(double dt, Player* scene);
 
 std::ostream& operator <<(std::ostream& out, const glm::vec3& v) {
-	out << "[x: " << v.x << ", y: " << v.y
-		<< ", z:" << v.z << "]";
+	out << "glm::vec3(" << v.x << ", " << v.y
+		<< ", " << v.z << ")";
 	return out;
 }
 
@@ -127,26 +127,35 @@ int main()
 		book.loadModel("assets/models/book/books.obj");
 		scene.registerModel(&book);
 		scene.generateInstance(book.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(10.5f, -1.0f, -2.7f));
+		scene.generateInstance(book.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-8.1, -1.0f, -2.64));
 
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
-		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.7f, .50f, -3.5f));
+		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.7f, .50f, -3.5f), glm::vec3(0.0f, glm::radians(25.0f), 0.0f));
 
 		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
 		couch.loadModel("assets/models/couch/couch.obj");
 		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
-		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f),0.0f));
+		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f), 0.0f));
+
+		Model pot("pot", BoundTypes::AABB, CONST_INSTANCES);
+		pot.loadModel("assets/models/pot/pot.obj");
+		//couch.loadModel("assets/models/exit/exit.obj");
+		scene.registerModel(&pot);
+		scene.generateInstance(pot.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(10.50f, -1.f, 1.4f));
+		scene.generateInstance(pot.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-10.9f, -1.f, 1.8f));
 
 		Model candy("candy", BoundTypes::AABB, NO_TEX);
 		candy.loadModel("assets/models/candy/candy.obj");
 		candy.setMaterial(Material::cyan_plastic);
 		scene.registerModel(&candy);
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, 0.0f, 9.14f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, 0.0f, -7.31f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, 0.f, -22.53f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, 0.f, -10.33f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, -0.5f, 9.14f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, -0.5f, -7.31f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, -0.5f, -22.53f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, -0.5f, -10.33f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-5.0f, -0.5f, 1.8f));
 
 		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
 		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
@@ -186,7 +195,22 @@ int main()
 			Path{glm::vec3(1.0f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 21.6f)},
 			Path{glm::vec3(30.6f, 0.0f, 21.6f),glm::vec3(30.6f, 0.0f, 0.0f)},
 			Path{glm::vec3(-30.8f, 0.0f, -23.2f),glm::vec3(-30.8f, 0.0f, -2.5f)},
-			Path{glm::vec3(-30.8f, 0.0f, -2.5f),glm::vec3(-30.8f, 0.0f, 21.5f)}
+			Path{glm::vec3(-30.8f, 0.0f, -2.5f),glm::vec3(-30.8f, 0.0f, 21.5f)},
+			Path{glm::vec3(-16.15f, 0.0f, 6.5f),glm::vec3(-5.0f, 0.0f, 6.5f)},
+			Path{glm::vec3(-12.3f, 0.0f, 6.5f),glm::vec3(-0.59f, 0.0f, 6.5f)},
+			Path{glm::vec3(10.4f, 0.0f, -12.0f),glm::vec3(10.4f, 0.0f, -7.0f)},
+			Path{glm::vec3(17.9f, 0.0f, -7.5),glm::vec3(13.1f, 0.0f, -7.5f)},
+			Path{glm::vec3(16.f, 0.0f, -14.8f),glm::vec3(22.45, 0.0f, -14.8f)},
+			Path{glm::vec3(-16.1,0.,-7.5f),glm::vec3(-16.1,0.0,0.0)},
+			Path{glm::vec3(-16.1f,0.0f, 1.3f),glm::vec3(-16.1, 0.0,  5.0f)},
+			Path{glm::vec3(-18., 0.0f, 0.1),glm::vec3(-25.8,  0.0, 0.1)},
+			Path{glm::vec3(-28.4, 0.0f,-5.1f),glm::vec3(-28.4,0.0f,  -11.7)},
+			Path{glm::vec3(-28.4, 0.0f, -12.9f),glm::vec3(-28.4, 0.0f,-19.9)},
+			Path{glm::vec3(-27.6, 0.0f,  -19.8f),glm::vec3(-19.0,  0.0f,  -19.8f)},
+			Path{glm::vec3(-17.4, 0.0f, -19.8f),glm::vec3(-9.1f, 0.0f, -19.8f)},
+			Path{glm::vec3(-6.9, 0.0f, -19.8f),glm::vec3(-1.1f,0.0f,-19.8f)},
+			Path{glm::vec3(-1.0f, 0.0f, -22.9f),glm::vec3(-16.0f, 0.0f, -22.9)},
+			Path{glm::vec3(-22.0902, 0.0f, -22.6),glm::vec3(-30.4, 0.0f,-22.6)}
 		};
 
 		std::vector<Enemy*> enemies(enemyPaths.size());
@@ -274,6 +298,9 @@ int main()
 
 			scene.renderShader(shader);
 			scene.renderInstances(couch.getId(), shader);
+
+			scene.renderShader(shader);
+			scene.renderInstances(pot.getId(), shader);
 
 			scene.renderShader(shader);
 			scene.renderInstances(book.getId(), shader);

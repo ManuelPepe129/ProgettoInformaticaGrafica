@@ -161,7 +161,15 @@ void Menu::render()
 		ImGui::Text("Press ESC to return to main menu...");
 		break;
 	case MenuState::RULES:
-		textCentered("Esci dal labirinto.");
+		textCentered("Esci dal labirinto evitando o sconfiggendo i mostri.");
+		ImGui::Text("");
+		textCentered("Attenzione pero'! Il pericolo e' dietro l'angolo");
+		textCentered("e le risorse a disposizione sono limitate.");
+		ImGui::Text("");
+		textCentered("Sconfiggi i mostri per ricaricare munizioni");
+		textCentered("Raccogli le caramelle per ottenere vite bonus e munizioni");
+		ImGui::Text("");
+		textCentered("Esci dal labirinto sconfiggendo piu' nemici possibile per entrare nella leaderboard!");
 		ImGui::Text("");
 		ImGui::Text("Press ESC to return to main menu...");
 		break;

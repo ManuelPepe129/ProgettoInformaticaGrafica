@@ -15,7 +15,7 @@ Scene::Scene(int glfwVersionMajor, int glfwVersionMinor,
 	activePointLights(0), activeSpotLights(0),
 	currentId("aaaaaaaa"),
 	points(0),
-	lives(1),
+	lives(3),
 	axes(5),
 	textRenderer(TextRenderer("assets/fonts/comic.ttf", 48))
 { }
@@ -134,7 +134,7 @@ void Scene::handleProjectileCollision(BoundingRegion& br)
 						markForDeletion(other.instance->instanceId);
 					}
 
-					std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+					//std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
 					markForDeletion(br.instance->instanceId);
 					break;
 				}
@@ -508,8 +508,7 @@ void Scene::handleCameraCollision(RigidBody& other)
 		markForDeletion(other.instanceId);
 		if (lives <= 0)
 		{
-			//std::cout << "TODO: riattivare game over\n";
-			state = GameState::GAME_OVER;
+			//state = GameState::GAME_OVER;
 		}
 	}
 }
