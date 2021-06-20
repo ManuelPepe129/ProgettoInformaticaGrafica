@@ -166,7 +166,7 @@ void Scene::handleAxeCollision(BoundingRegion& br)
 					markForDeletion(other.instance->instanceId);
 				}
 
-				std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+				//std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
 				markForDeletion(br.instance->instanceId);
 				break;
 			}
@@ -504,11 +504,11 @@ void Scene::handleCameraCollision(RigidBody& other)
 	}
 	else if (other.modelId == "monster" || other.modelId == "projectile")
 	{
-		//lives--;
+		lives--;
 		markForDeletion(other.instanceId);
 		if (lives <= 0)
 		{
-			//state = GameState::GAME_OVER;
+			state = GameState::GAME_OVER;
 		}
 	}
 }
