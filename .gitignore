@@ -59,6 +59,7 @@ artifacts/
 # StyleCop
 StyleCopReport.xml
 
+*.obj
 !*/assets/models/*.obj
 
 # Files built by Visual Studio
