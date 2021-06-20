@@ -115,46 +115,46 @@ int main()
 		Model maze("maze", BoundTypes::AABB, CONST_INSTANCES);
 		maze.loadModel("assets/models/maze/scene.gltf");
 		scene.registerModel(&maze);
-		scene.generateInstance(maze.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
+		scene.generateInstance(maze.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(0.0f));
 		//maze.setMaterial(Material::grey);
 
 		Model floor("floor", BoundTypes::AABB, CONST_INSTANCES);
 		floor.loadModel("assets/models/floor/floor.obj");
 		scene.registerModel(&floor);
-		scene.generateInstance(floor.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, -1.f, 0.0f));
+		scene.generateInstance(floor.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, -1.f, 0.0f));
 
 		Model book("book", BoundTypes::AABB, CONST_INSTANCES);
 		book.loadModel("assets/models/book/books.obj");
 		scene.registerModel(&book);
-		scene.generateInstance(book.id, glm::vec3(1.0f), 1.0f, glm::vec3(10.5f, -1.0f, -2.7f));
+		scene.generateInstance(book.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(10.5f, -1.0f, -2.7f));
 
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
-		scene.generateInstance(exit.id, glm::vec3(1.0f), 1.0f, glm::vec3(-31.4f, .50f, -3.5f));
+		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.4f, .50f, -3.5f));
 
 		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
 		couch.loadModel("assets/models/couch/couch.obj");
 		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
-		scene.generateInstance(couch.id, glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f));
+		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f));
 
 		Model candy("candy", BoundTypes::AABB, NO_TEX);
 		candy.loadModel("assets/models/candy/candy.obj");
 		candy.setMaterial(Material::cyan_plastic);
 		scene.registerModel(&candy);
-		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, 0.0f, 9.14f));
-		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, 0.0f, -7.31f));
-		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, 0.f, -22.53f));
-		scene.generateInstance(candy.id, glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, 0.f, -10.33f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, 0.0f, 9.14f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, 0.0f, -7.31f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, 0.f, -22.53f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, 0.f, -10.33f));
 
 		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
 		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
 		scene.registerModel(&painting);
 		//scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(0.0f), glm::vec3(glm::pi<float>()/2.0f,0.0f, glm::pi<float>()));
-		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(20.0f, 0.2f, -1.7f), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
-		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
-		States::activate(&scene.generateInstance(painting.id, glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
+		States::activate(&scene.generateInstance(painting.getId(), glm::vec3(.20f), 1.0f, glm::vec3(20.0f, 0.2f, -1.7f), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
+		States::activate(&scene.generateInstance(painting.getId(), glm::vec3(.20f), 1.0f, glm::vec3(24.4f, 0.2f, -18.0f), glm::vec3(glm::pi<float>() / 2.0f, glm::pi<float>(), glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
+		States::activate(&scene.generateInstance(painting.getId(), glm::vec3(.20f), 1.0f, glm::vec3(-25.5f, 0.2f, -21.8), glm::vec3(glm::pi<float>() / 2.0f, 0.0f, glm::pi<float>()))->state, (unsigned char)NO_COLLISION);
 
 		Model axe("axe", BoundTypes::AABB, DYNAMIC);
 		axe.loadModel("assets/models/axe/axe.obj");
@@ -191,7 +191,7 @@ int main()
 		enemyModel.loadModel("assets/models/monster/scene.glb");
 		for (int i = 0; i < enemyPaths.size(); ++i)
 		{
-			Enemy* enemy = new Enemy(enemyModel.id, &scene);
+			Enemy* enemy = new Enemy(enemyModel.getId(), &scene);
 			scene.registerModel(&enemyModel);
 			enemy->init(glm::vec3(1.0f), 1.0f, enemyPaths[i].start);
 			enemy->setPath(enemyPaths[i].start, enemyPaths[i].end);
@@ -227,7 +227,7 @@ int main()
 				k0, k1, k2,
 				ambient, diffuse, specular
 			);
-			scene.generateInstance(lamp.id, glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
+			scene.generateInstance(lamp.getId(), glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
 			scene.pointLights.push_back(&pointLights[i]);
 			States::activate(&scene.activePointLights, i);
 		}
@@ -263,45 +263,45 @@ int main()
 			//scene.render();
 
 			scene.renderShader(shader);
-			scene.renderInstances(maze.id, shader);
+			scene.renderInstances(maze.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(floor.id, shader);
+			scene.renderInstances(floor.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(couch.id, shader);
+			scene.renderInstances(couch.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(book.id, shader);
+			scene.renderInstances(book.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(candy.id, shader);
+			scene.renderInstances(candy.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(exit.id, shader);
+			scene.renderInstances(exit.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(painting.id, shader);
+			scene.renderInstances(painting.getId(), shader);
 
 			scene.renderShader(shader);
-			scene.renderInstances(enemyModel.id, shader);
+			scene.renderInstances(enemyModel.getId(), shader);
 
 			// remove launch objects if too far
-			for (int i = 0; i < axe.currentNoInstances; i++) {
+			for (unsigned int i = 0; i < axe.getNoInstances(); i++) {
 				if (axe.instances[i]->pos.y < -5.0f) {
 					scene.markForDeletion(axe.instances[i]->instanceId);
 				}
 			}
 
-			if (axe.currentNoInstances > 0)
+			if (axe.getNoInstances() > 0)
 			{
 				axe.update(dt);
 				scene.renderShader(shader);
-				scene.renderInstances(axe.id, shader);
+				scene.renderInstances(axe.getId(), shader);
 			}
 
 			scene.renderShader(lampShader, false);
-			scene.renderInstances(lamp.id, lampShader);
+			scene.renderInstances(lamp.getId(), lampShader);
 
 			//scene.renderShader(boxShader, false);
 			//box.render(boxShader);

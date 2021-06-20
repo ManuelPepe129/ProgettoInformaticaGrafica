@@ -36,7 +36,7 @@ void Model::initInstances()
 	std::vector<glm::mat4>* models = new std::vector<glm::mat4>();
 	std::vector<glm::mat3>* normalModels = new std::vector<glm::mat3>();
 
-	int size = UPPER_BOUND;
+	unsigned int size = UPPER_BOUND;
 
 	if (States::isActive(&switches, CONST_INSTANCES))
 	{
@@ -193,7 +193,7 @@ void Model::removeInstance(std::string instanceId)
 		removeInstance(idx);
 }
 
-unsigned int Model::getIdx(std::string id)
+const unsigned int Model::getIdx(std::string id)const
 {
 	for (int i = 0; i < currentNoInstances; ++i)
 	{
@@ -203,6 +203,16 @@ unsigned int Model::getIdx(std::string id)
 		}
 	}
 	return -1;
+}
+
+const unsigned int Model::getNoInstances() const
+{
+	return currentNoInstances;
+}
+
+const std::string Model::getId() const
+{
+	return id;
 }
 
 void Model::cleanup()
@@ -252,8 +262,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	//std::cout << "Processing mesh " << mesh->mName.C_Str() << std::endl;
 
 	BoundingRegion br(boundType);
-	glm::vec3 min(std::numeric_limits<double>::max());		// min point = max float
-	glm::vec3 max(std::numeric_limits<double>::lowest());	// max point = min float
+	glm::vec3 min(std::numeric_limits<float>::max());		// min point = max float
+	glm::vec3 max(std::numeric_limits<float>::lowest());	// max point = min float
 
 	// vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)

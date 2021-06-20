@@ -30,9 +30,8 @@ class Scene; // forward declaration
 
 class Model {
 public:
-	std::string id;
-
-	BoundTypes boundType;
+	
+	
 
 	std::vector<Mesh> meshes;
 	std::vector<BoundingRegion> boundingRegions;
@@ -40,7 +39,7 @@ public:
 	std::vector<RigidBody*> instances;
 
 	//unsigned int maxNoInstances;
-	unsigned int currentNoInstances;
+	
 
 	unsigned int switches;
 
@@ -65,16 +64,24 @@ public:
 
 	void cleanup();
 
-	glm::vec3 getSize();
-
 	void removeInstance(unsigned int idx);
 
 	void removeInstance(std::string instanceId);
 
-	unsigned int getIdx(std::string id);
+	/*
+	*	Getters
+	*/
+
+	const unsigned int getIdx(std::string id)const;
+	const unsigned int getNoInstances()const;
+
+	const std::string getId() const;
 
 protected:
 	//bool noTex;
+	std::string id;
+	BoundTypes boundType;
+	unsigned int currentNoInstances;
 
 	std::string directory;
 

@@ -104,7 +104,7 @@ public:
 		shader.setMat4("model", glm::mat4(1.0f));
 
 		// update data
-		int instances = std::min(UPPER_BOUND, (int)positions.size()); // if more than UPPER_BOUND instances, only render UPPER_BOUND
+		unsigned int instances = std::min(UPPER_BOUND, (int)positions.size()); // if more than UPPER_BOUND instances, only render UPPER_BOUND
 
 		// update data
 		if (instances != 0) {
@@ -138,9 +138,11 @@ public:
 		ArrayObject::clear();
 	}
 
-	void addInstance(RigidBody* instance) {
+	/*
+		void addInstance(RigidBody* instance) {
 
-	}
+		}
+	*/
 
 	void cleanup() {
 		VAO.cleanup();

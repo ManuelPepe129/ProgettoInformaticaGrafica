@@ -98,7 +98,7 @@ void Scene::checkCollision(double dt)
 								points++;
 								addAxes(2);
 							}
-							std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
+							//std::cout << "Instance of model " << br.instance->modelId << " collides with instance of " << other.instance->modelId << std::endl;
 							markForDeletion(br.instance->instanceId);
 							break;
 						}
@@ -254,10 +254,10 @@ void Scene::addEntity(EntityBase* entity)
 
 void Scene::registerModel(Model* model)
 {
-	if (models.count(model->id) == 0)
+	if (models.count(model->getId()) == 0)
 	{
 		//std::cout << "Registering model " << model->id << std::endl;
-		models.insert(std::pair<std::string, Model*>(model->id, model));
+		models.insert(std::pair<std::string, Model*>(model->getId(), model));
 	}
 
 }
@@ -444,7 +444,7 @@ void Scene::updateInstancies(double dt)
 	for (std::map<std::string, Model*>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		Model* model = it->second;
-		if (model->currentNoInstances > 0)
+		if (model->getNoInstances() > 0)
 		{
 			model->update(dt);
 		}
