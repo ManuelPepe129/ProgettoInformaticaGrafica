@@ -87,7 +87,7 @@ int main()
 
 		menu.newFrame();
 	}
-	
+
 
 	if (!menu.shouldClose())
 	{
@@ -140,7 +140,7 @@ int main()
 		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
 		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f), 0.0f));
-		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-28.132, 0, -0.784824), glm::vec3(0.0f, glm::radians(0.0f), 0.0f));
+		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-28.132, -0.7f, -0.7), glm::vec3(0.0f, glm::radians(-90.0f), 0.0f));
 
 		Model pot("pot", BoundTypes::AABB, CONST_INSTANCES);
 		pot.loadModel("assets/models/pot/pot.obj");
@@ -153,11 +153,11 @@ int main()
 		candy.loadModel("assets/models/candy/candy.obj");
 		candy.setMaterial(Material::cyan_plastic);
 		scene.registerModel(&candy);
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, -0.5f, 9.14f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, -0.5f, -7.31f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, -0.5f, -22.53f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, -0.5f, -10.33f));
-		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-5.0f, -0.5f, 1.8f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(4.65f, 0.0f, 9.14f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.78f, 0.0f, -7.31f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(12.49f, 0.0f, -22.53f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-21.0f, 0.0f, -10.33f));
+		scene.generateInstance(candy.getId(), glm::vec3(3.0f), 1.0f, glm::vec3(-5.0f, 0.0f, 1.8f));
 
 		Model painting("deChirico", BoundTypes::AABB, CONST_INSTANCES);
 		painting.loadModel("assets/models/paintings/deChirico/DeChirico.obj");
@@ -212,7 +212,11 @@ int main()
 			Path{glm::vec3(-17.4, 0.0f, -19.8f),glm::vec3(-9.1f, 0.0f, -19.8f)},
 			Path{glm::vec3(-6.9, 0.0f, -19.8f),glm::vec3(-1.1f,0.0f,-19.8f)},
 			Path{glm::vec3(-1.0f, 0.0f, -22.9f),glm::vec3(-16.0f, 0.0f, -22.9)},
-			Path{glm::vec3(-22.0902, 0.0f, -22.6),glm::vec3(-30.4, 0.0f,-22.6)}
+			Path{glm::vec3(-22.0902, 0.0f, -22.6),glm::vec3(-30.4, 0.0f,-22.6)},
+			Path{glm::vec3(18.9528, 0, 0.0527054),glm::vec3(25.5183, 0, 0.381071)},
+			Path{glm::vec3(25.7318, 0, -11.5701),glm::vec3(25.5249, 0, -2.36112)},
+			Path{glm::vec3(19.8339, 0, -17.4871),glm::vec3(3.95697, 0, -17.3793)},
+			Path {glm::vec3(-1.12864, 0, -9.62469),glm::vec3(-1.18471, 0, -17.3938)}
 		};
 
 		std::vector<Enemy*> enemies(enemyPaths.size());
@@ -363,11 +367,11 @@ int main()
 
 void processInput(double dt, Player* player)
 {
-
 	if (Keyboard::keyWentDown(GLFW_KEY_P))
 	{
 		std::cout << cam.cameraPos << std::endl;
 	}
+
 
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
 	{

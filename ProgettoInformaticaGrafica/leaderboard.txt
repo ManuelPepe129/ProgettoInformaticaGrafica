@@ -1,2 +1,3 @@
-Manu,111,9
-pipo,149,9
+Manu,111,5
+Riccardo,149,3
+manu,129,7
