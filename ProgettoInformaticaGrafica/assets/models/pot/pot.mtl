@@ -10,6 +10,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump -bm 1.500000 D:\\Documenti\\Università\\Dropbox (Politecnico Di Torino Studenti)\\Informatica Grafica\\Progetto\\Texture\\Pot\\Clay002_2K_Normal.jpg
-map_Kd D:\\Documenti\\Università\\Dropbox (Politecnico Di Torino Studenti)\\Informatica Grafica\\Progetto\\Texture\\Pot\\Clay002_2K_Color.jpg
-map_Ns D:\\Documenti\\Università\\Dropbox (Politecnico Di Torino Studenti)\\Informatica Grafica\\Progetto\\Texture\\Pot\\Clay002_2K_Roughness.jpg
+map_Bump -bm 1.500000 Clay002_2K_Normal.jpg
+map_Kd Clay002_2K_Color.jpg
+map_Ns Clay002_2K_Roughness.jpg
