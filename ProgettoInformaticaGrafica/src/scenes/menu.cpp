@@ -86,40 +86,44 @@ void Menu::render()
 		}
 		if (buttonCentered(" Leaderboard  "))
 		{
-			// File pointer
-			std::fstream fin;
+			if (scores.empty())
+			{
+				// File pointer
+				std::fstream fin;
 
-			// Open an existing file
-			fin.open("leaderboard.txt", std::ios::in);
+				// Open an existing file
+				fin.open("leaderboard.txt", std::ios::in);
 
-			// Read the Data from the file
-			// as String Vector
-			std::vector<std::string> row;
-			std::string line, word, temp;
+				// Read the Data from the file
+				// as String Vector
+				std::vector<std::string> row;
+				std::string line, word, temp;
 
-			while (getline(fin,line)) {
+				while (getline(fin, line)) {
 
-				row.clear();
+					row.clear();
 
-				//std::cout << line << std::endl;
+					//std::cout << line << std::endl;
 
-				// used for breaking words
-				std::stringstream s(line);
+					// used for breaking words
+					std::stringstream s(line);
 
-				// read every column data of a row and
-				// store it in a string variable, 'word'
-				while (std::getline(s, word, ',')) {
+					// read every column data of a row and
+					// store it in a string variable, 'word'
+					while (std::getline(s, word, ',')) {
 
-					// add all the column data
-					// of a row to a vector
-					row.push_back(word);
-					//std::cout << word << std::endl;
+						// add all the column data
+						// of a row to a vector
+						row.push_back(word);
+						//std::cout << word << std::endl;
+					}
+					scores.push_back(Score{ row[0], row[1], row[2] });
+
 				}
-				scores.push_back(Score{ row[0], row[1], row[2] });
-
+				fin.close();
+				sortScores();
 			}
-			fin.close();
-			sortScores();
+			
 
 			currentMenuState = MenuState::LEADERBOARD;
 		}
