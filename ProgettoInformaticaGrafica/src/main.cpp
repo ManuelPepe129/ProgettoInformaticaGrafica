@@ -87,6 +87,7 @@ int main()
 
 		menu.newFrame();
 	}
+	
 
 	if (!menu.shouldClose())
 	{
@@ -132,13 +133,14 @@ int main()
 		Model exit("exit", BoundTypes::AABB, CONST_INSTANCES);
 		exit.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&exit);
-		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.7f, .50f, -3.5f), glm::vec3(0.0f, glm::radians(25.0f), 0.0f));
+		scene.generateInstance(exit.getId(), glm::vec3(1.0f), 1.0f, glm::vec3(-31.7f, .50f, -3.5f));
 
 		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
 		couch.loadModel("assets/models/couch/couch.obj");
 		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
 		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f), 0.0f));
+		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-28.132, 0, -0.784824), glm::vec3(0.0f, glm::radians(0.0f), 0.0f));
 
 		Model pot("pot", BoundTypes::AABB, CONST_INSTANCES);
 		pot.loadModel("assets/models/pot/pot.obj");

@@ -504,7 +504,7 @@ void Scene::handleCameraCollision(RigidBody& other)
 	}
 	else if (other.modelId == "monster" || other.modelId == "projectile")
 	{
-		lives--;
+		//lives--;
 		markForDeletion(other.instanceId);
 		if (lives <= 0)
 		{

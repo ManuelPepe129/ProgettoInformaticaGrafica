@@ -99,13 +99,13 @@
     <ClCompile Include="src\algorithms\durationlogger.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\entitybase.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="src\entities\player.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="src\entities\enemy.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\entitybase.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -225,13 +225,13 @@
     <ClInclude Include="src\algorithms\trie.hpp">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\entitybase.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="src\entities\player.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\enemy.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\entitybase.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
