@@ -137,7 +137,6 @@ int main()
 
 		Model couch("couch", BoundTypes::AABB, CONST_INSTANCES);
 		couch.loadModel("assets/models/couch/couch.obj");
-		//couch.loadModel("assets/models/exit/exit.obj");
 		scene.registerModel(&couch);
 		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-10.0f, -.7f, -2.2f), glm::vec3(0.0f, glm::radians(20.0f), 0.0f));
 		scene.generateInstance(couch.getId(), glm::vec3(.15f), 1.0f, glm::vec3(-28.132, -0.7f, -0.7), glm::vec3(0.0f, glm::radians(-90.0f), 0.0f));
@@ -186,7 +185,7 @@ int main()
 		{
 			//Path{glm::vec3(-10.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.0f, 0.0f)},
 			Path{glm::vec3(-13.4f, 0.0f, 4.0f), glm::vec3(11.6f, 0.0f, 4.0f)},
-			Path{glm::vec3(12.5f, 0.0f, -5.3f), glm::vec3(12.5f, 0.0f, 7.7f)},
+			Path{glm::vec3(13.0f, 0.0f, -5.3f), glm::vec3(13.0f, 0.0f, 7.7f)},
 			Path{glm::vec3(15.5f, 0.0f, -5.2f), glm::vec3(15.5f, 0.0f, 6.2f)},
 			Path{glm::vec3(-12.2, 0.0f, -4.8f), glm::vec3(15.8f, 0.0f, -4.8f)},
 			Path{glm::vec3(-26.0f, 0.0f, -.3f), glm::vec3(-26.0f, 0.0f, 14.9f)},
@@ -367,10 +366,12 @@ int main()
 
 void processInput(double dt, Player* player)
 {
+	/*
 	if (Keyboard::keyWentDown(GLFW_KEY_P))
 	{
 		std::cout << cam.cameraPos << std::endl;
 	}
+	*/
 
 
 	if (Keyboard::keyWentDown(GLFW_KEY_1))
