@@ -1,4 +1,4 @@
-# ProgettoInformaticaGrafica
+# Progetto Informatica Grafica
 
 Progetto per il corso di Informatica Grafica 02BHIOV del Politecnico di Torino
 
